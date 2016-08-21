@@ -5,6 +5,7 @@
 
 #include<sight.h>
 #include<decode.h>
+#include<graph.h>
 
 #define DEBUG
 
@@ -73,5 +74,7 @@ int main(int argc,char *argv[]){
 	}
 	POINT *self=findSelf(map);
 	print(self);
+	GRAPH *g=createGraph();
+	fillGraph(g,map);
 	return 0;
 }
