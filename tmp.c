@@ -143,7 +143,7 @@ printf("CANCEL\n");
 		break;
 	}
 	esc->p=p;
-putchar('\n');
+	putchar('\n');
 	return esc;
 }
 void space(int fdin){
@@ -227,6 +227,11 @@ return 0;
 //			printf("(%d:%c) ",offset,*p);
 			printf("%c",*p);
 		}
+		p++;
+	}
+	while(*p!=27){
+		if(!iscntrl(*p))
+			screen[offset++]=*p;
 		p++;
 	}
 //	printf("\27[5B");	//move down 5 lines.
