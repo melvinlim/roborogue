@@ -1,0 +1,18 @@
+#ifndef DECODE_H
+#define DECODE_H
+
+#define DEBUG
+
+#define ESC struct esc
+
+struct esc{
+	char type;
+	int x;
+	int y;
+	char *p;
+};
+
+ESC *handleESC(char *p);
+char *printScreen(int fdout);
+
+#endif
