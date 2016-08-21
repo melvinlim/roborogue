@@ -1,18 +1,31 @@
 #include<stdio.h>
+#include<stdlib.h>
 #include<fcntl.h>
 #include<string.h>
+
+//#define DEBUG
 
 #define UP 'A'
 #define DOWN 'B'
 #define RIGHT 'C'
 #define LEFT 'D'
 
-int handleESC(char *p){
+#define ESC struct esc
+
+struct esc{
+	char type;
+	int x;
+	int y;
+	char *p;
+};
+
+ESC *handleESC(char *p){
 	int a,b;
 	int t,u;
-	char *x;
+	int x0,y0;
 	char ch;
 	if(*(p+1)!='[')	return 0;
+	ESC *esc=malloc(sizeof(ESC));
 	//printf("p+1=%c",*(p+1));
 	//printf("\nESC:");
 	p+=2;
@@ -34,22 +47,40 @@ int handleESC(char *p){
 		p++;
 		u=*p-48;
 	}
-		ch=*(p);
-		//printf("c=%c\n",ch);
-		switch(ch){
-			case'r':
-			case'R':
-				printf("\ncursor reported at: [%d,%d]\n",a,b);
-			break;
-			case'h':
-			case'H':
-				printf("\ncursor home set to: [%d,%d]\n",a,b);
-			break;
-			case'f':
-			case'F':
-				printf("\ncursor forced to: [%d,%d]\n",a,b);
-			break;
-		}
+	ch=*(p);
+	//printf("c=%c\n",ch);
+	switch(ch){
+		case'r':
+		case'R':
+#ifdef DEBUG
+			printf("\ncursor reported at: [%d,%d]\n",a,b);
+#endif
+			esc->type='r';
+			esc->x=a;
+			esc->y=b;
+		break;
+		case'h':
+		case'H':
+#ifdef DEBUG
+			printf("\ncursor home set to: [%d,%d]\n",a,b);
+#endif
+			esc->type='h';
+			esc->x=a;
+			esc->y=b;
+		break;
+		case'f':
+		case'F':
+#ifdef DEBUG
+			printf("\ncursor forced to: [%d,%d]\n",a,b);
+#endif
+			esc->type='f';
+			esc->x=a;
+			esc->y=b;
+		break;
+	}
+	esc->p=p;
+putchar('\n');
+	return esc;
 }
 void space(int fdin){
 	char buf;
@@ -75,37 +106,44 @@ void quit(int fdin){
 	printf("wrote %d bytes\n",n);
 }
 void printScreen(int fdout){
+	ESC *esc;
 	char *p;
-	int n,i,j;
+	int n,i,j,x0,y0;
 	char output[24*80];
+	char screen[24*80];
+	int offset=0;
+	bzero(screen,24*80);
 	n=read(fdout,output,24*80);
 	printf("read %d bytes\n",n);
+	x0=y0=0;
 	for(i=0;i<n;i++){
 		if(output[i]==27){
-p=output+i;
-handleESC(p);
-			i++;
-			if(output[i]=='['){
-/*
-				i++;
-				printf("%d",output[i]);
-				i++;
-				switch(output[i]){
-					case';':
-						i++;
-						printf("%d\n",output[i]);
-						i++;
+			p=output+i;
+			esc=handleESC(p);
+			if(esc){
+				i += esc->p - p + 1;
+				switch(esc->type){
+					case'r':
+						x0=esc->x;
+						y0=esc->y;
+					break;
+					case'm':
+						offset+=esc->y;
+						offset+=80*esc->x;
 					break;
 				}
-*/
+			}else{
+				screen[offset++]=output[i];
 			}
 		}
 		printf("%c",output[i]);
 	}
+	printf("\27[5B");	//move down 5 lines.
 /*
 	for(i=0;i<24;i++){
 		for(j=0;i<80;j++){
-			printf("%c",output[i*80+j]);
+			printf("%c",screen[i*80+j]);
+			//printf("%c",output[i*80+j]);
 		}
 	}
 */
@@ -115,7 +153,6 @@ handleESC(p);
 		printf("%c",output[i]);
 	}
 */
-//	printf("\27[5B");	//move down 5 lines.
 	//printf("n=%d\n",n);
 }
 int main(int argc,char *argv[]){
