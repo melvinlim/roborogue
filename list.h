@@ -6,6 +6,7 @@
 LIST{
 	LIST *next;
 	int val;
+	int visited;
 };
 
 LIST *createList();

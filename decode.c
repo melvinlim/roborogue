@@ -122,7 +122,7 @@ char *printScreen(int fdout){
 	ESC *esc;
 	char *p;
 	int n,i,j,x0,y0;
-	char output[24*80+1];
+	char output[24*80];
 //	char screen[24*80];
 	char *screen=malloc(24*80);
 	int offset=0;
@@ -132,7 +132,6 @@ char *printScreen(int fdout){
 	n=read(fdout,output,24*80);
 	printf("read %d bytes\n",n);
 	p=output;
-	output[24*80]=0;
 	pLevel=strstr(output,"Level");
 	pDots=strstr(output,"...");
 	p=pDots+3;
@@ -167,6 +166,7 @@ char *printScreen(int fdout){
 						offset+=80*(esc->y - 1);
 					break;
 				}
+				free(esc);
 			}else{
 #ifdef DEBUG
 printf("error in printScreen\n");

@@ -3,6 +3,8 @@
 #include<fcntl.h>
 #include<string.h>
 
+#include<sys/resource.h>
+
 #include<sight.h>
 #include<decode.h>
 #include<graph.h>
@@ -47,6 +49,21 @@ int main(int argc,char *argv[]){
 		printf("usage: %s [output file] [process number]\n",argv[0]);
 		return 0;
 	}
+
+	struct rlimit rlim;
+	getrlimit(RLIMIT_STACK,&rlim);
+	rlim.rlim_cur=rlim.rlim_max;
+	setrlimit(RLIMIT_STACK,&rlim);
+	getrlimit(RLIMIT_DATA,&rlim);
+	rlim.rlim_cur=rlim.rlim_max;
+	setrlimit(RLIMIT_DATA,&rlim);
+	getrlimit(RLIMIT_AS,&rlim);
+	rlim.rlim_cur=rlim.rlim_max;
+	setrlimit(RLIMIT_AS,&rlim);
+	//rlim.rlim_cur=rlim.rlim_max=RLIM_INFINITY;
+	//setrlimit(RLIMIT_STACK,&rlim);
+	//setrlimit(RLIMIT_AS,&rlim);
+
 	sprintf(buf,"%s",argv[1]);
 	printf("target file: %s\n",buf);
 	fdout=open(buf,O_RDONLY);

@@ -1,10 +1,16 @@
+#include<stdio.h>
 #include<stdlib.h>
 #include<list.h>
 
 LIST *createList(){
 	LIST *p=malloc(sizeof(LIST));
+	if(p==0){
+		printf("error, could not allocate memory in createList()\n");
+		return p;
+	}
 	p->next=0;
 	p->val=0;
+//	p->visited=0;
 	return p;
 }
 LIST *addList(LIST *p,int val){
@@ -13,6 +19,7 @@ LIST *addList(LIST *p,int val){
 	t->next=malloc(sizeof(LIST));
 	t=t->next;
 	t->val=val;
+//	t->visited=0;
 	t->next=0;
 	return p;
 }

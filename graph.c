@@ -7,6 +7,10 @@
 GRAPH *createGraph(){
 	int i;
 	GRAPH *g=malloc(sizeof(GRAPH));
+	if(g==0){
+		printf("error: could not allocate memory\n");
+		return g;
+	}
 	for(i=0;i<(COLUMNS*ROWS);i++){
 		g->v[i]=createList();
 	}
@@ -48,12 +52,12 @@ void fillGraph(GRAPH *g,char *map){
 
 void printGraph(GRAPH *g){
 	int i;
-	LIST *p=g->v[0];
+	LIST *p;
 	for(i=0;i<(COLUMNS*ROWS);i++){
+		p=g->v[i];
 		if(p->next){
 			printf("g->v[%d]:\t",i);
 			printList(p);
 		}
-		p++;
 	}
 }
