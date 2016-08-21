@@ -76,5 +76,6 @@ int main(int argc,char *argv[]){
 	print(self);
 	GRAPH *g=createGraph();
 	fillGraph(g,map);
+	printGraph(g);
 	return 0;
 }

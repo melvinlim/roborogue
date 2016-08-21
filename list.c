@@ -50,3 +50,10 @@ void freeList(LIST *root){
 	}
 	free(root);
 }
+void printList(LIST *p){
+	while(p->next){
+		p=p->next;
+		printf("[%d]->",p->val);
+	}
+	printf("0\n");
+}
