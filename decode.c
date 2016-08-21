@@ -116,6 +116,8 @@ printf("CANCEL\n");
 }
 
 char *printScreen(int fdout){
+	char *pLevel;
+	char *pDots;
 	char *pExp;
 	ESC *esc;
 	char *p;
@@ -131,6 +133,9 @@ char *printScreen(int fdout){
 	printf("read %d bytes\n",n);
 	p=output;
 	output[24*80]=0;
+	pLevel=strstr(output,"Level");
+	pDots=strstr(output,"...");
+	p=pDots+3;
 	pExp=strstr(output,"Exp");
 	if(pExp==0){
 		printf("error: could not find Exp substring\n");
@@ -138,7 +143,8 @@ char *printScreen(int fdout){
 	}
 //	printf("pExp=%lx\n",pExp);
 //	while(*p!=0){
-	while(p!=pExp){
+//	while(p!=pExp){
+	while(p!=pLevel){
 		if(*p==27){
 			esc=handleESC(p);
 			if(esc){
@@ -175,11 +181,13 @@ return 0;
 		}
 		p++;
 	}
+/*
 	while(*p!=27){
 //		if(!iscntrl(*p))
 			screen[offset++]=*p;
 		p++;
 	}
+*/
 //	printf("\27[5B");	//move down 5 lines.
 	printf("\n");
 	for(i=0;i<24;i++){
