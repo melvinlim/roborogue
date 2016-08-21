@@ -19,6 +19,33 @@ struct esc{
 	char *p;
 };
 
+#define POINT struct point
+
+struct point{
+	int x;
+	int y;
+};
+
+POINT *findSelf(char *map){
+	int i,j;
+	POINT *pt=malloc(sizeof(POINT));
+	for(i=0;i<24;i++){
+		for(j=0;j<80;j++){
+			if(*map++=='@'){
+				pt->x=j;
+				pt->y=i;
+				return pt;
+			}
+		}
+	}
+	return 0;
+}
+
+void print(POINT *pt){
+	if(pt)
+		printf("(%d,%d)\n",pt->x,pt->y);
+}
+
 ESC *handleESC(char *p){
 	int a,b;
 	int t,u;
@@ -57,7 +84,7 @@ printf("CANCEL\n");
 			return esc;
 		}
 #ifdef DEBUG
-		printf("\np!=\';\'\n");
+		printf("p!=\';\'\n");
 #endif
 		while(!isalpha(*p)){
 #ifdef DEBUG
@@ -142,12 +169,14 @@ void quit(int fdin){
 	n=write(fdin,buf,5);
 	printf("wrote %d bytes\n",n);
 }
-void printScreen(int fdout){
+char *printScreen(int fdout){
+	char *pExp;
 	ESC *esc;
 	char *p;
 	int n,i,j,x0,y0;
 	char output[24*80+1];
-	char screen[24*80];
+//	char screen[24*80];
+	char *screen=malloc(24*80);
 	int offset=0;
 	bzero(screen,24*80);
 	memset(screen,(char)' ',24*80);
@@ -156,7 +185,14 @@ void printScreen(int fdout){
 	printf("read %d bytes\n",n);
 	p=output;
 	output[24*80]=0;
-	while(*p!=0){
+	pExp=strstr(output,"Exp");
+	if(pExp==0){
+		printf("error: could not find Exp substring\n");
+		return 0;
+	}
+//	printf("pExp=%lx\n",pExp);
+//	while(*p!=0){
+	while(p!=pExp){
 		if(*p==27){
 			esc=handleESC(p);
 			if(esc){
@@ -182,7 +218,7 @@ void printScreen(int fdout){
 			}else{
 #ifdef DEBUG
 printf("error in printScreen\n");
-return;
+return 0;
 #endif
 			}
 		}else{
@@ -202,9 +238,11 @@ return;
 		putchar('\n');
 	}
 	//printf("n=%d\n",n);
+	return screen;
 }
 int main(int argc,char *argv[]){
 	int fdin,fdout,i,j,n;
+	char *map;
 	char buf[256];
 	char ch;
 	if(argc<=2){
@@ -229,8 +267,14 @@ int main(int argc,char *argv[]){
 	printf("fdin=%d\n",fdin);
 //	space(fdin);
 //	move(fdin,DOWN);
-	printScreen(fdout);
+	map=printScreen(fdout);
 //	printf("%d %d\n",fdin,fdout);
 //	quit(fdin);
+	if(map==0){
+		printf("error\n");
+		return 0;
+	}
+	POINT *self=findSelf(map);
+	print(self);
 	return 0;
 }
