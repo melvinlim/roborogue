@@ -12,7 +12,9 @@ GRAPH *createGraph(){
 		return g;
 	}
 	for(i=0;i<(COLUMNS*ROWS);i++){
-		g->v[i]=createList();
+		g->vList[i]=createList();
+		g->vertex[i]=0;
+		//g->vertex[i]=NEW(VERTEX);
 	}
 	return g;
 }
@@ -26,11 +28,20 @@ int validTile(char tile){
 
 void checkTile(GRAPH *g,char *map,int i,int j,int k){
 	int t;
+	VERTEX *v;
 	if((i<0)||(i>ROWS))	return;
 	if((j<0)||(j>COLUMNS))	return;
 	t=INDEX(i,j);
 	if(validTile(map[t])){
-		addList(g->v[k],t);
+		if(g->vertex[t]==0){
+			v=NEW(VERTEX);
+			v->val=t;
+			v->visited=0;
+			g->vertex[t]=v;
+		}else{
+			v=g->vertex[t];
+		}
+		addList(g->vList[k],v);
 	}
 }
 
@@ -54,7 +65,7 @@ void printGraph(GRAPH *g){
 	int i;
 	LIST *p;
 	for(i=0;i<(COLUMNS*ROWS);i++){
-		p=g->v[i];
+		p=g->vList[i];
 		if(p->next){
 			printf("g->v[%d]:\t",i);
 			printList(p);

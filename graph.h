@@ -7,7 +7,8 @@
 #define GRAPH struct graph
 
 struct graph{
-	LIST *v[ROWS*COLUMNS];
+	LIST *vList[ROWS*COLUMNS];
+	VERTEX *vertex[ROWS*COLUMNS];
 };
 
 GRAPH *createGraph();

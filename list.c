@@ -9,16 +9,16 @@ LIST *createList(){
 		return p;
 	}
 	p->next=0;
-	p->val=0;
+	p->v=0;
 //	p->visited=0;
 	return p;
 }
-LIST *addList(LIST *p,int val){
+LIST *addList(LIST *p,VERTEX *v){
 	LIST *t=p;
 	while(t->next)	t=t->next;
 	t->next=malloc(sizeof(LIST));
 	t=t->next;
-	t->val=val;
+	t->v=v;
 //	t->visited=0;
 	t->next=0;
 	return p;
@@ -35,11 +35,11 @@ LIST *remList(LIST *root,LIST *target){
 	}
 	return root;
 }
-LIST *findList(LIST *p,int val){
+LIST *findList(LIST *p,VERTEX *v){
 	LIST *t=p;
 	while(t->next){
 		t=t->next;
-		if(t->val==val)	return t;
+		if(t->v==v)	return t;
 	}
 	return 0;
 }
@@ -60,7 +60,7 @@ void freeList(LIST *root){
 void printList(LIST *p){
 	while(p->next){
 		p=p->next;
-		printf("[%d]->",p->val);
+		printf("[%d]->",p->v->val);
 	}
 	printf("0\n");
 }
