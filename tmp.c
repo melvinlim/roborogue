@@ -153,19 +153,19 @@ printf("x0,y0=%d,%d\n",x0,y0);
 						printf("%d,",80*(esc->y-1));
 						printf("%d\n",(esc->x-1));
 #endif
-						offset=esc->y - 1;
-						offset=80*(esc->x - 1);
+						offset=esc->x - 1;
+						offset+=80*(esc->y - 1);
 					break;
 				}
 			}
 		}else{
 			screen[offset++]=*p;
+//			printf("(%d:%c) ",offset,*p);
 			printf("%c",*p);
 		}
 		p++;
 	}
 //	printf("\27[5B");	//move down 5 lines.
-/*
 	for(i=0;i<24;i++){
 		for(j=0;j<80;j++){
 			printf("%c",screen[i*80+j]);
@@ -173,7 +173,6 @@ printf("x0,y0=%d,%d\n",x0,y0);
 		}
 		putchar('\n');
 	}
-*/
 	//printf("n=%d\n",n);
 }
 int main(int argc,char *argv[]){
