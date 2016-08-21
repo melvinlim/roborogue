@@ -37,7 +37,15 @@ ESC *handleESC(char *p){
 		p++;
 		t=*p-48;
 	}
-	if(*p!=';')	return 0;
+	if(*p!=';'){
+		while(!isalpha(*p)){
+printf("%c not alpha\n",*p);
+p++;
+		}
+		esc->type='u';
+		esc->p=p;
+		return esc;
+	}
 	p++;
 	u=*p-48;
 	b=0;
@@ -56,8 +64,8 @@ ESC *handleESC(char *p){
 			printf("\ncursor reported at: [%d,%d]\n",a,b);
 #endif
 			esc->type='r';
-			esc->x=a;
-			esc->y=b;
+			esc->y=a;
+			esc->x=b;
 		break;
 		case'h':
 		case'H':
@@ -65,8 +73,8 @@ ESC *handleESC(char *p){
 			printf("\ncursor home set to: [%d,%d]\n",a,b);
 #endif
 			esc->type='h';
-			esc->x=a;
-			esc->y=b;
+			esc->y=a;
+			esc->x=b;
 		break;
 		case'f':
 		case'F':
@@ -74,8 +82,8 @@ ESC *handleESC(char *p){
 			printf("\ncursor forced to: [%d,%d]\n",a,b);
 #endif
 			esc->type='f';
-			esc->x=a;
-			esc->y=b;
+			esc->y=a;
+			esc->x=b;
 		break;
 	}
 	esc->p=p;
@@ -113,6 +121,8 @@ void printScreen(int fdout){
 	char screen[24*80];
 	int offset=0;
 	bzero(screen,24*80);
+	memset(screen,(char)' ',24*80);
+	//memset(screen,32,24*80);
 	n=read(fdout,output,24*80);
 	printf("read %d bytes\n",n);
 	x0=y0=0;
@@ -121,36 +131,34 @@ void printScreen(int fdout){
 			p=output+i;
 			esc=handleESC(p);
 			if(esc){
-				i += esc->p - p + 1;
+				i += esc->p - p + 0;
 				switch(esc->type){
 					case'r':
 						x0=esc->x;
 						y0=esc->y;
+printf("x0,y0=%d,%d\n",x0,y0);
 					break;
-					case'm':
-						offset+=esc->y;
-						offset+=80*esc->x;
+					case'h':
+//						printf("%d,",80*(esc->y-1));
+//						printf("%d\n",(esc->x-1));
+						offset=esc->y - 1;
+						offset=80*(esc->x - 1);
 					break;
 				}
-			}else{
-				screen[offset++]=output[i];
 			}
+		}else{
+			screen[offset++]=output[i];
+			printf("%c",output[i]);
 		}
-		printf("%c",output[i]);
 	}
-	printf("\27[5B");	//move down 5 lines.
+//	printf("\27[5B");	//move down 5 lines.
 /*
 	for(i=0;i<24;i++){
-		for(j=0;i<80;j++){
+		for(j=0;j<80;j++){
 			printf("%c",screen[i*80+j]);
 			//printf("%c",output[i*80+j]);
 		}
-	}
-*/
-/*
-	for(i=0;i<512;i++){
-		if(output[i]=='\n')	printf("i=%d\n",i);
-		printf("%c",output[i]);
+		putchar('\n');
 	}
 */
 	//printf("n=%d\n",n);
