@@ -7,6 +7,50 @@
 #define RIGHT 'C'
 #define LEFT 'D'
 
+int handleESC(char *p){
+	int a,b;
+	int t,u;
+	char *x;
+	char ch;
+	if(*(p+1)!='[')	return 0;
+	//printf("p+1=%c",*(p+1));
+	//printf("\nESC:");
+	p+=2;
+	t=*p-48;
+	a=0;
+	while(t>=0&&t<=9){
+		a*=10;
+		a+=t;
+		p++;
+		t=*p-48;
+	}
+	if(*p!=';')	return 0;
+	p++;
+	u=*p-48;
+	b=0;
+	while(u>=0&&u<=9){
+		b*=10;
+		b+=u;
+		p++;
+		u=*p-48;
+	}
+		ch=*(p);
+		//printf("c=%c\n",ch);
+		switch(ch){
+			case'r':
+			case'R':
+				printf("\ncursor reported at: [%d,%d]\n",a,b);
+			break;
+			case'h':
+			case'H':
+				printf("\ncursor home set to: [%d,%d]\n",a,b);
+			break;
+			case'f':
+			case'F':
+				printf("\ncursor forced to: [%d,%d]\n",a,b);
+			break;
+		}
+}
 void space(int fdin){
 	char buf;
 	int n;
@@ -31,15 +75,17 @@ void quit(int fdin){
 	printf("wrote %d bytes\n",n);
 }
 void printScreen(int fdout){
+	char *p;
 	int n,i,j;
 	char output[24*80];
 	n=read(fdout,output,24*80);
 	printf("read %d bytes\n",n);
 	for(i=0;i<n;i++){
 		if(output[i]==27){
+p=output+i;
+handleESC(p);
 			i++;
 			if(output[i]=='['){
-printf("\nESC:");
 /*
 				i++;
 				printf("%d",output[i]);
