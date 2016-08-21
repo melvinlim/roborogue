@@ -38,10 +38,18 @@ ESC *handleESC(char *p){
 		t=*p-48;
 	}
 	if(*p!=';'){
+#ifdef DEBUG
+		printf("\np!=\';\'\n");
+#endif
 		while(!isalpha(*p)){
-printf("%c not alpha\n",*p);
-p++;
+#ifdef DEBUG
+			printf("%c not alpha\n",*p);
+#endif
+			p++;
 		}
+#ifdef DEBUG
+		printf("*p==%c\n",*p);
+#endif
 		esc->type='u';
 		esc->p=p;
 		return esc;
@@ -117,7 +125,7 @@ void printScreen(int fdout){
 	ESC *esc;
 	char *p;
 	int n,i,j,x0,y0;
-	char output[24*80];
+	char output[24*80+1];
 	char screen[24*80];
 	int offset=0;
 	bzero(screen,24*80);
@@ -126,12 +134,13 @@ void printScreen(int fdout){
 	n=read(fdout,output,24*80);
 	printf("read %d bytes\n",n);
 	x0=y0=0;
-	for(i=0;i<n;i++){
-		if(output[i]==27){
-			p=output+i;
+	p=output;
+	output[24*80]=0;
+	while(*p!=0){
+		if(*p==27){
 			esc=handleESC(p);
 			if(esc){
-				i += esc->p - p + 0;
+				p=esc->p;
 				switch(esc->type){
 					case'r':
 						x0=esc->x;
@@ -139,17 +148,21 @@ void printScreen(int fdout){
 printf("x0,y0=%d,%d\n",x0,y0);
 					break;
 					case'h':
-//						printf("%d,",80*(esc->y-1));
-//						printf("%d\n",(esc->x-1));
+#ifdef DEBUG
+						printf("(n,m)=");
+						printf("%d,",80*(esc->y-1));
+						printf("%d\n",(esc->x-1));
+#endif
 						offset=esc->y - 1;
 						offset=80*(esc->x - 1);
 					break;
 				}
 			}
 		}else{
-			screen[offset++]=output[i];
-			printf("%c",output[i]);
+			screen[offset++]=*p;
+			printf("%c",*p);
 		}
+		p++;
 	}
 //	printf("\27[5B");	//move down 5 lines.
 /*
