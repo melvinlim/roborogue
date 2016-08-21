@@ -222,7 +222,7 @@ return 0;
 #endif
 			}
 		}else{
-			if(!iscntrl(*p))
+//			if(!iscntrl(*p))
 				screen[offset++]=*p;
 //			printf("(%d:%c) ",offset,*p);
 			printf("%c",*p);
@@ -230,11 +230,12 @@ return 0;
 		p++;
 	}
 	while(*p!=27){
-		if(!iscntrl(*p))
+//		if(!iscntrl(*p))
 			screen[offset++]=*p;
 		p++;
 	}
 //	printf("\27[5B");	//move down 5 lines.
+	printf("\n");
 	for(i=0;i<24;i++){
 		for(j=0;j<80;j++){
 			printf("%c",screen[i*80+j]);
