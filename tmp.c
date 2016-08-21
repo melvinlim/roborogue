@@ -3,7 +3,7 @@
 #include<fcntl.h>
 #include<string.h>
 
-//#define DEBUG
+#define DEBUG
 
 #define UP 'A'
 #define DOWN 'B'
@@ -22,22 +22,40 @@ struct esc{
 ESC *handleESC(char *p){
 	int a,b;
 	int t,u;
-	int x0,y0;
 	char ch;
-	if(*(p+1)!='[')	return 0;
+	p++;
+	if(*p!='['){
+#ifdef DEBUG
+		printf("\nESC %c detected\n",*(p+1));
+#endif
+		return 0;
+	}
 	ESC *esc=malloc(sizeof(ESC));
-	//printf("p+1=%c",*(p+1));
-	//printf("\nESC:");
-	p+=2;
-	t=*p-48;
+	p++;
 	a=0;
-	while(t>=0&&t<=9){
+	while(isdigit(*p)){
 		a*=10;
-		a+=t;
+		a+=*p-48;
 		p++;
-		t=*p-48;
 	}
 	if(*p!=';'){
+		printf("\na!=;,a=%d\n",a);
+		if(*(p)==24){
+printf("CANCEL\n");
+			esc=malloc(sizeof(ESC));
+			esc->p=p;
+			esc->type='u';
+			return esc;
+		}
+		if(*(p)=='d'){
+			printf("*p==d\n");
+			esc=malloc(sizeof(ESC));
+			esc->x=a;
+//			esc->x=80;
+			esc->p=p;
+			esc->type='d';
+			return esc;
+		}
 #ifdef DEBUG
 		printf("\np!=\';\'\n");
 #endif
@@ -55,37 +73,40 @@ ESC *handleESC(char *p){
 		return esc;
 	}
 	p++;
-	u=*p-48;
 	b=0;
-	while(u>=0&&u<=9){
+	while(isdigit(*p)){
 		b*=10;
-		b+=u;
+		b+=*p-48;
 		p++;
-		u=*p-48;
 	}
 	ch=*(p);
 	//printf("c=%c\n",ch);
 	switch(ch){
 		case'r':
-		case'R':
 #ifdef DEBUG
-			printf("\ncursor reported at: [%d,%d]\n",a,b);
+			printf("\nscrolling enabled from rows: [%d,%d]\n",a,b);
 #endif
 			esc->type='r';
 			esc->y=a;
 			esc->x=b;
 		break;
-		case'h':
+		case'R':
+#ifdef DEBUG
+			printf("\ncursor reported at: [%d,%d]\n",a,b);
+#endif
+			esc->type='R';
+			esc->y=a;
+			esc->x=b;
+		break;
 		case'H':
 #ifdef DEBUG
 			printf("\ncursor home set to: [%d,%d]\n",a,b);
 #endif
-			esc->type='h';
+			esc->type='H';
 			esc->y=a;
 			esc->x=b;
 		break;
 		case'f':
-		case'F':
 #ifdef DEBUG
 			printf("\ncursor forced to: [%d,%d]\n",a,b);
 #endif
@@ -133,7 +154,6 @@ void printScreen(int fdout){
 	//memset(screen,32,24*80);
 	n=read(fdout,output,24*80);
 	printf("read %d bytes\n",n);
-	x0=y0=0;
 	p=output;
 	output[24*80]=0;
 	while(*p!=0){
@@ -142,12 +162,14 @@ void printScreen(int fdout){
 			if(esc){
 				p=esc->p;
 				switch(esc->type){
-					case'r':
-						x0=esc->x;
-						y0=esc->y;
-printf("x0,y0=%d,%d\n",x0,y0);
+					case'd':
+//						offset-=esc->x;
+						offset+=80;
+						offset-=offset%80;
 					break;
-					case'h':
+					case'r':
+					break;
+					case'H':
 #ifdef DEBUG
 						printf("(n,m)=");
 						printf("%d,",80*(esc->y-1));
@@ -157,9 +179,15 @@ printf("x0,y0=%d,%d\n",x0,y0);
 						offset+=80*(esc->y - 1);
 					break;
 				}
+			}else{
+#ifdef DEBUG
+printf("error in printScreen\n");
+return;
+#endif
 			}
 		}else{
-			screen[offset++]=*p;
+			if(!iscntrl(*p))
+				screen[offset++]=*p;
 //			printf("(%d:%c) ",offset,*p);
 			printf("%c",*p);
 		}
