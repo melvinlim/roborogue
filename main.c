@@ -106,6 +106,7 @@ int main(int argc,char *argv[]){
 		printf("error\n");
 		return 0;
 	}
+/*
 	POINT *loc=findSelf(map);
 	POINT *enemyLoc;
 	print(loc);
@@ -116,5 +117,6 @@ int main(int argc,char *argv[]){
 	enemyLoc=nearestEnemy(map,g,loc);
 	enemyLoc=nearestEnemy(map,g,loc);
 	moveTowards(fdin,enemyLoc,loc);
+*/
 	return 0;
 }

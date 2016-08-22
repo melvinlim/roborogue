@@ -2,18 +2,6 @@
 #include<stdlib.h>
 #include<string.h>
 #include<decode.h>
-/*
-#define DEBUG
-
-#define ESC struct esc
-
-struct esc{
-	char type;
-	int x;
-	int y;
-	char *p;
-};
-*/
 ESC *handleESC(char *p){
 	int a,b;
 	int t,u;
@@ -51,6 +39,13 @@ printf("CANCEL\n");
 			esc->type='d';
 			return esc;
 		}
+		switch(*p){
+			case'H':
+				esc->type='.';
+				esc->p=p;
+				return esc;
+			break;
+		}
 #ifdef DEBUG
 		printf("p!=\';\'\n");
 #endif
@@ -77,34 +72,22 @@ printf("CANCEL\n");
 	ch=*(p);
 	//printf("c=%c\n",ch);
 	switch(ch){
-		case'r':
-#ifdef DEBUG
-			printf("\nscrolling enabled from rows: [%d,%d]\n",a,b);
-#endif
+		case'r':		//scrolling enabled from rows [a,b]
 			esc->type='r';
 			esc->y=a;
 			esc->x=b;
 		break;
-		case'R':
-#ifdef DEBUG
-			printf("\ncursor reported at: [%d,%d]\n",a,b);
-#endif
+		case'R':		//cursor was reported at [a,b]
 			esc->type='R';
 			esc->y=a;
 			esc->x=b;
 		break;
-		case'H':
-#ifdef DEBUG
-			printf("\ncursor home set to: [%d,%d]\n",a,b);
-#endif
+		case'H':		//set cursor home to [a,b]
 			esc->type='H';
 			esc->y=a;
 			esc->x=b;
 		break;
-		case'f':
-#ifdef DEBUG
-			printf("\ncursor forced to: [%d,%d]\n",a,b);
-#endif
+		case'f':		//cursor forced to [a,b]
 			esc->type='f';
 			esc->y=a;
 			esc->x=b;
@@ -120,18 +103,20 @@ char *printScreen(int fdout){
 	char *pDots;
 	char *pExp;
 	ESC *esc;
-	char *p;
+	char *p,*pEnd;
 	int n,i,j,x0,y0;
-	char output[24*80];
+	char output[24*80+1];
 //	char screen[24*80];
 	char *screen=malloc(24*80);
 	int offset=0;
 	bzero(screen,24*80);
 	memset(screen,(char)' ',24*80);
 	//memset(screen,32,24*80);
+	output[24*80]=0;
 	n=read(fdout,output,24*80);
 	printf("read %d bytes\n",n);
 	p=output;
+	pEnd=output+n;
 	pLevel=strstr(output,"Level");
 	pDots=strstr(output,"...");
 	p=pDots+3;
@@ -143,21 +128,40 @@ char *printScreen(int fdout){
 //	printf("pExp=%lx\n",pExp);
 //	while(*p!=0){
 //	while(p!=pExp){
-	while(p!=pLevel){
+	//while(p!=pLevel){
+	while(p<pEnd){
 		if(*p==27){
 			esc=handleESC(p);
 			if(esc){
 				p=esc->p;
 				switch(esc->type){
+					case'R':
+#ifdef DEBUG
+						printf("\ncursor reported at: [%d,%d]\n",esc->y,esc->x);
+#endif
+					break;
+					case'f':
+#ifdef DEBUG
+						printf("\ncursor forced to: [%d,%d]\n",esc->y,esc->x);
+#endif
+					break;
 					case'd':
 //						offset-=esc->x;
 						offset+=80;
 						offset-=offset%80;
 					break;
 					case'r':
+#ifdef DEBUG
+						printf("\nscrolling enabled from rows: [%d,%d]\n",esc->y,esc->x);
+#endif
+					break;
+					case'.':
+						printf("\ncursor home set to: [%d,%d]\n",1,1);
+						offset=0;
 					break;
 					case'H':
 #ifdef DEBUG
+						printf("\ncursor home set to: [%d,%d]\n",esc->y,esc->x);
 						printf("(n,m)=");
 						printf("%d,",80*(esc->y-1));
 						printf("%d\n",(esc->x-1));
@@ -181,6 +185,20 @@ return 0;
 		}
 		p++;
 	}
+	//while(p!=0){
+/*
+	while(p<=pEnd){
+		if(*p==27){
+			esc=handleESC(p);
+			if(esc){
+				p=esc->p;
+			}
+		}else{
+			printf("%c",*p);
+		}
+		p++;
+	}
+*/
 /*
 	while(*p!=27){
 //		if(!iscntrl(*p))
@@ -190,7 +208,13 @@ return 0;
 */
 //	printf("\27[5B");	//move down 5 lines.
 	printf("\n");
+	printf("\t\t");
+	for(i=0;i<80;i++){
+		printf("%d",i%10);
+	}
+	printf("\n");
 	for(i=0;i<24;i++){
+		printf("line %02i:\t",i);
 		for(j=0;j<80;j++){
 			printf("%c",screen[i*80+j]);
 			//printf("%c",output[i*80+j]);
