@@ -39,7 +39,24 @@ void quit(int fdin){
 	n=write(fdin,buf,5);
 	printf("wrote %d bytes\n",n);
 }
-
+void moveTowards(int fdin,POINT *dst,POINT *src){
+	int dx,dy;
+	dx = abs(src->x - dst->x);
+	dy = abs(src->y - dst->y);
+	if(dx>=dy){
+		if(src->x > dst->x){
+			move(fdin,LEFT);
+		}else{
+			move(fdin,RIGHT);
+		}
+	}else{
+		if(src->y > dst->y){
+			move(fdin,DOWN);
+		}else{
+			move(fdin,UP);
+		}
+	}
+}
 int main(int argc,char *argv[]){
 	int fdin,fdout,i,j,n;
 	char *map;
@@ -90,10 +107,14 @@ int main(int argc,char *argv[]){
 		return 0;
 	}
 	POINT *loc=findSelf(map);
+	POINT *enemyLoc;
 	print(loc);
 	GRAPH *g=createGraph();
 	fillGraph(g,map);
 	printGraph(g);
 	nearest(map,g,loc);
+	enemyLoc=nearestEnemy(map,g,loc);
+	enemyLoc=nearestEnemy(map,g,loc);
+	moveTowards(fdin,enemyLoc,loc);
 	return 0;
 }
