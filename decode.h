@@ -2,6 +2,8 @@
 #define DECODE_H
 
 #define DEBUG
+//#define RAWDATA
+//#define NUMBEREDMAP
 
 #define ESC struct esc
 

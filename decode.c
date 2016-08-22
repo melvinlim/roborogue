@@ -117,6 +117,17 @@ char *printScreen(int fdout){
 	printf("read %d bytes\n",n);
 	p=output;
 	pEnd=output+n;
+#ifdef RAWDATA
+while(p<pEnd){
+if(iscntrl(*p)){
+printf("[0x%02x]",*p);
+}else{
+printf("%c",*p);
+}
+p++;
+}
+return 0;
+#endif
 	pLevel=strstr(output,"Level");
 	pDots=strstr(output,"...");
 	p=pDots+3;
@@ -177,8 +188,10 @@ printf("error in printScreen\n");
 return 0;
 #endif
 			}
+		}else if(*p==0x08){
+			offset--;
 		}else{
-//			if(!iscntrl(*p))
+			if(!iscntrl(*p))
 				screen[offset++]=*p;
 //			printf("(%d:%c) ",offset,*p);
 			printf("%c",*p);
@@ -216,7 +229,15 @@ return 0;
 	for(i=0;i<24;i++){
 		printf("line %02i:\t",i);
 		for(j=0;j<80;j++){
-			printf("%c",screen[i*80+j]);
+			if(screen[i*80+j]==' '){
+#ifdef NUMBEREDMAP
+				printf("%d",j%10);
+#else
+				printf(" ");
+#endif
+			}else{
+				printf("%c",screen[i*80+j]);
+			}
 			//printf("%c",output[i*80+j]);
 		}
 		putchar('\n');
