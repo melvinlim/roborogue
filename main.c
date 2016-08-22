@@ -97,6 +97,9 @@ int main(int argc,char *argv[]){
 		return 0;
 	}
 	printf("fdin=%d\n",fdin);
+
+//	move(fdin,UP);
+
 //	space(fdin);
 //	move(fdin,DOWN);
 	map=printScreen(fdout);
@@ -111,11 +114,11 @@ int main(int argc,char *argv[]){
 	print(loc);
 	GRAPH *g=createGraph();
 	fillGraph(g,map);
-	printGraph(g);
+//	printGraph(g);
 	nearest(map,g,loc);
 	itemLoc=nearestItem(map,g,loc);
-//	moveTowards(fdin,itemLoc,loc);
 /*
+	moveTowards(fdin,itemLoc,loc);
 	enemyLoc=nearestEnemy(map,g,loc);
 	moveTowards(fdin,enemyLoc,loc);
 */

@@ -2,6 +2,8 @@
 #include<stdlib.h>
 #include<string.h>
 #include<decode.h>
+#include<definitions.h>
+
 ESC *handleESC(char *p){
 	int a,b;
 	int t,u;
@@ -30,11 +32,10 @@ printf("CANCEL\n");
 			esc->type='u';
 			return esc;
 		}
-		if(*(p)=='d'){
+		if(*(p)=='d'){							//scroll down to line number a.
 			printf("*p==d\n");
 			esc=malloc(sizeof(ESC));
-			esc->x=a;
-//			esc->x=80;
+			esc->y=a;
 			esc->p=p;
 			esc->type='d';
 			return esc;
@@ -98,6 +99,15 @@ printf("CANCEL\n");
 	return esc;
 }
 
+void scrollDown(char *map){
+	int i,j;
+	for(i=0;i<ROWS-1;i++){
+		for(j=0;j<COLUMNS;j++){
+			map[INDEX(i,j)]=map[INDEX(i+1,j)];
+		}
+	}
+}
+
 char *printScreen(int fdout){
 	char *pLevel;
 	char *pDots;
@@ -105,18 +115,18 @@ char *printScreen(int fdout){
 	ESC *esc;
 	char *p,*pEnd;
 	int n,i,j,x0,y0;
-	char output[24*80+1];
+	char buffer[BUFSZ+1];
 //	char screen[24*80];
 	char *screen=malloc(24*80);
 	int offset=0;
 	bzero(screen,24*80);
 	memset(screen,(char)' ',24*80);
 	//memset(screen,32,24*80);
-	output[24*80]=0;
-	n=read(fdout,output,24*80);
+	buffer[BUFSZ]=0;
+	n=read(fdout,buffer,BUFSZ);
 	printf("read %d bytes\n",n);
-	p=output;
-	pEnd=output+n;
+	p=buffer;
+	pEnd=buffer+n;
 #ifdef RAWDATA
 while(p<pEnd){
 if(iscntrl(*p)){
@@ -128,10 +138,10 @@ p++;
 }
 return 0;
 #endif
-	pLevel=strstr(output,"Level");
-	pDots=strstr(output,"...");
+	pLevel=strstr(buffer,"Level");
+	pDots=strstr(buffer,"...");
 	p=pDots+3;
-	pExp=strstr(output,"Exp");
+	pExp=strstr(buffer,"Exp");
 	if(pExp==0){
 		printf("error: could not find Exp substring\n");
 		return 0;
@@ -157,9 +167,10 @@ return 0;
 #endif
 					break;
 					case'd':
-//						offset-=esc->x;
-						offset+=80;
-						offset-=offset%80;
+						offset=80*(esc->y-1);
+//						offset+=80;
+//						scrollDown(screen);
+//						offset--;
 					break;
 					case'r':
 #ifdef DEBUG
@@ -238,7 +249,7 @@ return 0;
 			}else{
 				printf("%c",screen[i*80+j]);
 			}
-			//printf("%c",output[i*80+j]);
+			//printf("%c",buffer[i*80+j]);
 		}
 		putchar('\n');
 	}
