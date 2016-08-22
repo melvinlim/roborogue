@@ -89,10 +89,11 @@ int main(int argc,char *argv[]){
 		printf("error\n");
 		return 0;
 	}
-	POINT *self=findSelf(map);
-	print(self);
+	POINT *loc=findSelf(map);
+	print(loc);
 	GRAPH *g=createGraph();
 	fillGraph(g,map);
 	printGraph(g);
+	nearest(map,g,loc);
 	return 0;
 }

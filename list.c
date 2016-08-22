@@ -10,7 +10,6 @@ LIST *createList(){
 	}
 	p->next=0;
 	p->v=0;
-//	p->visited=0;
 	return p;
 }
 LIST *addList(LIST *p,VERTEX *v){
@@ -19,7 +18,6 @@ LIST *addList(LIST *p,VERTEX *v){
 	t->next=malloc(sizeof(LIST));
 	t=t->next;
 	t->v=v;
-//	t->visited=0;
 	t->next=0;
 	return p;
 }
@@ -63,4 +61,17 @@ void printList(LIST *p){
 		printf("[%d]->",p->v->val);
 	}
 	printf("0\n");
+}
+LIST *dequeue(LIST *p){
+	LIST *t=p->next;
+	if(t){
+		p->next=t->next;
+	}
+	return t;
+}
+int emptyList(LIST *p){
+	if(p->next)
+		return 0;
+	else
+		return 1;
 }

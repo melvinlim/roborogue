@@ -3,6 +3,8 @@
 #include<string.h>
 #include<sight.h>
 
+#include<graph.h>
+
 POINT *findSelf(char *map){
 	int i,j;
 	POINT *pt=malloc(sizeof(POINT));
@@ -21,4 +23,53 @@ POINT *findSelf(char *map){
 void print(POINT *pt){
 	if(pt)
 		printf("(%d,%d)\n",pt->x,pt->y);
+}
+
+int ofInterest(char loc){
+//	printf("%c\n",loc);
+	if(
+		loc!='.'&&
+		loc!='-'&&
+		loc!='|'
+		){
+		return 1;
+	}
+	return 0;
+}
+
+POINT *nearest(char *map,GRAPH *g,POINT *loc){
+	VERTEX *vert;
+	int vIndex=INDEX(loc->y,loc->x);
+	LIST *lp,*vp;
+	POINT *pt=NEW(POINT);
+	LIST *q=createList();
+	VERTEX *s=g->vertex[vIndex];
+	lp=g->vList[vIndex];
+	s->visited=1;
+	addList(q,s);
+//	printList(q);
+	while(!emptyList(q)){
+		vp=dequeue(q);
+		lp=g->vList[vp->v->val];
+		//printf("%d?=%d\n",vIndex,vp->v->val);
+		while(lp->next){
+			lp=lp->next;
+			vert=lp->v;
+			if((vert->visited==0)&&(vert!=s)){
+				if(ofInterest(map[vert->val])){
+					pt->x=vert->val%80;
+					pt->y=vert->val/80;
+					print(pt);
+					printf("%c\n",map[INDEX(pt->y,pt->x)]);
+					return pt;
+				}
+				vert->visited=1;
+				addList(q,vert);
+			}
+		}
+	}
+	freeList(q);
+	pt->x=pt->y=0;
+	print(pt);
+	return pt;
 }
