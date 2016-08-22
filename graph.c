@@ -29,8 +29,7 @@ int validTile(char tile){
 void freeGraph(GRAPH *g){
 	int i;
 	for(i=0;i<(COLUMNS*ROWS);i++){
-		//freeList(g->vList[i]);
-		//(g->vList[i]=0);
+		freeList(g->vList[i]);
 		free(g->vertex[i]);
 	}
 	free(g);

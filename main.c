@@ -115,7 +115,7 @@ int main(int argc,char *argv[]){
 	print(loc);
 	GRAPH *g=createGraph();
 	fillGraph(g,map);
-	printGraph(g);
+//	printGraph(g);
 	nearest(map,g,loc);
 	itemLoc=nearestItem(map,g,loc);
 /*
@@ -127,7 +127,7 @@ int main(int argc,char *argv[]){
 	freeGraph(g);
 	g=createGraph();
 	fillGraph(g,map);
-//	printGraph(g);
+	//printGraph(g);
 	loc=findSelf(map);
 	print(loc);
 	nearest(map,g,loc);
