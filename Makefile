@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-O0 -I. -g
+CFLAGS=-O4 -I. -g
 DEPS = list.h graph.h sight.h decode.h
 OBJ = list.o graph.o sight.o decode.o main.o
 TARGS = main

@@ -116,8 +116,9 @@ int main(int argc,char *argv[]){
 	GRAPH *g=createGraph();
 	fillGraph(g,map);
 //	printGraph(g);
-	nearest(map,g,loc);
+	nearestObject(map,g,loc);
 	itemLoc=nearestItem(map,g,loc);
+	enemyLoc=nearestEnemy(map,g,loc);
 /*
 	moveTowards(fdin,itemLoc,loc);
 	enemyLoc=nearestEnemy(map,g,loc);
@@ -130,7 +131,8 @@ int main(int argc,char *argv[]){
 	//printGraph(g);
 	loc=findSelf(map);
 	print(loc);
-	nearest(map,g,loc);
+	nearestObject(map,g,loc);
 	itemLoc=nearestItem(map,g,loc);
+	enemyLoc=nearestEnemy(map,g,loc);
 	return 0;
 }

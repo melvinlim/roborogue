@@ -54,7 +54,7 @@ int ofInterest(char loc){
 int isEnemy(char loc){
 	return isalpha(loc);
 }
-
+/*
 POINT *nearestEnemy(char *map,GRAPH *g,POINT *loc){
 	VERTEX *vert;
 	int vIndex=INDEX(loc->y,loc->x);
@@ -96,7 +96,8 @@ POINT *nearestEnemy(char *map,GRAPH *g,POINT *loc){
 	print(pt);
 	return pt;
 }
-
+*/
+/*
 POINT *nearestItem(char *map,GRAPH *g,POINT *loc){
 	VERTEX *vert;
 	int vIndex=INDEX(loc->y,loc->x);
@@ -139,8 +140,10 @@ POINT *nearestItem(char *map,GRAPH *g,POINT *loc){
 	print(pt);
 	return pt;
 }
+*/
 
-POINT *nearest(char *map,GRAPH *g,POINT *loc){
+//POINT *nearest(char *map,GRAPH *g,POINT *loc){
+POINT *nearest(char *map,GRAPH *g,POINT *loc,int f(char)){
 	VERTEX *vert;
 	int vIndex=INDEX(loc->y,loc->x);
 	LIST *lp,*vp;
@@ -163,7 +166,8 @@ POINT *nearest(char *map,GRAPH *g,POINT *loc){
 			vert=lp->v;
 			//if((vert->visited==0)&&(vert!=s)){
 			if(!(visited[vert->val])&&(vert!=s)){
-				if(ofInterest(map[vert->val])){
+				//if(ofInterest(map[vert->val])){
+				if(f(map[vert->val])){
 					pt->x=vert->val%80;
 					pt->y=vert->val/80;
 					print(pt);
@@ -181,4 +185,14 @@ POINT *nearest(char *map,GRAPH *g,POINT *loc){
 	pt->x=pt->y=0;
 	print(pt);
 	return pt;
+}
+
+POINT *nearestObject(char *map,GRAPH *g,POINT *loc){
+	return nearest(map,g,loc,ofInterest);
+}
+POINT *nearestItem(char *map,GRAPH *g,POINT *loc){
+	return nearest(map,g,loc,isItem);
+}
+POINT *nearestEnemy(char *map,GRAPH *g,POINT *loc){
+	return nearest(map,g,loc,isEnemy);
 }
