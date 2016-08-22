@@ -11,7 +11,6 @@
 #define VERTEX struct vertex
 VERTEX{
 	int val;
-	int visited;
 };
 
 #endif

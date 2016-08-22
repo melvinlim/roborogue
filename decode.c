@@ -107,21 +107,21 @@ void scrollDown(char *map){
 		}
 	}
 }
-
-char *printScreen(int fdout){
+//char *printScreen(int fdout){
+char *updateScreen(int fdout,char *screen){
 	char *pLevel;
 	char *pDots;
-	char *pExp;
 	ESC *esc;
 	char *p,*pEnd;
-	int n,i,j,x0,y0;
+	int n,i,j;
 	char buffer[BUFSZ+1];
-//	char screen[24*80];
-	char *screen=malloc(24*80);
 	int offset=0;
-	bzero(screen,24*80);
-	memset(screen,(char)' ',24*80);
-	//memset(screen,32,24*80);
+//	char *screen=malloc(24*80);
+	if(screen==0){
+		screen=malloc(24*80);
+		bzero(screen,24*80);
+		memset(screen,(char)' ',24*80);
+	}
 	buffer[BUFSZ]=0;
 	n=read(fdout,buffer,BUFSZ);
 	printf("read %d bytes\n",n);
@@ -140,15 +140,8 @@ return 0;
 #endif
 	pLevel=strstr(buffer,"Level");
 	pDots=strstr(buffer,"...");
-	p=pDots+3;
-	pExp=strstr(buffer,"Exp");
-	if(pExp==0){
-		printf("error: could not find Exp substring\n");
-		return 0;
-	}
-//	printf("pExp=%lx\n",pExp);
+//	p=pDots+3;
 //	while(*p!=0){
-//	while(p!=pExp){
 	//while(p!=pLevel){
 	while(p<pEnd){
 		if(*p==27){

@@ -26,17 +26,26 @@ int validTile(char tile){
 	return 0;
 }
 
+void freeGraph(GRAPH *g){
+	int i;
+	for(i=0;i<(COLUMNS*ROWS);i++){
+		//freeList(g->vList[i]);
+		//(g->vList[i]=0);
+		free(g->vertex[i]);
+	}
+	free(g);
+}
+
 void checkTile(GRAPH *g,char *map,int i,int j,int k){
 	int t;
 	VERTEX *v;
-	if((i<0)||(i>ROWS))	return;
-	if((j<0)||(j>COLUMNS))	return;
+	if((i<0)||(i>=ROWS))	return;
+	if((j<0)||(j>=COLUMNS))	return;
 	t=INDEX(i,j);
 	if(validTile(map[t])){
 		if(g->vertex[t]==0){
 			v=NEW(VERTEX);
 			v->val=t;
-			v->visited=0;
 			g->vertex[t]=v;
 		}else{
 			v=g->vertex[t];

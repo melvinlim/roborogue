@@ -102,7 +102,8 @@ int main(int argc,char *argv[]){
 
 //	space(fdin);
 //	move(fdin,DOWN);
-	map=printScreen(fdout);
+	//map=printScreen(fdout);
+	map=updateScreen(fdout,0);
 //	printf("%d %d\n",fdin,fdout);
 //	quit(fdin);
 	if(map==0){
@@ -114,7 +115,7 @@ int main(int argc,char *argv[]){
 	print(loc);
 	GRAPH *g=createGraph();
 	fillGraph(g,map);
-//	printGraph(g);
+	printGraph(g);
 	nearest(map,g,loc);
 	itemLoc=nearestItem(map,g,loc);
 /*
@@ -122,5 +123,14 @@ int main(int argc,char *argv[]){
 	enemyLoc=nearestEnemy(map,g,loc);
 	moveTowards(fdin,enemyLoc,loc);
 */
+	map=updateScreen(fdout,map);
+	freeGraph(g);
+	g=createGraph();
+	fillGraph(g,map);
+//	printGraph(g);
+	loc=findSelf(map);
+	print(loc);
+	nearest(map,g,loc);
+	itemLoc=nearestItem(map,g,loc);
 	return 0;
 }

@@ -26,6 +26,7 @@ LIST *remList(LIST *root,LIST *target){
 	while(t->next){
 		if(t->next==target){
 			t->next=target->next;
+//			free(target->v);
 			free(target);
 			return root;
 		}
@@ -41,7 +42,9 @@ LIST *findList(LIST *p,VERTEX *v){
 	}
 	return 0;
 }
-LIST *lastList(LIST *p){
+LIST *lastList(LIST *t){
+	LIST *p=t;
+	if(p==0)	return p;
 	while(p->next){
 		p=p->next;
 	}
@@ -49,9 +52,10 @@ LIST *lastList(LIST *p){
 }
 void freeList(LIST *root){
 	LIST *target;
+	if(root==0)	return;
 	while(root->next){
 		target=lastList(root);
-		remList(root,target);
+		root=remList(root,target);
 	}
 	free(root);
 }
