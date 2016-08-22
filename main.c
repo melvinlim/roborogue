@@ -51,9 +51,9 @@ void moveTowards(int fdin,POINT *dst,POINT *src){
 		}
 	}else{
 		if(src->y > dst->y){
-			move(fdin,DOWN);
-		}else{
 			move(fdin,UP);
+		}else{
+			move(fdin,DOWN);
 		}
 	}
 }
@@ -106,15 +106,16 @@ int main(int argc,char *argv[]){
 		printf("error\n");
 		return 0;
 	}
-/*
 	POINT *loc=findSelf(map);
-	POINT *enemyLoc;
+	POINT *enemyLoc,*itemLoc;
 	print(loc);
 	GRAPH *g=createGraph();
 	fillGraph(g,map);
 	printGraph(g);
 	nearest(map,g,loc);
-	enemyLoc=nearestEnemy(map,g,loc);
+	itemLoc=nearestItem(map,g,loc);
+//	moveTowards(fdin,itemLoc,loc);
+/*
 	enemyLoc=nearestEnemy(map,g,loc);
 	moveTowards(fdin,enemyLoc,loc);
 */
