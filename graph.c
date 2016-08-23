@@ -11,10 +11,9 @@ GRAPH *createGraph(){
 		printf("error: could not allocate memory\n");
 		return g;
 	}
-	for(i=0;i<(COLUMNS*ROWS);i++){
+	for(i=80;i<(COLUMNS*ROWS);i++){
 		g->vList[i]=createList();
 		g->vertex[i]=0;
-		//g->vertex[i]=NEW(VERTEX);
 	}
 	return g;
 }
@@ -28,7 +27,7 @@ int validTile(char tile){
 
 void freeGraph(GRAPH *g){
 	int i;
-	for(i=0;i<(COLUMNS*ROWS);i++){
+	for(i=80;i<(COLUMNS*ROWS);i++){
 		freeList(g->vList[i]);
 		free(g->vertex[i]);
 	}
@@ -38,8 +37,8 @@ void freeGraph(GRAPH *g){
 void checkTile(GRAPH *g,char *map,int i,int j,int k){
 	int t;
 	VERTEX *v;
-	if((i<1)||(i>=ROWS))	return;
-	if((j<1)||(j>=COLUMNS))	return;
+	if((i<1)||(i>=ROWS))		return;		//first row is status bar
+	if((j<0)||(j>=COLUMNS))	return;
 	t=INDEX(i,j);
 	if(validTile(map[t])){
 		if(g->vertex[t]==0){
@@ -56,8 +55,9 @@ void checkTile(GRAPH *g,char *map,int i,int j,int k){
 void fillGraph(GRAPH *g,char *map){
 	int i,j,k=0;
 	int t;
+	k=80;
 	for(i=1;i<ROWS;i++){
-		for(j=1;j<COLUMNS;j++){
+		for(j=0;j<COLUMNS;j++){
 			if(map[k]!=' '){
 				checkTile(g,map,i+1,j+0,k);
 				checkTile(g,map,i+0,j+1,k);
@@ -72,10 +72,10 @@ void fillGraph(GRAPH *g,char *map){
 void printGraph(GRAPH *g){
 	int i;
 	LIST *p;
-	for(i=0;i<(COLUMNS*ROWS);i++){
+	for(i=80;i<(COLUMNS*ROWS);i++){
 		p=g->vList[i];
 		if(p->next){
-			printf("g->v[%d]:\t",i);
+			printf("g->v[%4d/(%2d,%2d)]:\t",i,i/80,i%80);
 			printList(p);
 		}
 	}

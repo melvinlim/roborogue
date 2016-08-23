@@ -112,7 +112,8 @@ int main(int argc,char *argv[]){
 		return 0;
 	}
 	POINT *loc=findSelf(map);
-	POINT *enemyLoc,*itemLoc;
+	POINT *enemyLoc,*itemLoc,*doorLoc;
+	printf("player location found at: ");
 	print(loc);
 	GRAPH *g=createGraph();
 	fillGraph(g,map);
@@ -120,6 +121,7 @@ int main(int argc,char *argv[]){
 	nearestObject(map,g,loc);
 	itemLoc=nearestItem(map,g,loc);
 	enemyLoc=nearestEnemy(map,g,loc);
+	doorLoc=nearestDoor(map,g,loc);
 /*
 	moveTowards(fdin,itemLoc,loc);
 	enemyLoc=nearestEnemy(map,g,loc);
@@ -136,20 +138,19 @@ int main(int argc,char *argv[]){
 	enemyLoc=nearestEnemy(map,g,loc);
 
 */
-
+print(doorLoc);
 	if(checkMore(map)){
 		space(fdin);
 	}else{
-printf("enemyLoc:");
-print(enemyLoc);
-		moveTowards(fdin,enemyLoc,loc);
+		//moveTowards(fdin,enemyLoc,loc);
+		moveTowards(fdin,doorLoc,loc);
 	}
 
 	map=updateScreen(fdout,map);
 	freeGraph(g);
 	g=createGraph();
 	fillGraph(g,map);
-	//printGraph(g);
+//	printGraph(g);
 	loc=findSelf(map);
 	print(loc);
 	nearestObject(map,g,loc);

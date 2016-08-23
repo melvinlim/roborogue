@@ -8,8 +8,9 @@
 POINT *findSelf(char *map){
 	int i,j;
 	POINT *pt=malloc(sizeof(POINT));
+	map+=80;
 	for(i=1;i<ROWS;i++){
-		for(j=1;j<COLUMNS;j++){
+		for(j=0;j<COLUMNS;j++){
 			if(*map++=='@'){
 				pt->x=j;
 				pt->y=i;
@@ -23,6 +24,11 @@ POINT *findSelf(char *map){
 void print(POINT *pt){
 	if(pt)
 		printf("(%d,%d)\n",pt->x,pt->y);
+}
+
+int isDoor(char loc){
+	if(loc=='+')	return 1;
+	return 0;
 }
 
 int isItem(char loc){
@@ -100,6 +106,9 @@ POINT *nearest(char *map,GRAPH *g,POINT *loc,int f(char)){
 	return pt;
 */
 	free(pt);
+#ifdef DEBUG
+	printf("not found\n");
+#endif
 	return 0;
 }
 
@@ -111,6 +120,9 @@ POINT *nearestItem(char *map,GRAPH *g,POINT *loc){
 }
 POINT *nearestEnemy(char *map,GRAPH *g,POINT *loc){
 	return nearest(map,g,loc,isEnemy);
+}
+POINT *nearestDoor(char *map,GRAPH *g,POINT *loc){
+	return nearest(map,g,loc,isDoor);
 }
 
 char *lastMessage(char *map){
