@@ -17,6 +17,7 @@ int main(int argc,char *argv[]){
 	char *map;
 	char buf[256];
 	char ch;
+	srand(time(0));
 	if(argc<=2){
 		printf("usage: %s [output file] [process number]\n",argv[0]);
 		return 0;

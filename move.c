@@ -1,3 +1,5 @@
+#include<stdio.h>
+#include<string.h>
 #include<move.h>
 #include<definitions.h>
 
@@ -27,9 +29,12 @@ void quit(int fdin){
 void moveTowards(int fdin,POINT *dst,POINT *src){
 	int dx,dy;
 	if((src==0)||(dst==0))	return;
+/*
 	dx = abs(src->x - dst->x);
 	dy = abs(src->y - dst->y);
 	if(dx>=dy){
+*/
+	if(random()%2==1){
 		if(src->x > dst->x){
 			move(fdin,LEFT);
 		}else{

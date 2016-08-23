@@ -33,6 +33,7 @@ int isDoor(char loc){
 
 int isItem(char loc){
 	if(
+		loc!='#'&&
 		loc!='.'&&
 		loc!='-'&&
 		loc!='+'&&

@@ -25,15 +25,14 @@ ESC *handleESC(char *p){
 	}
 	a--;
 	if(*p!=';'){
-		printf("\na!=;,a=%d\n",a);
-		if(*(p)==24){
-			printf("CANCEL\n");
-			esc=malloc(sizeof(ESC));
-			esc->p=p;
-			esc->type='u';
-			return esc;
-		}
 		switch(*p){
+			case 24:
+				printf("CANCEL\n");
+				esc=malloc(sizeof(ESC));
+				esc->p=p;
+				esc->type='u';
+				return esc;
+			break;
 			case'A':									//move cursor vertically up/down -/+ a units.
 				esc=malloc(sizeof(ESC));
 				esc->y=a;
@@ -61,6 +60,7 @@ ESC *handleESC(char *p){
 			break;
 		}
 #ifdef DEBUG
+		printf("\na!=;,a=%d\n",a);
 		printf("p!=\';\'\n");
 #endif
 		while(!isalpha(*p)){
@@ -223,7 +223,8 @@ return 0;
 		}else if(*p==0x08){
 			offset--;
 		}else{
-			if(!iscntrl(*p))
+			//if(!iscntrl(*p))
+			if(!iscntrl(*p)&&(*p!=' '))
 				screen[offset++]=*p;
 //			printf("(%d:%c) ",offset,*p);
 			printf("%c",*p);
@@ -246,7 +247,7 @@ return 0;
 */
 /*
 	while(*p!=27){
-//		if(!iscntrl(*p))
+		if(!iscntrl(*p))
 			screen[offset++]=*p;
 		p++;
 	}
