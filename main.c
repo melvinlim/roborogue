@@ -92,7 +92,6 @@ int main(int argc,char *argv[]){
 	itemLoc=nearestItem(map,g,loc);
 	enemyLoc=nearestEnemy(map,g,loc);
 
-*/
 print(doorLoc);
 	if(checkMore(map)){
 		space(fdin);
@@ -114,6 +113,7 @@ print(doorLoc);
 	enemyLoc=nearestEnemy(map,g,loc);
 
 //	quit(fdin);
+*/
 
 	return 0;
 }

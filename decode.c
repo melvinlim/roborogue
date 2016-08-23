@@ -220,14 +220,16 @@ printf("error in printScreen\n");
 return 0;
 #endif
 			}
-		}else if(*p==0x08){
+		}else if(*p==0x08){		//ASCII backspace:				\b
 			offset--;
-		}else{
-			//if(!iscntrl(*p))
-			if(!iscntrl(*p)&&(*p!=' '))
-				screen[offset++]=*p;
-//			printf("(%d:%c) ",offset,*p);
+		}else if(*p==13){			//ASCII carriage return:	\r
+			offset = offset-(offset%80);
+		}else	if(!iscntrl(*p)){
+			screen[offset++]=*p;
 			printf("%c",*p);
+//		printf("(%d:%c) ",offset,*p);
+		}else{
+			printf("detected control character: %d\n",*p);
 		}
 		p++;
 	}
