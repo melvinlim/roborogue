@@ -8,8 +8,8 @@
 POINT *findSelf(char *map){
 	int i,j;
 	POINT *pt=malloc(sizeof(POINT));
-	for(i=0;i<ROWS;i++){
-		for(j=0;j<COLUMNS;j++){
+	for(i=1;i<ROWS;i++){
+		for(j=1;j<COLUMNS;j++){
 			if(*map++=='@'){
 				pt->x=j;
 				pt->y=i;
@@ -54,95 +54,7 @@ int ofInterest(char loc){
 int isEnemy(char loc){
 	return isalpha(loc);
 }
-/*
-POINT *nearestEnemy(char *map,GRAPH *g,POINT *loc){
-	VERTEX *vert;
-	int vIndex=INDEX(loc->y,loc->x);
-	LIST *lp,*vp;
-	POINT *pt=NEW(POINT);
-	LIST *q=createList();
-	VERTEX *s=g->vertex[vIndex];
-	lp=g->vList[vIndex];
-	//s->visited=1;
-	int visited[ROWS*COLUMNS];
-	bzero(visited,4*ROWS*COLUMNS);
-	addList(q,s);
-//	printList(q);
-	while(!emptyList(q)){
-		vp=dequeue(q);
-		lp=g->vList[vp->v->val];
-		//printf("%d?=%d\n",vIndex,vp->v->val);
-		while(lp->next){
-			lp=lp->next;
-			vert=lp->v;
-			//if((vert->visited==0)&&(vert!=s)){
-			if(!(visited[vert->val])&&(vert!=s)){
-				if(isEnemy(map[vert->val])){
-					pt->x=vert->val%80;
-					pt->y=vert->val/80;
-					print(pt);
-					printf("%c\n",map[INDEX(pt->y,pt->x)]);
-					freeList(q);
-					return pt;
-				}
-				//vert->visited=1;
-				visited[vert->val]=1;
-				addList(q,vert);
-			}
-		}
-	}
-	freeList(q);
-	pt->x=pt->y=0;
-	print(pt);
-	return pt;
-}
-*/
-/*
-POINT *nearestItem(char *map,GRAPH *g,POINT *loc){
-	VERTEX *vert;
-	int vIndex=INDEX(loc->y,loc->x);
-	LIST *lp,*vp;
-	POINT *pt=NEW(POINT);
-	LIST *q=createList();
-	VERTEX *s=g->vertex[vIndex];
-	lp=g->vList[vIndex];
-	int visited[ROWS*COLUMNS];
-	bzero(visited,4*ROWS*COLUMNS);
-	visited[s->val]=1;
-//	s->visited=1;
-	addList(q,s);
-//	printList(q);
-	while(!emptyList(q)){
-		vp=dequeue(q);
-		lp=g->vList[vp->v->val];
-		//printf("%d?=%d\n",vIndex,vp->v->val);
-		while(lp->next){
-			lp=lp->next;
-			vert=lp->v;
-			//if((vert->visited==0)&&(vert!=s)){
-			if(!(visited[vert->val])&&(vert!=s)){
-				if(isItem(map[vert->val])){
-					pt->x=vert->val%80;
-					pt->y=vert->val/80;
-					print(pt);
-					printf("%c\n",map[INDEX(pt->y,pt->x)]);
-					freeList(q);
-					return pt;
-				}
-				visited[vert->val]=1;
-				//vert->visited=1;
-				addList(q,vert);
-			}
-		}
-	}
-	freeList(q);
-	pt->x=pt->y=0;
-	print(pt);
-	return pt;
-}
-*/
 
-//POINT *nearest(char *map,GRAPH *g,POINT *loc){
 POINT *nearest(char *map,GRAPH *g,POINT *loc,int f(char)){
 	VERTEX *vert;
 	int vIndex=INDEX(loc->y,loc->x);
@@ -182,9 +94,13 @@ POINT *nearest(char *map,GRAPH *g,POINT *loc,int f(char)){
 		}
 	}
 	freeList(q);
+/*
 	pt->x=pt->y=0;
 	print(pt);
 	return pt;
+*/
+	free(pt);
+	return 0;
 }
 
 POINT *nearestObject(char *map,GRAPH *g,POINT *loc){

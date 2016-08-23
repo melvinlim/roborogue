@@ -41,6 +41,7 @@ void quit(int fdin){
 }
 void moveTowards(int fdin,POINT *dst,POINT *src){
 	int dx,dy;
+	if((src==0)||(dst==0))	return;
 	dx = abs(src->x - dst->x);
 	dy = abs(src->y - dst->y);
 	if(dx>=dy){
@@ -139,6 +140,8 @@ int main(int argc,char *argv[]){
 	if(checkMore(map)){
 		space(fdin);
 	}else{
+printf("enemyLoc:");
+print(enemyLoc);
 		moveTowards(fdin,enemyLoc,loc);
 	}
 

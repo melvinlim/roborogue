@@ -38,8 +38,8 @@ void freeGraph(GRAPH *g){
 void checkTile(GRAPH *g,char *map,int i,int j,int k){
 	int t;
 	VERTEX *v;
-	if((i<0)||(i>=ROWS))	return;
-	if((j<0)||(j>=COLUMNS))	return;
+	if((i<1)||(i>=ROWS))	return;
+	if((j<1)||(j>=COLUMNS))	return;
 	t=INDEX(i,j);
 	if(validTile(map[t])){
 		if(g->vertex[t]==0){
@@ -56,8 +56,8 @@ void checkTile(GRAPH *g,char *map,int i,int j,int k){
 void fillGraph(GRAPH *g,char *map){
 	int i,j,k=0;
 	int t;
-	for(i=0;i<ROWS;i++){
-		for(j=0;j<COLUMNS;j++){
+	for(i=1;i<ROWS;i++){
+		for(j=1;j<COLUMNS;j++){
 			if(map[k]!=' '){
 				checkTile(g,map,i+1,j+0,k);
 				checkTile(g,map,i+0,j+1,k);
