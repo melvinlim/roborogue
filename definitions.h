@@ -4,7 +4,7 @@
 #define BUFSZ 4096
 
 #define COLUMNS 80
-#define ROWS 24
+#define ROWS 25
 #define INDEX(n,m) ((n*COLUMNS)+m)
 #define NEW(x) malloc(sizeof(x))
 

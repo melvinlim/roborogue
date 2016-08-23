@@ -27,20 +27,27 @@ ESC *handleESC(char *p){
 	if(*p!=';'){
 		printf("\na!=;,a=%d\n",a);
 		if(*(p)==24){
-printf("CANCEL\n");
+			printf("CANCEL\n");
 			esc=malloc(sizeof(ESC));
 			esc->p=p;
 			esc->type='u';
 			return esc;
 		}
-		if(*(p)=='d'){							//move cursor down to line number a.
-			esc=malloc(sizeof(ESC));
-			esc->y=a;
-			esc->p=p;
-			esc->type='d';
-			return esc;
-		}
 		switch(*p){
+			case'A':									//move cursor vertically up/down -/+ a units.
+				esc=malloc(sizeof(ESC));
+				esc->y=a;
+				esc->p=p;
+				esc->type='A';
+				return esc;
+			break;
+			case'd':									//move cursor down to line number a.
+				esc=malloc(sizeof(ESC));
+				esc->y=a;
+				esc->p=p;
+				esc->type='d';
+				return esc;
+			break;
 			case'G':									//move cursor right to column a.
 				esc->type='G';
 				esc->x=a;
@@ -123,11 +130,10 @@ char *updateScreen(int fdout,char *screen){
 	int n,i,j;
 	char buffer[BUFSZ+1];
 	int offset=0;
-//	char *screen=malloc(24*80);
 	if(screen==0){
-		screen=malloc(24*80);
-		bzero(screen,24*80);
-		memset(screen,(char)' ',24*80);
+		screen=malloc(ROWS*COLUMNS);
+		bzero(screen,ROWS*COLUMNS);
+		memset(screen,(char)' ',ROWS*COLUMNS);
 	}
 	buffer[BUFSZ]=0;
 	n=read(fdout,buffer,BUFSZ);
@@ -156,6 +162,12 @@ return 0;
 			if(esc){
 				p=esc->p;
 				switch(esc->type){
+					case'A':									//move cursor vertically up/down -/+ a units.
+						offset+=80*(esc->y);
+#ifdef DEBUG
+						printf("\nmoved cursor to: [%d,%d]\n",offset/80,offset%80);
+#endif
+					break;
 					case'G':									//move cursor right to column a.
 #ifdef DEBUG
 						printf("\nmoved cursor to: [%d,%d]\n",offset/80,esc->x);
@@ -185,7 +197,9 @@ return 0;
 #endif
 					break;
 					case'.':
-						printf("\ncursor home set to: [%d,%d]\n",1,1);
+						memset(screen,' ',80);
+						printf("\ncursor home set to: [1,1] and status line cleared\n");
+						//printf("\ncursor home set to: [%d,%d]\n",1,1);
 						offset=0;
 					break;
 					case'H':
@@ -244,7 +258,7 @@ return 0;
 		printf("%d",i%10);
 	}
 	printf("\n");
-	for(i=0;i<24;i++){
+	for(i=0;i<ROWS;i++){
 		printf("line %02i:\t",i);
 		for(j=0;j<80;j++){
 			if(screen[i*80+j]==' '){

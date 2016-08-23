@@ -8,8 +8,8 @@
 POINT *findSelf(char *map){
 	int i,j;
 	POINT *pt=malloc(sizeof(POINT));
-	for(i=0;i<24;i++){
-		for(j=0;j<80;j++){
+	for(i=0;i<ROWS;i++){
+		for(j=0;j<COLUMNS;j++){
 			if(*map++=='@'){
 				pt->x=j;
 				pt->y=i;
@@ -195,4 +195,18 @@ POINT *nearestItem(char *map,GRAPH *g,POINT *loc){
 }
 POINT *nearestEnemy(char *map,GRAPH *g,POINT *loc){
 	return nearest(map,g,loc,isEnemy);
+}
+
+char *lastMessage(char *map){
+	char *last=malloc(80);
+	strncpy(last,map,80);
+	return last;
+}
+
+int checkMore(char *map){
+	char *last=lastMessage(map);
+	if(strstr(last,"More")){
+		return 1;
+	}
+	return 0;
 }
