@@ -3,11 +3,6 @@
 
 #include<definitions.h>
 
-#define UP 'A'
-#define DOWN 'B'
-#define RIGHT 'C'
-#define LEFT 'D'
-
 void space(int fdin);
 //void move(int fdin,char dir);
 void quit(int fdin);

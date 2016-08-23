@@ -5,6 +5,11 @@
 
 #define BUFSZ 4096
 
+#define UP 'A'
+#define DOWN 'B'
+#define RIGHT 'C'
+#define LEFT 'D'
+
 #define COLUMNS 80
 #define ROWS 25
 #define INDEX(n,m) (((n)*COLUMNS)+(m))
@@ -34,10 +39,17 @@ struct point{
 	int y;
 };
 
+#define STATE enum State
+STATE{
+	idle,
+	inTunnel
+};
+
 #define OBJECTS struct objects
 OBJECTS{
 	int fd;
 	char *map;
+	STATE state;
 	POINT *self;
 	POINT *enemy;
 	POINT *item;

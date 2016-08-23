@@ -46,11 +46,11 @@ int moveTowardsX(int fdin,char *map,POINT *dst,POINT *src){
 	if(src->x > dst->x){
 		if(!validTile(map[INDEX(src->y,src->x-1)]))	return 0;
 		move(fdin,map,LEFT);
-		return 1;
+		return LEFT;
 	}else if(src->x < dst->x){
 		if(!validTile(map[INDEX(src->y,src->x+1)]))	return 0;
 		move(fdin,map,RIGHT);
-		return 1;
+		return RIGHT;
 	}
 	return 0;
 }
@@ -58,17 +58,79 @@ int moveTowardsY(int fdin,char *map,POINT *dst,POINT *src){
 	if(src->y > dst->y){
 		if(!validTile(map[INDEX(src->y-1,src->x)]))	return 0;
 		move(fdin,map,UP);
-		return 1;
+		return UP;
 	}else if(src->y < dst->y){
 		if(!validTile(map[INDEX(src->y+1,src->x)]))	return 0;
 		move(fdin,map,DOWN);
-		return 1;
+		return DOWN;
+	}
+	return 0;
+}
+int opposite(int dir){
+	switch(dir){
+		case'A':
+			return'B';
+		break;
+		case'B':
+			return'A';
+		break;
+		case'C':
+			return'D';
+		break;
+		case'D':
+			return'C';
+		break;
+	}
+	return 0;
+}
+int navigateTunnel(int fdin,OBJECTS *objs,int prev){
+	int opp=opposite(prev);
+	if(opp!='A'){
+		if(isTunnel(objs->map[INDEX(objs->self->y-1,objs->self->x)])){
+			move(fdin,objs->map,'A');
+			return 'A';
+		}
+		if(isDoor(objs->map[INDEX(objs->self->y-1,objs->self->x)])){
+			move(fdin,objs->map,'A');
+			return 0;
+		}
+	}
+	if(opp!='B'){
+		if(isTunnel(objs->map[INDEX(objs->self->y+1,objs->self->x)])){
+			move(fdin,objs->map,'B');
+			return 'B';
+		}
+		if(isDoor(objs->map[INDEX(objs->self->y+1,objs->self->x)])){
+			move(fdin,objs->map,'B');
+			return 0;
+		}
+	}
+	if(opp!='C'){
+		if(isTunnel(objs->map[INDEX(objs->self->y,objs->self->x+1)])){
+			move(fdin,objs->map,'C');
+			return 'C';
+		}
+		if(isDoor(objs->map[INDEX(objs->self->y,objs->self->x+1)])){
+			move(fdin,objs->map,'C');
+			return 0;
+		}
+	}
+	if(opp!='D'){
+		if(isTunnel(objs->map[INDEX(objs->self->y,objs->self->x-1)])){
+			move(fdin,objs->map,'D');
+			return 'D';
+		}
+		if(isDoor(objs->map[INDEX(objs->self->y,objs->self->x-1)])){
+			move(fdin,objs->map,'D');
+			return 0;
+		}
 	}
 	return 0;
 }
 //void moveTowards(int fdin,char *map,POINT *dst,POINT *src){
 int moveTowards(int fdin,OBJECTS *objs,POINT *dst){
 	int dx,dy;
+	int dir;
 	char *map=objs->map;
 	POINT *src=objs->self;
 	if((src==0)||(dst==0))	return;
@@ -76,19 +138,23 @@ int moveTowards(int fdin,OBJECTS *objs,POINT *dst){
 	dy = abs(src->y - dst->y);
 //	if(random()%2==1){
 	if(dx>=dy){
-		if(moveTowardsX(fdin,map,dst,src)){
+//		if(moveTowardsX(fdin,map,dst,src)){
+		dir=(moveTowardsX(fdin,map,dst,src));
+		if(dir){
 		}else{
-			moveTowardsY(fdin,map,dst,src);
+			dir=moveTowardsY(fdin,map,dst,src);
 		}
 	}else{
-		if(moveTowardsY(fdin,map,dst,src)){
+//		if(moveTowardsY(fdin,map,dst,src)){
+		dir=(moveTowardsY(fdin,map,dst,src));
+		if(dir){
 		}else{
-			moveTowardsX(fdin,map,dst,src);
+			dir=moveTowardsX(fdin,map,dst,src);
 		}
 	}
 	if(	(dx==1)&&(dy==0)	||
 			(dx==0)&&(dy==1)	){
-		return 1;
+		return dir;
 	}
 	return 0;
 }

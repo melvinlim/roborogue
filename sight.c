@@ -75,6 +75,11 @@ int isDoor(char loc){
 	return 0;
 }
 
+int isTunnel(char loc){
+	if(loc=='#')	return 1;
+	return 0;
+}
+
 int isItem(char loc){
 	if(
 		!(isalpha(loc))&&

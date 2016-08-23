@@ -57,6 +57,7 @@ int main(int argc,char *argv[]){
 
 	objs=createObjects();
 	objs->fd=fdout;
+	objs->state=idle;
 /*
 	map=updateScreen(fdout,0);
 	if(map==0){
@@ -67,41 +68,48 @@ int main(int argc,char *argv[]){
 	fillGraph(g,map);
 //	printGraph(g);
 */
-	//objs=scanArea(map,g);
-	objs=scanArea(objs);
-	printObjs(objs);
-	if(checkMore(objs->map)){
-printf("cleared more prompt\n");
-		space(fdin);
-	}else{
-		if(objs->enemy){
-printf("moving to enemy\n");
-			moveTowards(fdin,objs,objs->enemy);
-		}else if(objs->item){
-printf("moving to item\n");
-			moveTowards(fdin,objs,objs->item);
-			//moveTowards(fdin,map,objs->item,objs->self);
-		}else if(objs->door){
-printf("moving to door\n");
-			if(moveTowards(fdin,objs,objs->door)==1){
-				printf("at door.  should travel through tunnel.\n");
-			}
-			//moveTowards(fdin,map,objs->door,objs->self);
+	int prev=0;
+	objs->state=inTunnel;
+	prev=RIGHT;
+	while(1){
+
+		objs=scanArea(objs);
+		printObjs(objs);
+
+		if(checkMore(objs->map)){
+	printf("cleared more prompt\n");
+			space(fdin);
 		}
+		
+		switch(objs->state){
+			case idle:
+				if(objs->enemy){
+		printf("moving to enemy\n");
+					moveTowards(fdin,objs,objs->enemy);
+				}else if(objs->item){
+		printf("moving to item\n");
+					moveTowards(fdin,objs,objs->item);
+					//moveTowards(fdin,map,objs->item,objs->self);
+				}else if(objs->door){
+		printf("moving to door\n");
+					//if(moveTowards(fdin,objs,objs->door)==1){
+					prev=(moveTowards(fdin,objs,objs->door));
+					if(prev){
+						printf("at door.  should travel through tunnel at next step.\n");
+						printf("previous step: %c\n",prev);
+						objs->state=inTunnel;
+					}
+				}
+			break;
+			case inTunnel:
+				prev=navigateTunnel(fdin,objs,prev);
+			break;
+		}
+
+		sleep(2);
 	}
 
-/*
-	objs=scanArea(objs);
-	printObjs(objs);
-	map=updateScreen(fdout,map);
-	freeGraph(g);
-	g=createGraph();
-	fillGraph(g,map);
-//	printGraph(g);
-	objs=scanArea(map,g);
-	printObjs(objs);
-//	quit(fdin);
-*/
+	quit(fdin);
 
 	return 0;
 }
