@@ -47,7 +47,7 @@ int main(int argc,char *argv[]){
 	printf("fdout=%d\n",fdout);
 	sprintf(buf,"/proc/%s/fd/0",argv[2]);
 	printf("target process: %s\n",buf);
-	fdin=open(buf,O_WRONLY);
+	fdin=open(buf,O_WRONLY|O_SYNC);
 	if(fdin<0){
 		printf("unable to open %s\n",buf);
 		return 0;
@@ -70,9 +70,16 @@ int main(int argc,char *argv[]){
 	}else{
 		objs=scanArea(map,g);
 		printObjs(objs);
-		//moveTowards(fdin,enemyLoc,loc);
-		//moveTowards(fdin,doorLoc,loc);
-		//moveTowards(fdin,itemLoc,loc);
+		if(objs->enemy){
+printf("moving to enemy\n");
+			moveTowards(fdin,objs->enemy,objs->self);
+		}else if(objs->item){
+printf("moving to item\n");
+			moveTowards(fdin,objs->item,objs->self);
+		}else if(objs->door){
+printf("moving to door\n");
+			moveTowards(fdin,objs->door,objs->self);
+		}
 	}
 	free(objs);
 

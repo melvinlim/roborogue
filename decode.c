@@ -121,7 +121,6 @@ void scrollDown(char *map){
 		}
 	}
 }
-//char *printScreen(int fdout){
 char *updateScreen(int fdout,char *screen){
 	char *pLevel;
 	char *pDots;
@@ -135,6 +134,7 @@ char *updateScreen(int fdout,char *screen){
 		bzero(screen,ROWS*COLUMNS);
 		memset(screen,(char)' ',ROWS*COLUMNS);
 	}
+	lseek(fdout,0,SEEK_SET);	//alternatively store offset.
 	buffer[BUFSZ]=0;
 	n=read(fdout,buffer,BUFSZ);
 	printf("read %d bytes\n",n);
