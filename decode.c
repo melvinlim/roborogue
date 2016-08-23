@@ -23,6 +23,7 @@ ESC *handleESC(char *p){
 		a+=*p-48;
 		p++;
 	}
+	a--;
 	if(*p!=';'){
 		printf("\na!=;,a=%d\n",a);
 		if(*(p)==24){
@@ -33,7 +34,6 @@ printf("CANCEL\n");
 			return esc;
 		}
 		if(*(p)=='d'){							//scroll down to line number a.
-			printf("*p==d\n");
 			esc=malloc(sizeof(ESC));
 			esc->y=a;
 			esc->p=p;
@@ -70,6 +70,7 @@ printf("CANCEL\n");
 		b+=*p-48;
 		p++;
 	}
+	b--;
 	ch=*(p);
 	//printf("c=%c\n",ch);
 	switch(ch){
@@ -160,10 +161,11 @@ return 0;
 #endif
 					break;
 					case'd':
-						offset=80*(esc->y-1);
-//						offset+=80;
-//						scrollDown(screen);
-//						offset--;
+						offset=offset%80;
+#ifdef DEBUG
+						printf("\nmoved cursor to: [%d,%d]\n",esc->y,offset);
+#endif
+						offset+=80*(esc->y);
 					break;
 					case'r':
 #ifdef DEBUG
@@ -178,11 +180,11 @@ return 0;
 #ifdef DEBUG
 						printf("\ncursor home set to: [%d,%d]\n",esc->y,esc->x);
 						printf("(n,m)=");
-						printf("%d,",80*(esc->y-1));
-						printf("%d\n",(esc->x-1));
+						printf("%d,",80*(esc->y));
+						printf("%d\n",(esc->x));
 #endif
-						offset=esc->x - 1;
-						offset+=80*(esc->y - 1);
+						offset=esc->x;
+						offset+=80*(esc->y);
 					break;
 				}
 				free(esc);

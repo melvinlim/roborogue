@@ -3,7 +3,7 @@
 
 #define DEBUG
 //#define RAWDATA
-//#define NUMBEREDMAP
+#define NUMBEREDMAP
 
 #define ESC struct esc
 
