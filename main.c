@@ -15,6 +15,8 @@ int main(int argc,char *argv[]){
 	char *map;
 	char buf[256];
 	char ch;
+	OBJECTS *objs;
+
 	srand(time(0));
 	if(argc<=2){
 		printf("usage: %s [output file] [process number]\n",argv[0]);
@@ -53,6 +55,9 @@ int main(int argc,char *argv[]){
 	printf("fdin=%d\n",fdin);
 //	printf("%d %d\n",fdin,fdout);
 
+	objs=createObjects();
+	objs->fd=fdout;
+/*
 	map=updateScreen(fdout,0);
 	if(map==0){
 		printf("error\n");
@@ -61,26 +66,31 @@ int main(int argc,char *argv[]){
 	GRAPH *g=createGraph();
 	fillGraph(g,map);
 //	printGraph(g);
-
-	OBJECTS *objs;
-	if(checkMore(map)){
+*/
+	//objs=scanArea(map,g);
+	objs=scanArea(objs);
+	printObjs(objs);
+	if(checkMore(objs->map)){
+printf("cleared more prompt\n");
 		space(fdin);
 	}else{
-		objs=scanArea(map,g);
-		printObjs(objs);
 		if(objs->enemy){
 printf("moving to enemy\n");
-			moveTowards(fdin,map,objs->enemy,objs->self);
+			moveTowards(fdin,objs,objs->enemy);
 		}else if(objs->item){
 printf("moving to item\n");
-			moveTowards(fdin,map,objs->item,objs->self);
+			moveTowards(fdin,objs,objs->item);
+			//moveTowards(fdin,map,objs->item,objs->self);
 		}else if(objs->door){
 printf("moving to door\n");
-			moveTowards(fdin,map,objs->door,objs->self);
+			moveTowards(fdin,objs,objs->door);
+			//moveTowards(fdin,map,objs->door,objs->self);
 		}
 	}
-	free(objs);
 
+	objs=scanArea(objs);
+	printObjs(objs);
+/*
 	map=updateScreen(fdout,map);
 	freeGraph(g);
 	g=createGraph();
@@ -88,7 +98,7 @@ printf("moving to door\n");
 //	printGraph(g);
 	objs=scanArea(map,g);
 	printObjs(objs);
-
+*/
 //	quit(fdin);
 
 	return 0;

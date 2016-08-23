@@ -36,6 +36,8 @@ struct point{
 
 #define OBJECTS struct objects
 OBJECTS{
+	int fd;
+	char *map;
 	POINT *self;
 	POINT *enemy;
 	POINT *item;

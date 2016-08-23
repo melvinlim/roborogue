@@ -66,8 +66,11 @@ int moveTowardsY(int fdin,char *map,POINT *dst,POINT *src){
 	}
 	return 0;
 }
-void moveTowards(int fdin,char *map,POINT *dst,POINT *src){
+//void moveTowards(int fdin,char *map,POINT *dst,POINT *src){
+void moveTowards(int fdin,OBJECTS *objs,POINT *dst){
 	int dx,dy;
+	char *map=objs->map;
+	POINT *src=objs->self;
 	if((src==0)||(dst==0))	return;
 	dx = abs(src->x - dst->x);
 	dy = abs(src->y - dst->y);

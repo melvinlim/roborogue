@@ -5,15 +5,36 @@
 
 #include<graph.h>
 
-OBJECTS *scanArea(char *map,GRAPH *g){
-	POINT *loc;
+OBJECTS *createObjects(){
 	OBJECTS *objs=NEW(OBJECTS);
 	bzero(objs,sizeof(OBJECTS));
+	return objs;
+}
+
+//OBJECTS *scanArea(char *map,GRAPH *g){
+OBJECTS *scanArea(OBJECTS *objs){
+	GRAPH *g;
+	char *map;
+	POINT *loc;
+	if(objs==0){
+		printf("scanArea requires initialized pointer\n");
+		return 0;
+	}
+	map=updateScreen(objs->fd,objs->map);
+	if(map==0){
+		printf("error, map==0\n");
+		return 0;
+	}
+	g=createGraph();
+	fillGraph(g,map);
+	//printGraph(g);
+	objs->map=map;
 	objs->self=findSelf(map);
 	loc=objs->self;
 	objs->enemy=nearestEnemy(map,g,loc);
 	objs->item=nearestItem(map,g,loc);
 	objs->door=nearestDoor(map,g,loc);
+	freeGraph(g);
 	return objs;
 }
 
