@@ -19,6 +19,9 @@ GRAPH *createGraph(){
 }
 
 int validTile(char tile){
+#ifdef DEBUG
+//	printf("checking tile: %c\n",tile);
+#endif
 	//if(tile!=' '){
 	if(
 		(tile!=' ')&&

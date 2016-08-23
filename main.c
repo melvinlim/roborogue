@@ -10,8 +10,6 @@
 #include<graph.h>
 #include<move.h>
 
-#define DEBUG
-
 int main(int argc,char *argv[]){
 	int fdin,fdout,i,j,n;
 	char *map;
@@ -72,13 +70,13 @@ int main(int argc,char *argv[]){
 		printObjs(objs);
 		if(objs->enemy){
 printf("moving to enemy\n");
-			moveTowards(fdin,objs->enemy,objs->self);
+			moveTowards(fdin,map,objs->enemy,objs->self);
 		}else if(objs->item){
 printf("moving to item\n");
-			moveTowards(fdin,objs->item,objs->self);
+			moveTowards(fdin,map,objs->item,objs->self);
 		}else if(objs->door){
 printf("moving to door\n");
-			moveTowards(fdin,objs->door,objs->self);
+			moveTowards(fdin,map,objs->door,objs->self);
 		}
 	}
 	free(objs);

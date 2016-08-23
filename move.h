@@ -9,8 +9,8 @@
 #define LEFT 'D'
 
 void space(int fdin);
-void move(int fdin,char dir);
+//void move(int fdin,char dir);
 void quit(int fdin);
-void moveTowards(int fdin,POINT *dst,POINT *src);
+//void moveTowards(int fdin,POINT *dst,POINT *src);
 
 #endif
