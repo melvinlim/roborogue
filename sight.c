@@ -5,6 +5,29 @@
 
 #include<graph.h>
 
+OBJECTS *scanArea(char *map,GRAPH *g){
+	POINT *loc;
+	OBJECTS *objs=NEW(OBJECTS);
+	bzero(objs,sizeof(OBJECTS));
+	objs->self=findSelf(map);
+	loc=objs->self;
+	objs->enemy=nearestEnemy(map,g,loc);
+	objs->item=nearestItem(map,g,loc);
+	objs->door=nearestDoor(map,g,loc);
+	return objs;
+}
+
+#define PRINTOBJS(x,s)		\
+	printf("%s:\t",s);			\
+	print(o->x);						\
+
+void printObjs(OBJECTS *o){
+	PRINTOBJS(self,"self");
+	PRINTOBJS(enemy,"enemy");
+	PRINTOBJS(item,"item");
+	PRINTOBJS(door,"door");
+}
+
 POINT *findSelf(char *map){
 	int i,j;
 	POINT *pt=malloc(sizeof(POINT));
@@ -33,6 +56,7 @@ int isDoor(char loc){
 
 int isItem(char loc){
 	if(
+		!(isalpha(loc))&&
 		loc!='#'&&
 		loc!='.'&&
 		loc!='-'&&

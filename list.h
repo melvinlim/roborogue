@@ -3,13 +3,6 @@
 
 #include<definitions.h>
 
-#define LIST struct list
-
-LIST{
-	LIST *next;
-	VERTEX *v;
-};
-
 LIST *createList();
 LIST *addList(LIST *p,VERTEX *v);
 LIST *remList(LIST *root,LIST *target);

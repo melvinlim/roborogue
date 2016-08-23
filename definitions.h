@@ -13,11 +13,31 @@ VERTEX{
 	int val;
 };
 
+#define LIST struct list
+LIST{
+	LIST *next;
+	VERTEX *v;
+};
+
 #define POINT struct point
+
+#define GRAPH struct graph
+struct graph{
+	LIST *vList[ROWS*COLUMNS];
+	VERTEX *vertex[ROWS*COLUMNS];
+};
 
 struct point{
 	int x;
 	int y;
+};
+
+#define OBJECTS struct objects
+OBJECTS{
+	POINT *self;
+	POINT *enemy;
+	POINT *item;
+	POINT *door;
 };
 
 #endif

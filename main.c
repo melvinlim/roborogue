@@ -53,67 +53,38 @@ int main(int argc,char *argv[]){
 		return 0;
 	}
 	printf("fdin=%d\n",fdin);
-
-//	move(fdin,UP);
-
-//	space(fdin);
-//	move(fdin,DOWN);
-	//map=printScreen(fdout);
-	map=updateScreen(fdout,0);
 //	printf("%d %d\n",fdin,fdout);
-//	quit(fdin);
+
+	map=updateScreen(fdout,0);
 	if(map==0){
 		printf("error\n");
 		return 0;
 	}
-	POINT *loc=findSelf(map);
-	POINT *enemyLoc,*itemLoc,*doorLoc;
-	printf("player location found at: ");
-	print(loc);
 	GRAPH *g=createGraph();
 	fillGraph(g,map);
 //	printGraph(g);
-	nearestObject(map,g,loc);
-	itemLoc=nearestItem(map,g,loc);
-	enemyLoc=nearestEnemy(map,g,loc);
-	doorLoc=nearestDoor(map,g,loc);
-/*
-	moveTowards(fdin,itemLoc,loc);
-	enemyLoc=nearestEnemy(map,g,loc);
-	moveTowards(fdin,enemyLoc,loc);
-	map=updateScreen(fdout,map);
-	freeGraph(g);
-	g=createGraph();
-	fillGraph(g,map);
-	//printGraph(g);
-	loc=findSelf(map);
-	print(loc);
-	nearestObject(map,g,loc);
-	itemLoc=nearestItem(map,g,loc);
-	enemyLoc=nearestEnemy(map,g,loc);
 
-print(doorLoc);
+	OBJECTS *objs;
 	if(checkMore(map)){
 		space(fdin);
 	}else{
+		objs=scanArea(map,g);
+		printObjs(objs);
 		//moveTowards(fdin,enemyLoc,loc);
 		//moveTowards(fdin,doorLoc,loc);
-		moveTowards(fdin,itemLoc,loc);
+		//moveTowards(fdin,itemLoc,loc);
 	}
+	free(objs);
 
 	map=updateScreen(fdout,map);
 	freeGraph(g);
 	g=createGraph();
 	fillGraph(g,map);
 //	printGraph(g);
-	loc=findSelf(map);
-	print(loc);
-	nearestObject(map,g,loc);
-	itemLoc=nearestItem(map,g,loc);
-	enemyLoc=nearestEnemy(map,g,loc);
+	objs=scanArea(map,g);
+	printObjs(objs);
 
 //	quit(fdin);
-*/
 
 	return 0;
 }
