@@ -83,14 +83,16 @@ printf("moving to item\n");
 			//moveTowards(fdin,map,objs->item,objs->self);
 		}else if(objs->door){
 printf("moving to door\n");
-			moveTowards(fdin,objs,objs->door);
+			if(moveTowards(fdin,objs,objs->door)==1){
+				printf("at door.  should travel through tunnel.\n");
+			}
 			//moveTowards(fdin,map,objs->door,objs->self);
 		}
 	}
 
+/*
 	objs=scanArea(objs);
 	printObjs(objs);
-/*
 	map=updateScreen(fdout,map);
 	freeGraph(g);
 	g=createGraph();
@@ -98,8 +100,8 @@ printf("moving to door\n");
 //	printGraph(g);
 	objs=scanArea(map,g);
 	printObjs(objs);
-*/
 //	quit(fdin);
+*/
 
 	return 0;
 }

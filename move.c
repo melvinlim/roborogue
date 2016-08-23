@@ -67,7 +67,7 @@ int moveTowardsY(int fdin,char *map,POINT *dst,POINT *src){
 	return 0;
 }
 //void moveTowards(int fdin,char *map,POINT *dst,POINT *src){
-void moveTowards(int fdin,OBJECTS *objs,POINT *dst){
+int moveTowards(int fdin,OBJECTS *objs,POINT *dst){
 	int dx,dy;
 	char *map=objs->map;
 	POINT *src=objs->self;
@@ -77,15 +77,18 @@ void moveTowards(int fdin,OBJECTS *objs,POINT *dst){
 //	if(random()%2==1){
 	if(dx>=dy){
 		if(moveTowardsX(fdin,map,dst,src)){
-			return;
 		}else{
 			moveTowardsY(fdin,map,dst,src);
 		}
 	}else{
 		if(moveTowardsY(fdin,map,dst,src)){
-			return;
 		}else{
 			moveTowardsX(fdin,map,dst,src);
 		}
 	}
+	if(	(dx==1)&&(dy==0)	||
+			(dx==0)&&(dy==1)	){
+		return 1;
+	}
+	return 0;
 }
