@@ -33,7 +33,7 @@ printf("CANCEL\n");
 			esc->type='u';
 			return esc;
 		}
-		if(*(p)=='d'){							//scroll down to line number a.
+		if(*(p)=='d'){							//move cursor down to line number a.
 			esc=malloc(sizeof(ESC));
 			esc->y=a;
 			esc->p=p;
@@ -41,6 +41,12 @@ printf("CANCEL\n");
 			return esc;
 		}
 		switch(*p){
+			case'G':									//move cursor right to column a.
+				esc->type='G';
+				esc->x=a;
+				esc->p=p;
+				return esc;
+			break;
 			case'H':
 				esc->type='.';
 				esc->p=p;
@@ -150,6 +156,12 @@ return 0;
 			if(esc){
 				p=esc->p;
 				switch(esc->type){
+					case'G':									//move cursor right to column a.
+#ifdef DEBUG
+						printf("\nmoved cursor to: [%d,%d]\n",offset/80,esc->x);
+#endif
+						offset += esc->x - (offset%80);
+					break;
 					case'R':
 #ifdef DEBUG
 						printf("\ncursor reported at: [%d,%d]\n",esc->y,esc->x);

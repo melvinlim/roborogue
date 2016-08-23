@@ -134,7 +134,7 @@ int main(int argc,char *argv[]){
 	itemLoc=nearestItem(map,g,loc);
 	enemyLoc=nearestEnemy(map,g,loc);
 
-//	moveTowards(fdin,enemyLoc,loc);
+	moveTowards(fdin,enemyLoc,loc);
 
 	map=updateScreen(fdout,map);
 	freeGraph(g);
@@ -146,7 +146,7 @@ int main(int argc,char *argv[]){
 	nearestObject(map,g,loc);
 	itemLoc=nearestItem(map,g,loc);
 	enemyLoc=nearestEnemy(map,g,loc);
-
 */
+
 	return 0;
 }
