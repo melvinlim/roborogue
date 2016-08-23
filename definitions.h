@@ -13,4 +13,11 @@ VERTEX{
 	int val;
 };
 
+#define POINT struct point
+
+struct point{
+	int x;
+	int y;
+};
+
 #endif

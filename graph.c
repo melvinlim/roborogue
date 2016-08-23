@@ -19,7 +19,12 @@ GRAPH *createGraph(){
 }
 
 int validTile(char tile){
-	if(tile!=' '){
+	//if(tile!=' '){
+	if(
+		(tile!=' ')&&
+		(tile!='|')&&
+		(tile!='-')
+		){
 		return 1;
 	}
 	return 0;
