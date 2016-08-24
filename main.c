@@ -132,7 +132,9 @@ printf("restoring old state\n");
 				objs->state=inTunnel;
 			break;
 			case inTunnel:
+				searches=0;
 				prev=navigateTunnel(fdin,objs,prev);
+/*
 				if(prev==0){
 					printf("exiting tunnel.  should mark exit as visited at next step.\n");
 					objs->state=exitedTunnel;
@@ -140,13 +142,16 @@ printf("restoring old state\n");
 					printf("dead end.  searching to try and find door\n");
 					objs->state=searching;
 				}
+*/
 			break;
 			case searching:
+				searches++;
 				if(searches<=MAXSEARCHES){
 					printf("searching (%d/%d)\n",searches,MAXSEARCHES);
 					search(fdin);
+					objs->state=inTunnel;	//navigateTunnel will change state to exitedTunnel or searching based on result.
 					prev=navigateTunnel(fdin,objs,prev);
-					searches++;
+/*
 					if(prev>0){
 						searches=0;
 						objs->state=inTunnel;
@@ -155,14 +160,16 @@ printf("restoring old state\n");
 						printf("exiting tunnel.  should mark exit as visited at next step.\n");
 						objs->state=exitedTunnel;
 					}
+*/
 				}else{
-					searches++;
+					searches=0;
 					printf("dead end.  need to assume tunnel was just entered in other direction\n");
 					prev=opposite(prev);
 					objs->state=inTunnel;
 				}
 			break;
 			case exitedTunnel:
+				searches=0;
 				markDoor(objs);
 				objs->state=idle;
 			break;

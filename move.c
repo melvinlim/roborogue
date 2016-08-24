@@ -107,6 +107,8 @@ int navigateTunnel(int fdin,OBJECTS *objs,int prev){
 		}
 		if(isDoor(objs->map[INDEX(objs->self->y-1,objs->self->x)])){
 			move(fdin,objs->map,'A');
+			printf("exiting tunnel.  in move.c:navigateTunnel().  need to mark door as visited on next step.\n");
+			objs->state=exitedTunnel;
 			return 0;
 		}
 	}
@@ -117,6 +119,8 @@ int navigateTunnel(int fdin,OBJECTS *objs,int prev){
 		}
 		if(isDoor(objs->map[INDEX(objs->self->y+1,objs->self->x)])){
 			move(fdin,objs->map,'B');
+			printf("exiting tunnel.  in move.c:navigateTunnel().  need to mark door as visited on next step.\n");
+			objs->state=exitedTunnel;
 			return 0;
 		}
 	}
@@ -127,6 +131,8 @@ int navigateTunnel(int fdin,OBJECTS *objs,int prev){
 		}
 		if(isDoor(objs->map[INDEX(objs->self->y,objs->self->x+1)])){
 			move(fdin,objs->map,'C');
+			printf("exiting tunnel.  in move.c:navigateTunnel().  need to mark door as visited on next step.\n");
+			objs->state=exitedTunnel;
 			return 0;
 		}
 	}
@@ -137,10 +143,15 @@ int navigateTunnel(int fdin,OBJECTS *objs,int prev){
 		}
 		if(isDoor(objs->map[INDEX(objs->self->y,objs->self->x-1)])){
 			move(fdin,objs->map,'D');
+			printf("exiting tunnel.  in move.c:navigateTunnel().  need to mark door as visited on next step.\n");
+			objs->state=exitedTunnel;
 			return 0;
 		}
 	}
-	return -1;
+	printf("at dead end.  in move.c:navigateTunnel().  changing to search state\n");
+	objs->state=searching;
+	return prev;
+//	return -1;
 }
 int moveTowards(int fdin,OBJECTS *objs,POINT *dst){
 	int dx,dy;
