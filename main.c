@@ -10,6 +10,8 @@
 #include<graph.h>
 #include<move.h>
 
+#define MAXSEARCHES 50
+
 int main(int argc,char *argv[]){
 	int fdin,fdout,i,j,n;
 	char *map;
@@ -67,6 +69,8 @@ int main(int argc,char *argv[]){
 			objs->state=inTunnel;
 		}
 */
+	POINT *prevLoc;
+	int searches=0;
 	while(1){
 
 		objs=scanArea(objs);
@@ -77,17 +81,22 @@ int main(int argc,char *argv[]){
 			space(fdin);
 		}
 		
-		switch(objs->state){
-			case idle:
+		if(objs->state!=attacking){
 				if(objs->enemy){
 					printf("transitioning to attack state\n");
-					POINT *prevLoc=NEW(POINT);
+					prevLoc=NEW(POINT);
 					memcpy(prevLoc,objs->self,sizeof(POINT));
+					free(objs->prevLoc);
 					objs->prevLoc=prevLoc;
 					objs->prevStep=prev;
 					objs->prevState=objs->state;
 					objs->state=attacking;
-				}else if(objs->item){
+				}
+		}
+		
+		switch(objs->state){
+			case idle:
+				if(objs->item){
 					printf("moving to item\n");
 					moveTowards(fdin,objs,objs->item);
 				}else if(objs->door){
@@ -129,11 +138,28 @@ printf("restoring old state\n");
 					objs->state=exitedTunnel;
 				}else if(prev==-1){
 					printf("dead end.  searching to try and find door\n");
-					for(i=0;i<15;i++){
-						search(fdin);
+					objs->state=searching;
+				}
+			break;
+			case searching:
+				if(searches<=MAXSEARCHES){
+					printf("searching (%d/%d)\n",searches,MAXSEARCHES);
+					search(fdin);
+					prev=navigateTunnel(fdin,objs,prev);
+					searches++;
+					if(prev>0){
+						searches=0;
+						objs->state=inTunnel;
+					}else if(prev==0){
+						searches=0;
+						printf("exiting tunnel.  should mark exit as visited at next step.\n");
+						objs->state=exitedTunnel;
 					}
+				}else{
+					searches++;
 					printf("dead end.  need to assume tunnel was just entered in other direction\n");
 					prev=opposite(prev);
+					objs->state=inTunnel;
 				}
 			break;
 			case exitedTunnel:

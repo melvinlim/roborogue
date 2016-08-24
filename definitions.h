@@ -47,6 +47,7 @@ STATE{
 	atDoor,
 	inTunnel,
 	attacking,
+	searching,
 	exitedTunnel,
 	returningToPrevLoc
 };

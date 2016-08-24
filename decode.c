@@ -121,7 +121,6 @@ void scrollDown(char *map){
 		}
 	}
 }
-//char *updateScreen(int fdout,char *screen){
 char *updateScreen(OBJECTS *objs){
 //	int fdout;
 //	char *screen;
@@ -299,7 +298,11 @@ printf("error in updateScreen (handleESC returned 0)\n");
 		}
 		putchar('\n');
 	}
-	//printf("n=%d\n",n);
+	printf("n=%d\n",n);
 	objs->offset=offset;
+	if(n==BUFSZ){
+		printf("buffer was full, calling updateScreen again\n");
+		screen=updateScreen(objs);
+	}
 	return screen;
 }
