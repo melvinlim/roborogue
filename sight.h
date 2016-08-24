@@ -15,6 +15,7 @@ POINT *nearestObject(OBJECTS *objs,GRAPH *g);
 POINT *nearestItem(OBJECTS *objs,GRAPH *g);
 POINT *nearestEnemy(OBJECTS *objs,GRAPH *g);
 POINT *nearestDoor(OBJECTS *objs,GRAPH *g);
+POINT *nearestStairs(OBJECTS *objs,GRAPH *g);
 char *lastMessage(char *map);
 int checkMore(char *map);
 

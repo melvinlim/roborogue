@@ -55,6 +55,7 @@ OBJECTS{
 	POINT *enemy;
 	POINT *item;
 	POINT *door;
+	POINT *stairs;
 	LIST *visitedDoors;
 };
 

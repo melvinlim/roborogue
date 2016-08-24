@@ -21,7 +21,8 @@ OBJECTS *scanArea(OBJECTS *objs){
 		printf("scanArea requires initialized pointer\n");
 		return 0;
 	}
-	map=updateScreen(objs->fd,objs->map);
+	map=updateScreen(objs);
+	//map=updateScreen(objs->fd,objs->map);
 	if(map==0){
 		printf("error, map==0\n");
 		return 0;
@@ -42,6 +43,11 @@ OBJECTS *scanArea(OBJECTS *objs){
 	free(objs->door);
 	objs->door=nearestDoor(objs,g);
 	//objs->door=nearestDoor(map,g,loc);
+
+	if(objs->stairs==0){
+		objs->stairs=nearestStairs(objs,g);
+	}
+	
 	freeGraph(g);
 	return objs;
 }
@@ -84,6 +90,7 @@ int isDoor(char loc){
 }
 
 int isTunnel(char loc){
+	if(isalpha(loc))	return 1;			//not a tunnel but temporarily do this to handle exception.  (should have state stack and remember locations and etc)
 	if(loc=='#')	return 1;
 	return 0;
 }
@@ -95,8 +102,9 @@ int isItem(char loc){
 		loc!='.'&&
 		loc!='-'&&
 		loc!='+'&&
-		loc!='>'&&
-		loc!='<'&&
+		loc!='%'&&
+//		loc!='>'&&
+//		loc!='<'&&
 		loc!='|'
 		){
 		return 1;
@@ -114,6 +122,10 @@ int ofInterest(char loc){
 		return 1;
 	}
 	return 0;
+}
+
+int isStairs(char loc){
+	return (loc=='%');
 }
 
 int isEnemy(char loc){
@@ -187,12 +199,18 @@ POINT *nearestDoor(OBJECTS *objs,GRAPH *g){
 	return nearest(objs,g,isDoor);
 	//return nearest(map,g,loc,isDoor);
 }
+
+POINT *nearestStairs(OBJECTS *objs,GRAPH *g){
+	return nearest(objs,g,isStairs);
+}
+
+/*
 //POINT *nearestUnvisitedDoor(char *map,GRAPH *g,POINT *loc){
 POINT *nearestUnvisitedDoor(OBJECTS *objs,GRAPH *g){
 	return nearest(objs,g,isDoor);
 	//return nearest(map,g,loc,isDoor);
 }
-
+*/
 char *lastMessage(char *map){
 	char *last=malloc(80);
 	strncpy(last,map,80);

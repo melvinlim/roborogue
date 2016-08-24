@@ -58,16 +58,7 @@ int main(int argc,char *argv[]){
 	objs=createObjects();
 	objs->fd=fdout;
 	objs->state=idle;
-/*
-	map=updateScreen(fdout,0);
-	if(map==0){
-		printf("error\n");
-		return 0;
-	}
-	GRAPH *g=createGraph();
-	fillGraph(g,map);
-//	printGraph(g);
-*/
+		
 	int prev=0;
 	while(1){
 
@@ -114,7 +105,7 @@ int main(int argc,char *argv[]){
 				objs->state=idle;
 			break;
 		}
-
+//return 0;
 		sleep(2);
 	}
 

@@ -16,6 +16,6 @@ struct esc{
 
 ESC *handleESC(char *p);
 //char *printScreen(int fdout);
-char *updateScreen(int fdout,char *map);
+//char *updateScreen(int fdout,char *map);
 
 #endif

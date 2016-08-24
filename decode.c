@@ -121,7 +121,12 @@ void scrollDown(char *map){
 		}
 	}
 }
-char *updateScreen(int fdout,char *screen){
+//char *updateScreen(int fdout,char *screen){
+char *updateScreen(OBJECTS *objs){
+//	int fdout;
+//	char *screen;
+	int fdout=objs->fd;
+	char *screen=objs->map;
 	char *pLevel;
 	char *pDots;
 	ESC *esc;
@@ -129,6 +134,13 @@ char *updateScreen(int fdout,char *screen){
 	int n,i,j;
 	char buffer[BUFSZ+1];
 	int offset=0;
+/*
+	if(objs){
+	}else{
+		fdout=0;
+		screen=0;
+	}
+*/
 	if(screen==0){
 		screen=malloc(ROWS*COLUMNS);
 		bzero(screen,ROWS*COLUMNS);
@@ -216,14 +228,17 @@ return 0;
 				free(esc);
 			}else{
 #ifdef DEBUG
-printf("error in printScreen\n");
-return 0;
+printf("error in updateScreen (handleESC returned 0)\n");
+//return 0;
 #endif
 			}
 		}else if(*p==0x08){		//ASCII backspace:				\b
 			offset--;
 		}else if(*p==13){			//ASCII carriage return:	\r
 			offset = offset-(offset%80);
+		}else if(*p==' '){		//ASCII space
+			offset++;
+			printf(" ");
 		}else	if(!iscntrl(*p)){
 			screen[offset++]=*p;
 			printf("%c",*p);
