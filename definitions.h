@@ -46,7 +46,9 @@ STATE{
 	idle,
 	atDoor,
 	inTunnel,
-	exitedTunnel
+	attacking,
+	exitedTunnel,
+	returningToPrevLoc
 };
 
 #define OBJECTS struct objects
@@ -54,7 +56,13 @@ OBJECTS{
 	int fd;
 	char *map;
 	int offset;
+	
+	int prevStep;
+	POINT *prevLoc;
+
 	STATE state;
+	STATE prevState;
+
 	POINT *self;
 	POINT *enemy;
 	POINT *item;

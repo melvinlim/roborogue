@@ -11,6 +11,7 @@ POINT *nearestItem(char *map,GRAPH *g,POINT *loc);
 POINT *nearestEnemy(char *map,GRAPH *g,POINT *loc);
 POINT *nearestDoor(char *map,GRAPH *g,POINT *loc);
 */
+POINT *nearestPoint(OBJECTS *objs,GRAPH *g,POINT *target);
 POINT *nearestObject(OBJECTS *objs,GRAPH *g);
 POINT *nearestItem(OBJECTS *objs,GRAPH *g);
 POINT *nearestEnemy(OBJECTS *objs,GRAPH *g);

@@ -12,6 +12,35 @@ OBJECTS *createObjects(){
 	return objs;
 }
 
+OBJECTS *scan(OBJECTS *objs){
+	return objs;
+}
+
+int moveToPoint(int fdin,OBJECTS *objs,POINT *pt){
+	GRAPH *g;
+	char *map;
+	POINT *loc;
+	if(objs==0){
+		printf("scanArea requires initialized pointer\n");
+		return 0;
+	}
+	map=updateScreen(objs);
+	if(map==0){
+		printf("error, map==0\n");
+		return 0;
+	}
+	g=createGraph();
+	fillGraph(g,map);
+	//printGraph(g);
+	objs->map=map;
+	free(objs->self);
+	objs->self=findSelf(map);
+	loc=objs->self;
+
+	nearestPoint(objs,g,pt);
+	return moveTowards(fdin,objs,pt);
+}
+
 OBJECTS *scanArea(OBJECTS *objs){
 	GRAPH *g;
 	char *map;
@@ -87,7 +116,7 @@ int isDoor(char loc){
 }
 
 int isTunnel(char loc){
-	if(isalpha(loc))	return 1;			//not a tunnel but temporarily do this to handle exception.  (should have state stack and remember locations and etc)
+//	if(isalpha(loc))	return 1;			//not a tunnel but temporarily do this to handle exception.  (should have state stack and remember locations and etc)
 	if(loc=='#')	return 1;
 	return 0;
 }
@@ -127,6 +156,66 @@ int isStairs(char loc){
 
 int isEnemy(char loc){
 	return isalpha(loc);
+}
+
+POINT *nearestPoint(OBJECTS *objs,GRAPH *g,POINT *target){
+	char *map=objs->map;
+	POINT *loc=objs->self;
+	VERTEX *vert;
+	int vIndex=INDEX(loc->y,loc->x);
+	int tIndex=INDEX(target->y,target->x);
+	LIST *lp,*vp;
+	POINT *pt=NEW(POINT);
+	LIST *q=createList();
+	VERTEX *s=g->vertex[vIndex];
+	lp=g->vList[vIndex];
+	int visited[ROWS*COLUMNS];
+	bzero(visited,4*ROWS*COLUMNS);
+	visited[s->val]=1;
+	addList(q,s);
+//	printList(q);
+	while(!emptyList(q)){
+		vp=dequeue(q);
+		lp=g->vList[vp->v->val];
+		while(lp->next){
+			lp=lp->next;
+			vert=lp->v;
+			if(!(visited[vert->val])&&(vert!=s)){
+				vert->pre=vp->v;
+				if(tIndex==vert->val){
+					freeList(q);
+					pt->x=vert->val%80;
+					pt->y=vert->val/80;
+					POINT *nextStep=NEW(POINT);
+				while(vert->pre){
+					if(vert->pre==s){
+									nextStep->x=vert->val%80;
+									nextStep->y=vert->val/80;
+									print(nextStep);
+									objs->nextStep=nextStep;
+//									printf("%c\n",map[INDEX(nextStep->y,nextStep->x)]);
+									return pt;
+					}else{
+									nextStep->x=vert->val%80;
+									nextStep->y=vert->val/80;
+									print(nextStep);
+						vert=vert->pre;
+					}
+				}
+printf("unable to trace predecessors back to source.  bug in sight.c:nearest()\n");
+return 0;
+				}
+				visited[vert->val]=1;
+				addList(q,vert);
+			}
+		}
+	}
+	freeList(q);
+	free(pt);
+#ifdef DEBUG
+	printf("not found\n");
+#endif
+	return 0;
 }
 
 POINT *nearest(OBJECTS *objs,GRAPH *g,int f(char)){
@@ -169,21 +258,21 @@ if(!findListValue(objs->visitedDoors,(vert->val)))					//should maybe add anothe
 					return pt;
 */
 
-while(vert->pre){
-	if(vert->pre==s){
-					nextStep->x=vert->val%80;
-					nextStep->y=vert->val/80;
-					print(nextStep);
-					objs->nextStep=nextStep;
-					printf("%c\n",map[INDEX(nextStep->y,nextStep->x)]);
-					return pt;
-	}else{
-					nextStep->x=vert->val%80;
-					nextStep->y=vert->val/80;
-					print(nextStep);
-		vert=vert->pre;
-	}
-}
+				while(vert->pre){
+					if(vert->pre==s){
+									nextStep->x=vert->val%80;
+									nextStep->y=vert->val/80;
+									print(nextStep);
+									objs->nextStep=nextStep;
+									printf("%c\n",map[INDEX(nextStep->y,nextStep->x)]);
+									return pt;
+					}else{
+									nextStep->x=vert->val%80;
+									nextStep->y=vert->val/80;
+									print(nextStep);
+						vert=vert->pre;
+					}
+				}
 printf("unable to trace predecessors back to source.  bug in sight.c:nearest()\n");
 return 0;
 				}
@@ -233,6 +322,36 @@ char *lastMessage(char *map){
 int checkMore(char *map){
 	char *last=lastMessage(map);
 	if(strstr(last,"More")){
+		free(last);
+		return 1;
+	}
+	free(last);
+	return 0;
+}
+
+int enemyDefeated(char *map){
+	char *last=lastMessage(map);
+	if(strstr(last,"Defeated")){
+		free(last);
+		return 1;
+	}
+	free(last);
+	return 0;
+}
+
+int isInTunnel(OBJECTS *objs){
+	char *map=objs->map;
+	POINT *self=objs->self;
+	if(isTunnel(map[INDEX(self->y+1,self->x)])){
+		return 1;
+	}
+	if(isTunnel(map[INDEX(self->y-1,self->x)])){
+		return 1;
+	}
+	if(isTunnel(map[INDEX(self->y,self->x+1)])){
+		return 1;
+	}
+	if(isTunnel(map[INDEX(self->y,self->x-1)])){
 		return 1;
 	}
 	return 0;

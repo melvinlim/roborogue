@@ -61,32 +61,61 @@ int main(int argc,char *argv[]){
 	
 	int tmp=0;	
 	int prev=0;
+/*
+		if(isInTunnel(objs)){
+			printf("possibly in tunnel\n");
+			objs->state=inTunnel;
+		}
+*/
 	while(1){
 
 		objs=scanArea(objs);
 		printObjs(objs);
 
 		if(checkMore(objs->map)){
-	printf("cleared more prompt\n");
+			printf("cleared more prompt\n");
 			space(fdin);
 		}
 		
 		switch(objs->state){
 			case idle:
 				if(objs->enemy){
-		printf("moving to enemy\n");
-					moveTowards(fdin,objs,objs->enemy);
+					printf("transitioning to attack state\n");
+					POINT *prevLoc=NEW(POINT);
+					memcpy(prevLoc,objs->self,sizeof(POINT));
+					objs->prevLoc=prevLoc;
+					objs->prevStep=prev;
+					objs->prevState=objs->state;
+					objs->state=attacking;
 				}else if(objs->item){
-		printf("moving to item\n");
+					printf("moving to item\n");
 					moveTowards(fdin,objs,objs->item);
 				}else if(objs->door){
-		printf("moving to door\n");
+					printf("moving to door\n");
 					prev=(moveTowards(fdin,objs,objs->door));
 					if(prev){
 						printf("in front of door.  should mark door on next step then travel through tunnel.\n");
 						printf("previous step: %c\n",prev);
 						objs->state=atDoor;
 					}
+				}
+			break;
+			case attacking:
+				if(enemyDefeated(objs->map)){
+					printf("enemy defeated, returning to previous location.\n");
+					objs->state=returningToPrevLoc;
+				}else{
+					printf("moving towards / attacking enemy\n");
+					moveTowards(fdin,objs,objs->enemy);
+				}
+			break;
+			case returningToPrevLoc:
+printf("prev loc:");
+print(objs->prevLoc);
+				if(moveToPoint(fdin,objs,objs->prevLoc)){
+printf("restoring old state\n");
+					objs->state=objs->prevState;
+					objs->nextStep=objs->prevStep;
 				}
 			break;
 			case atDoor:
@@ -101,7 +130,7 @@ int main(int argc,char *argv[]){
 				}else if(prev==-1){
 					printf("dead end.  searching to try and find door\n");
 					for(i=0;i<15;i++){
-						search();
+						search(fdin);
 					}
 					printf("dead end.  need to assume tunnel was just entered in other direction\n");
 					prev=opposite(prev);
