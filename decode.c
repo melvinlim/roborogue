@@ -176,46 +176,48 @@ return 0;
 				switch(esc->type){
 					case'A':									//move cursor vertically up/down -/+ a units.
 						offset+=80*(esc->y);
-#ifdef DEBUG
+#ifdef DECODE_DEBUG
 						printf("\nmoved cursor to: [%d,%d]\n",offset/80,offset%80);
 #endif
 					break;
 					case'G':									//move cursor right to column a.
-#ifdef DEBUG
+#ifdef DECODE_DEBUG
 						printf("\nmoved cursor to: [%d,%d]\n",offset/80,esc->x);
 #endif
 						offset += esc->x - (offset%80);
 					break;
 					case'R':
-#ifdef DEBUG
+#ifdef DECODE_DEBUG
 						printf("\ncursor reported at: [%d,%d]\n",esc->y,esc->x);
 #endif
 					break;
 					case'f':
-#ifdef DEBUG
+#ifdef DECODE_DEBUG
 						printf("\ncursor forced to: [%d,%d]\n",esc->y,esc->x);
 #endif
 					break;
 					case'd':
 						offset=offset%80;
-#ifdef DEBUG
+#ifdef DECODE_DEBUG
 						printf("\nmoved cursor to: [%d,%d]\n",esc->y,offset);
 #endif
 						offset+=80*(esc->y);
 					break;
 					case'r':
-#ifdef DEBUG
+#ifdef DECODE_DEBUG
 						printf("\nscrolling enabled from rows: [%d,%d]\n",esc->y,esc->x);
 #endif
 					break;
 					case'.':
 						memset(screen,' ',80);
+#ifdef DECODE_DEBUG
 						printf("\ncursor home set to: [1,1] and status line cleared\n");
 						//printf("\ncursor home set to: [%d,%d]\n",1,1);
+#endif
 						offset=0;
 					break;
 					case'H':
-#ifdef DEBUG
+#ifdef DECODE_DEBUG
 						printf("\ncursor home set to: [%d,%d]\n",esc->y,esc->x);
 						printf("(n,m)=");
 						printf("%d,",80*(esc->y));
@@ -241,10 +243,14 @@ printf("error in updateScreen (handleESC returned 0)\n");
 			printf(" ");
 		}else	if(!iscntrl(*p)){
 			screen[offset++]=*p;
+#ifdef DECODE_DEBUG
 			printf("%c",*p);
 //		printf("(%d:%c) ",offset,*p);
+#endif
 		}else{
+#ifdef DECODE_DEBUG
 			printf("detected control character: %d\n",*p);
+#endif
 		}
 		p++;
 	}

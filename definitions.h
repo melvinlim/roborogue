@@ -2,6 +2,7 @@
 #define _DEFINITIONS_H
 
 #define DEBUG
+#define DECODE_DEBUG
 
 #define BUFSZ 4096
 
@@ -42,6 +43,7 @@ struct point{
 #define STATE enum State
 STATE{
 	idle,
+	atDoor,
 	inTunnel,
 	exitedTunnel
 };

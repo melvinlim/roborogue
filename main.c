@@ -58,7 +58,8 @@ int main(int argc,char *argv[]){
 	objs=createObjects();
 	objs->fd=fdout;
 	objs->state=idle;
-		
+	
+	int tmp=0;	
 	int prev=0;
 	while(1){
 
@@ -78,24 +79,31 @@ int main(int argc,char *argv[]){
 				}else if(objs->item){
 		printf("moving to item\n");
 					moveTowards(fdin,objs,objs->item);
-					//moveTowards(fdin,map,objs->item,objs->self);
 				}else if(objs->door){
 		printf("moving to door\n");
-					//if(moveTowards(fdin,objs,objs->door)==1){
 					prev=(moveTowards(fdin,objs,objs->door));
 					if(prev){
-						printf("at door.  should travel through tunnel at next step.\n");
+						printf("in front of door.  should mark door on next step then travel through tunnel.\n");
 						printf("previous step: %c\n",prev);
-						objs->state=inTunnel;
+						objs->state=atDoor;
 					}
 				}
+			break;
+			case atDoor:
+				markDoor(objs);
+				objs->state=inTunnel;
 			break;
 			case inTunnel:
 				prev=navigateTunnel(fdin,objs,prev);
 				if(prev==0){
-					printf("exited tunnel.  should mark exit as visited at next step.\n");
+					printf("exiting tunnel.  should mark exit as visited at next step.\n");
 					objs->state=exitedTunnel;
 				}else if(prev==-1){
+					printf("dead end.  searching to try and find door\n");
+					if(i<15){
+						search();
+						i++;
+					}
 					printf("dead end.  need to assume tunnel was just entered in other direction\n");
 					prev=opposite(prev);
 				}

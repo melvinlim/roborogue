@@ -11,6 +11,13 @@ void markDoor(OBJECTS *o){
 	printf("visitedDoors:\n");
 	printList(o->visitedDoors);
 }
+void search(int fdin){
+	char buf;
+	int n;
+	buf='s';
+	n=write(fdin,&buf,1);
+	printf("searching.  wrote %d bytes\n",n);
+}
 void space(int fdin){
 	char buf;
 	int n;
