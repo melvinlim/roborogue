@@ -142,7 +142,6 @@ int navigateTunnel(int fdin,OBJECTS *objs,int prev){
 	}
 	return -1;
 }
-//void moveTowards(int fdin,char *map,POINT *dst,POINT *src){
 int moveTowards(int fdin,OBJECTS *objs,POINT *dst){
 	int dx,dy;
 	int dir;
@@ -151,22 +150,30 @@ int moveTowards(int fdin,OBJECTS *objs,POINT *dst){
 	if((src==0)||(dst==0))	return;
 	dx = abs(src->x - dst->x);
 	dy = abs(src->y - dst->y);
-//	if(random()%2==1){
+/*
 	if(dx>=dy){
-//		if(moveTowardsX(fdin,map,dst,src)){
 		dir=(moveTowardsX(fdin,map,dst,src));
 		if(dir){
 		}else{
 			dir=moveTowardsY(fdin,map,dst,src);
 		}
 	}else{
-//		if(moveTowardsY(fdin,map,dst,src)){
 		dir=(moveTowardsY(fdin,map,dst,src));
 		if(dir){
 		}else{
 			dir=moveTowardsX(fdin,map,dst,src);
 		}
 	}
+*/
+	if((objs->nextStep==0)){
+		printf("error in move.c:moveTowards(), objs->nextStep==0\n");
+		return;
+	}
+	dir=(moveTowardsX(fdin,map,objs->nextStep,src));
+	if(dir==0){
+		dir=moveTowardsY(fdin,map,objs->nextStep,src);
+	}
+	
 	if(	(dx==1)&&(dy==0)	||
 			(dx==0)&&(dy==1)	){
 		return dir;

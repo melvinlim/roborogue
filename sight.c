@@ -12,7 +12,6 @@ OBJECTS *createObjects(){
 	return objs;
 }
 
-//OBJECTS *scanArea(char *map,GRAPH *g){
 OBJECTS *scanArea(OBJECTS *objs){
 	GRAPH *g;
 	char *map;
@@ -22,7 +21,6 @@ OBJECTS *scanArea(OBJECTS *objs){
 		return 0;
 	}
 	map=updateScreen(objs);
-	//map=updateScreen(objs->fd,objs->map);
 	if(map==0){
 		printf("error, map==0\n");
 		return 0;
@@ -34,19 +32,18 @@ OBJECTS *scanArea(OBJECTS *objs){
 	free(objs->self);
 	objs->self=findSelf(map);
 	loc=objs->self;
-	free(objs->enemy);
-	objs->enemy=nearestEnemy(objs,g);
-	//objs->enemy=nearestEnemy(map,g,loc);
-	free(objs->item);
-	objs->item=nearestItem(objs,g);
-	//objs->item=nearestItem(map,g,loc);
-	free(objs->door);
-	objs->door=nearestDoor(objs,g);
-	//objs->door=nearestDoor(map,g,loc);
 
 	if(objs->stairs==0){
 		objs->stairs=nearestStairs(objs,g);
 	}
+
+	free(objs->enemy);
+	free(objs->item);
+	free(objs->door);
+
+	objs->door=nearestDoor(objs,g);
+	objs->item=nearestItem(objs,g);
+	objs->enemy=nearestEnemy(objs,g);
 	
 	freeGraph(g);
 	return objs;
@@ -132,7 +129,6 @@ int isEnemy(char loc){
 	return isalpha(loc);
 }
 
-//POINT *nearest(char *map,GRAPH *g,POINT *loc,int f(char)){
 POINT *nearest(OBJECTS *objs,GRAPH *g,int f(char)){
 	char *map=objs->map;
 //	char *graph=objs->g;
@@ -157,14 +153,39 @@ POINT *nearest(OBJECTS *objs,GRAPH *g,int f(char)){
 			lp=lp->next;
 			vert=lp->v;
 			if(!(visited[vert->val])&&(vert!=s)){
+				vert->pre=vp->v;
 if(!findListValue(objs->visitedDoors,(vert->val)))					//should maybe add another function to parameter list to not check this in every case.
 				if(f(map[vert->val])){
+
+					freeList(q);
+					pt->x=vert->val%80;
+					pt->y=vert->val/80;
+					POINT *nextStep=NEW(POINT);
+/*
 					pt->x=vert->val%80;
 					pt->y=vert->val/80;
 					print(pt);
 					printf("%c\n",map[INDEX(pt->y,pt->x)]);
-					freeList(q);
 					return pt;
+*/
+
+while(vert->pre){
+	if(vert->pre==s){
+					nextStep->x=vert->val%80;
+					nextStep->y=vert->val/80;
+					print(nextStep);
+					objs->nextStep=nextStep;
+					printf("%c\n",map[INDEX(nextStep->y,nextStep->x)]);
+					return pt;
+	}else{
+					nextStep->x=vert->val%80;
+					nextStep->y=vert->val/80;
+					print(nextStep);
+		vert=vert->pre;
+	}
+}
+printf("unable to trace predecessors back to source.  bug in sight.c:nearest()\n");
+return 0;
 				}
 				visited[vert->val]=1;
 				addList(q,vert);
@@ -179,25 +200,17 @@ if(!findListValue(objs->visitedDoors,(vert->val)))					//should maybe add anothe
 	return 0;
 }
 
-//POINT *nearestObject(char *map,GRAPH *g,POINT *loc){
 POINT *nearestObject(OBJECTS *objs,GRAPH *g){
 	return nearest(objs,g,ofInterest);
-	//return nearest(map,g,loc,ofInterest);
 }
-//POINT *nearestItem(char *map,GRAPH *g,POINT *loc){
 POINT *nearestItem(OBJECTS *objs,GRAPH *g){
 	return nearest(objs,g,isItem);
-	//return nearest(map,g,loc,isItem);
 }
-//POINT *nearestEnemy(char *map,GRAPH *g,POINT *loc){
 POINT *nearestEnemy(OBJECTS *objs,GRAPH *g){
 	return nearest(objs,g,isEnemy);
-	//return nearest(map,g,loc,isEnemy);
 }
-//POINT *nearestDoor(char *map,GRAPH *g,POINT *loc){
 POINT *nearestDoor(OBJECTS *objs,GRAPH *g){
 	return nearest(objs,g,isDoor);
-	//return nearest(map,g,loc,isDoor);
 }
 
 POINT *nearestStairs(OBJECTS *objs,GRAPH *g){

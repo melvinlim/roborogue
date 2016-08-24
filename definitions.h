@@ -19,6 +19,7 @@
 #define VERTEX struct vertex
 VERTEX{
 	int val;
+	VERTEX *pre;	//predecessor
 };
 
 #define LIST struct list
@@ -59,6 +60,7 @@ OBJECTS{
 	POINT *item;
 	POINT *door;
 	POINT *stairs;
+	POINT *nextStep;
 	LIST *visitedDoors;
 };
 

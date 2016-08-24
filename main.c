@@ -100,9 +100,8 @@ int main(int argc,char *argv[]){
 					objs->state=exitedTunnel;
 				}else if(prev==-1){
 					printf("dead end.  searching to try and find door\n");
-					if(i<15){
+					for(i=0;i<15;i++){
 						search();
-						i++;
 					}
 					printf("dead end.  need to assume tunnel was just entered in other direction\n");
 					prev=opposite(prev);
