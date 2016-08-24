@@ -8,6 +8,7 @@
 OBJECTS *createObjects(){
 	OBJECTS *objs=NEW(OBJECTS);
 	bzero(objs,sizeof(OBJECTS));
+	objs->visitedDoors=createList();
 	return objs;
 }
 
@@ -29,11 +30,18 @@ OBJECTS *scanArea(OBJECTS *objs){
 	fillGraph(g,map);
 	//printGraph(g);
 	objs->map=map;
+	free(objs->self);
 	objs->self=findSelf(map);
 	loc=objs->self;
-	objs->enemy=nearestEnemy(map,g,loc);
-	objs->item=nearestItem(map,g,loc);
-	objs->door=nearestDoor(map,g,loc);
+	free(objs->enemy);
+	objs->enemy=nearestEnemy(objs,g);
+	//objs->enemy=nearestEnemy(map,g,loc);
+	free(objs->item);
+	objs->item=nearestItem(objs,g);
+	//objs->item=nearestItem(map,g,loc);
+	free(objs->door);
+	objs->door=nearestDoor(objs,g);
+	//objs->door=nearestDoor(map,g,loc);
 	freeGraph(g);
 	return objs;
 }
@@ -112,7 +120,11 @@ int isEnemy(char loc){
 	return isalpha(loc);
 }
 
-POINT *nearest(char *map,GRAPH *g,POINT *loc,int f(char)){
+//POINT *nearest(char *map,GRAPH *g,POINT *loc,int f(char)){
+POINT *nearest(OBJECTS *objs,GRAPH *g,int f(char)){
+	char *map=objs->map;
+//	char *graph=objs->g;
+	POINT *loc=objs->self;
 	VERTEX *vert;
 	int vIndex=INDEX(loc->y,loc->x);
 	LIST *lp,*vp;
@@ -123,7 +135,6 @@ POINT *nearest(char *map,GRAPH *g,POINT *loc,int f(char)){
 	int visited[ROWS*COLUMNS];
 	bzero(visited,4*ROWS*COLUMNS);
 	visited[s->val]=1;
-//	s->visited=1;
 	addList(q,s);
 //	printList(q);
 	while(!emptyList(q)){
@@ -133,9 +144,8 @@ POINT *nearest(char *map,GRAPH *g,POINT *loc,int f(char)){
 		while(lp->next){
 			lp=lp->next;
 			vert=lp->v;
-			//if((vert->visited==0)&&(vert!=s)){
 			if(!(visited[vert->val])&&(vert!=s)){
-				//if(ofInterest(map[vert->val])){
+if(!findListValue(objs->visitedDoors,(vert->val)))					//should maybe add another function to parameter list to not check this in every case.
 				if(f(map[vert->val])){
 					pt->x=vert->val%80;
 					pt->y=vert->val/80;
@@ -145,17 +155,11 @@ POINT *nearest(char *map,GRAPH *g,POINT *loc,int f(char)){
 					return pt;
 				}
 				visited[vert->val]=1;
-				//vert->visited=1;
 				addList(q,vert);
 			}
 		}
 	}
 	freeList(q);
-/*
-	pt->x=pt->y=0;
-	print(pt);
-	return pt;
-*/
 	free(pt);
 #ifdef DEBUG
 	printf("not found\n");
@@ -163,17 +167,30 @@ POINT *nearest(char *map,GRAPH *g,POINT *loc,int f(char)){
 	return 0;
 }
 
-POINT *nearestObject(char *map,GRAPH *g,POINT *loc){
-	return nearest(map,g,loc,ofInterest);
+//POINT *nearestObject(char *map,GRAPH *g,POINT *loc){
+POINT *nearestObject(OBJECTS *objs,GRAPH *g){
+	return nearest(objs,g,ofInterest);
+	//return nearest(map,g,loc,ofInterest);
 }
-POINT *nearestItem(char *map,GRAPH *g,POINT *loc){
-	return nearest(map,g,loc,isItem);
+//POINT *nearestItem(char *map,GRAPH *g,POINT *loc){
+POINT *nearestItem(OBJECTS *objs,GRAPH *g){
+	return nearest(objs,g,isItem);
+	//return nearest(map,g,loc,isItem);
 }
-POINT *nearestEnemy(char *map,GRAPH *g,POINT *loc){
-	return nearest(map,g,loc,isEnemy);
+//POINT *nearestEnemy(char *map,GRAPH *g,POINT *loc){
+POINT *nearestEnemy(OBJECTS *objs,GRAPH *g){
+	return nearest(objs,g,isEnemy);
+	//return nearest(map,g,loc,isEnemy);
 }
-POINT *nearestDoor(char *map,GRAPH *g,POINT *loc){
-	return nearest(map,g,loc,isDoor);
+//POINT *nearestDoor(char *map,GRAPH *g,POINT *loc){
+POINT *nearestDoor(OBJECTS *objs,GRAPH *g){
+	return nearest(objs,g,isDoor);
+	//return nearest(map,g,loc,isDoor);
+}
+//POINT *nearestUnvisitedDoor(char *map,GRAPH *g,POINT *loc){
+POINT *nearestUnvisitedDoor(OBJECTS *objs,GRAPH *g){
+	return nearest(objs,g,isDoor);
+	//return nearest(map,g,loc,isDoor);
 }
 
 char *lastMessage(char *map){

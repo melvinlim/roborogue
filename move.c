@@ -1,8 +1,16 @@
 #include<stdio.h>
+#include<stdlib.h>
 #include<string.h>
 #include<move.h>
 #include<definitions.h>
 
+void markDoor(OBJECTS *o){
+	VERTEX *v=NEW(VERTEX);
+	v->val=INDEX(o->self->y,o->self->x);
+	addList(o->visitedDoors,v);
+	printf("visitedDoors:\n");
+	printList(o->visitedDoors);
+}
 void space(int fdin){
 	char buf;
 	int n;
@@ -125,7 +133,7 @@ int navigateTunnel(int fdin,OBJECTS *objs,int prev){
 			return 0;
 		}
 	}
-	return 0;
+	return -1;
 }
 //void moveTowards(int fdin,char *map,POINT *dst,POINT *src){
 int moveTowards(int fdin,OBJECTS *objs,POINT *dst){

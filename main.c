@@ -69,8 +69,6 @@ int main(int argc,char *argv[]){
 //	printGraph(g);
 */
 	int prev=0;
-	objs->state=inTunnel;
-	prev=RIGHT;
 	while(1){
 
 		objs=scanArea(objs);
@@ -103,6 +101,17 @@ int main(int argc,char *argv[]){
 			break;
 			case inTunnel:
 				prev=navigateTunnel(fdin,objs,prev);
+				if(prev==0){
+					printf("exited tunnel.  should mark exit as visited at next step.\n");
+					objs->state=exitedTunnel;
+				}else if(prev==-1){
+					printf("dead end.  need to assume tunnel was just entered in other direction\n");
+					prev=opposite(prev);
+				}
+			break;
+			case exitedTunnel:
+				markDoor(objs);
+				objs->state=idle;
 			break;
 		}
 

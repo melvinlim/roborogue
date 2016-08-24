@@ -34,6 +34,14 @@ LIST *remList(LIST *root,LIST *target){
 	}
 	return root;
 }
+LIST *findListValue(LIST *p,int val){
+	LIST *t=p;
+	while(t->next){
+		t=t->next;
+		if(t->v->val==val)	return t;
+	}
+	return 0;
+}
 LIST *findList(LIST *p,VERTEX *v){
 	LIST *t=p;
 	while(t->next){

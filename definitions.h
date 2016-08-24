@@ -42,7 +42,8 @@ struct point{
 #define STATE enum State
 STATE{
 	idle,
-	inTunnel
+	inTunnel,
+	exitedTunnel
 };
 
 #define OBJECTS struct objects
@@ -54,6 +55,7 @@ OBJECTS{
 	POINT *enemy;
 	POINT *item;
 	POINT *door;
+	LIST *visitedDoors;
 };
 
 #endif
