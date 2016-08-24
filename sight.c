@@ -49,7 +49,10 @@ OBJECTS *scanArea(OBJECTS *objs){
 		printf("scanArea requires initialized pointer\n");
 		return 0;
 	}
-	map=updateScreen(objs);
+	//map=updateScreen(objs);
+	updateScreen(objs);
+	map=objs->map;
+	//if(map==0){
 	if(map==0){
 		printf("error, map==0\n");
 		return 0;
@@ -57,7 +60,7 @@ OBJECTS *scanArea(OBJECTS *objs){
 	g=createGraph();
 	fillGraph(g,map);
 	//printGraph(g);
-	objs->map=map;
+//	objs->map=map;
 	free(objs->self);
 	objs->self=findSelf(map);
 	loc=objs->self;

@@ -75,7 +75,7 @@ int main(int argc,char *argv[]){
 
 		objs=scanArea(objs);
 		printObjs(objs);
-
+//return 0;
 		if(checkMore(objs->map)){
 			printf("cleared more prompt\n");
 			space(fdin);

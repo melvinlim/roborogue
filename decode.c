@@ -121,7 +121,7 @@ void scrollDown(char *map){
 		}
 	}
 }
-char *updateScreen(OBJECTS *objs){
+void updateScreen(OBJECTS *objs){
 //	int fdout;
 //	char *screen;
 	int fdout=objs->fd;
@@ -161,7 +161,8 @@ printf("%c",*p);
 }
 p++;
 }
-return 0;
+return;
+//return 0;
 #endif
 	pLevel=strstr(buffer,"Level");
 	pDots=strstr(buffer,"...");
@@ -300,9 +301,11 @@ printf("error in updateScreen (handleESC returned 0)\n");
 	}
 	printf("n=%d\n",n);
 	objs->offset=offset;
-	if(n==BUFSZ){
+	if(n>=BUFSZ){
 		printf("buffer was full, calling updateScreen again\n");
-		screen=updateScreen(objs);
+		objs->map=screen;
+		//screen=updateScreen(objs);
+		updateScreen(objs);
 	}
-	return screen;
+//	return screen;
 }
