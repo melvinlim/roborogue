@@ -52,6 +52,7 @@ STATE{
 OBJECTS{
 	int fd;
 	char *map;
+	int offset;
 	STATE state;
 	POINT *self;
 	POINT *enemy;

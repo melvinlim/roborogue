@@ -133,7 +133,8 @@ char *updateScreen(OBJECTS *objs){
 	char *p,*pEnd;
 	int n,i,j;
 	char buffer[BUFSZ+1];
-	int offset=0;
+	//int offset=0;
+	int offset=objs->offset;
 /*
 	if(objs){
 	}else{
@@ -146,7 +147,7 @@ char *updateScreen(OBJECTS *objs){
 		bzero(screen,ROWS*COLUMNS);
 		memset(screen,(char)' ',ROWS*COLUMNS);
 	}
-	lseek(fdout,0,SEEK_SET);	//alternatively store offset.
+	//lseek(fdout,0,SEEK_SET);	//alternatively store offset.
 	buffer[BUFSZ]=0;
 	n=read(fdout,buffer,BUFSZ);
 	printf("read %d bytes\n",n);
@@ -299,5 +300,6 @@ printf("error in updateScreen (handleESC returned 0)\n");
 		putchar('\n');
 	}
 	//printf("n=%d\n",n);
+	objs->offset=offset;
 	return screen;
 }
