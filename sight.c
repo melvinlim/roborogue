@@ -16,6 +16,21 @@ OBJECTS *scan(OBJECTS *objs){
 	return objs;
 }
 
+char findFood(OBJECTS *objs){
+	int i,j;
+	char *loc;
+	char *inv=objs->inventory;
+	if(inv==0)	return 0;
+	for(i=0;i<ROWS;i+=ROWS){
+		loc=strstr(inv+i,"food");
+		if(loc){
+			loc=strstr(inv+i,")");
+			return *(loc-1);
+		}
+	}
+	return 0;
+}
+
 int moveToPoint(int fdin,OBJECTS *objs,POINT *pt){
 	GRAPH *g;
 	char *map;
@@ -25,6 +40,7 @@ int moveToPoint(int fdin,OBJECTS *objs,POINT *pt){
 		return 0;
 	}
 	updateScreen(objs);
+	map=objs->map;
 	if(map==0){
 		printf("error, map==0\n");
 		return 0;
@@ -32,7 +48,6 @@ int moveToPoint(int fdin,OBJECTS *objs,POINT *pt){
 	g=createGraph();
 	fillGraph(g,map);
 	//printGraph(g);
-//	objs->map=map;
 	free(objs->self);
 	objs->self=findSelf(map);
 	loc=objs->self;
@@ -52,7 +67,6 @@ OBJECTS *scanArea(OBJECTS *objs){
 	//map=updateScreen(objs);
 	updateScreen(objs);
 	map=objs->map;
-	//if(map==0){
 	if(map==0){
 		printf("error, map==0\n");
 		return 0;
@@ -60,7 +74,6 @@ OBJECTS *scanArea(OBJECTS *objs){
 	g=createGraph();
 	fillGraph(g,map);
 	//printGraph(g);
-//	objs->map=map;
 	free(objs->self);
 	objs->self=findSelf(map);
 	loc=objs->self;
@@ -119,7 +132,6 @@ int isDoor(char loc){
 }
 
 int isTunnel(char loc){
-//	if(isalpha(loc))	return 1;			//not a tunnel but temporarily do this to handle exception.  (should have state stack and remember locations and etc)
 	if(loc=='#')	return 1;
 	return 0;
 }
@@ -194,14 +206,18 @@ POINT *nearestPoint(OBJECTS *objs,GRAPH *g,POINT *target){
 					if(vert->pre==s){
 									nextStep->x=vert->val%80;
 									nextStep->y=vert->val/80;
+#ifdef DEBUGSTEPS
 									print(nextStep);
+#endif
 									objs->nextStep=nextStep;
 //									printf("%c\n",map[INDEX(nextStep->y,nextStep->x)]);
 									return pt;
 					}else{
 									nextStep->x=vert->val%80;
 									nextStep->y=vert->val/80;
+#ifdef DEBUGSTEPS
 									print(nextStep);
+#endif
 						vert=vert->pre;
 					}
 				}
@@ -254,8 +270,6 @@ if(!findListValue(objs->visitedDoors,(vert->val)))					//should maybe add anothe
 					pt->y=vert->val/80;
 					POINT *nextStep=NEW(POINT);
 /*
-					pt->x=vert->val%80;
-					pt->y=vert->val/80;
 					print(pt);
 					printf("%c\n",map[INDEX(pt->y,pt->x)]);
 					return pt;
@@ -265,14 +279,18 @@ if(!findListValue(objs->visitedDoors,(vert->val)))					//should maybe add anothe
 					if(vert->pre==s){
 									nextStep->x=vert->val%80;
 									nextStep->y=vert->val/80;
+#ifdef DEBUGSTEPS
 									print(nextStep);
-									objs->nextStep=nextStep;
 									printf("%c\n",map[INDEX(nextStep->y,nextStep->x)]);
+#endif
+									objs->nextStep=nextStep;
 									return pt;
 					}else{
 									nextStep->x=vert->val%80;
 									nextStep->y=vert->val/80;
+#ifdef DEBUGSTEPS
 									print(nextStep);
+#endif
 						vert=vert->pre;
 					}
 				}
@@ -320,6 +338,26 @@ char *lastMessage(char *map){
 	char *last=malloc(80);
 	strncpy(last,map,80);
 	return last;
+}
+
+int checkInventory(OBJECTS *objs){
+	int n;
+	int fdin=objs->fdin;
+	char buf='i';
+	n=write(fdin,&buf,1);
+	printf("wrote %d bytes\n",n);
+	parseInventory(objs);
+	space(objs->fdin);
+}
+
+int checkFaint(char *map){
+	char *last=lastMessage(map);
+	if(strstr(last,"faint")){
+		free(last);
+		return 1;
+	}
+	free(last);
+	return 0;
 }
 
 int checkMore(char *map){

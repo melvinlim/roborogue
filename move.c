@@ -18,6 +18,16 @@ void search(int fdin){
 	n=write(fdin,&buf,1);
 	printf("searching.  wrote %d bytes\n",n);
 }
+void consume(OBJECTS *objs,char slot){
+	char buf;
+	int fdin=objs->fdin;
+	int n;
+	buf='e';
+	n=write(fdin,&buf,1);
+	buf=slot;
+	n=write(fdin,&buf,1);
+	printf("consuming item in slot %c.  wrote %d bytes\n",slot,n);
+}
 void space(int fdin){
 	char buf;
 	int n;

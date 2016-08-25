@@ -4,9 +4,87 @@
 #include<decode.h>
 #include<definitions.h>
 
+void parseInventory(OBJECTS *objs){
+	char ch;
+	int fdout=objs->fdout;
+	char *inventory=objs->inventory;
+	char *p,*pEnd;
+	int n,i,j,a,b;
+	char buffer[BUFSZ+1];
+//	int offset=objs->offset;
+	int offset=0;
+	if(inventory==0){
+		inventory=malloc(ROWS*COLUMNS);
+		bzero(inventory,ROWS*COLUMNS);
+		memset(inventory,(char)' ',ROWS*COLUMNS);
+	}
+	buffer[BUFSZ]=0;
+	int pBLen=strlen(objs->prevBuffer);
+	strncpy(buffer,objs->prevBuffer,pBLen);
+	n=read(fdout,buffer+pBLen,BUFSZ-pBLen);
+	bzero(objs->prevBuffer,pBLen);
+	//n=read(fdout,buffer,BUFSZ);
+	printf("read %d bytes\n",n);
+	p=buffer;
+	//if(n>=BUFSZ/2){
+	if(n+pBLen>=BUFSZ/2){
+		pEnd=memchr( (p+BUFSZ/2) , 0x1b , BUFSZ/2 );
+		if(pEnd==0){
+			printf("ERROR: could not find 0x1b.\n");
+			return;
+		}
+	}else{
+		pEnd=buffer+n+pBLen;
+	}
+
+//#ifdef RAWDATA
+	i=0;
+	while(p<pEnd){
+		if(iscntrl(*p)){
+			if(i++ > 40){
+				i=0;
+				getchar();
+			}
+		printf("\n[0x%02x]",*p);
+		}else{
+		printf("%c",*p);
+		}
+		p++;
+	}
+	if(n>=BUFSZ){
+		parseInventory(objs);
+	}
+//#endif
+	putchar('\n');
+
+	p=buffer;
+	while(p<pEnd){
+		while(!isalpha(*p)){
+			p++;
+		}
+		p++;
+		while(!iscntrl(*p)){
+			inventory[offset++]=*p;
+			p++;
+		}
+		offset = (offset/80)*80+80;
+	}
+
+	objs->inventory=inventory;
+	
+	for(i=0;i<ROWS;i++){
+		printf("line %02i:\t",i);
+		for(j=0;j<80;j++){
+			printf("%c",inventory[i*80+j]);
+		}
+		putchar('\n');
+	}
+
+}
+
 void updateScreen(OBJECTS *objs){
 	char ch;
-	int fdout=objs->fd;
+	int fdout=objs->fdout;
 	char *screen=objs->map;
 	char *p,*pEnd;
 	int n,i,j,a,b;
@@ -100,7 +178,12 @@ printf("%c,",ch);
 							offset=0;
 						break;
 						case'K':									//status line cleared?
-							memset(screen,' ',80);
+//							memset(screen,' ',80);
+//							memset(screen+(offset-offset%80),' ',80);
+							memset(screen+(offset),' ',80-(offset%80));
+						break;
+						case'X':									//clear a characters?
+							memset(screen+offset,' ',a);
 						break;
 					}
 				}else{
@@ -135,9 +218,12 @@ printf("%c,",ch);
 			case 0x0d:		//ASCII carriage return:	\r
 				offset = offset-(offset%80);
 			break;
+/*
 			case ' ':			//ASCII space
-				offset++;
+				//offset++;
+				screen[offset++]=' ';
 			break;
+*/
 case '\n':
 offset++;
 break;

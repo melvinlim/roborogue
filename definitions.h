@@ -46,6 +46,7 @@ STATE{
 	idle,
 	atDoor,
 	inTunnel,
+	starving,
 	attacking,
 	searching,
 	exitedTunnel,
@@ -54,8 +55,10 @@ STATE{
 
 #define OBJECTS struct objects
 OBJECTS{
-	int fd;
+	int fdin;
+	int fdout;
 	char *map;
+	char *inventory;
 	int offset;
 	
 	int prevStep;

@@ -14,6 +14,11 @@ LIST *createList(){
 }
 LIST *addList(LIST *p,VERTEX *v){
 	LIST *t=p;
+
+	if(findListValue(p,v->val)){
+		return p;
+	}
+
 	while(t->next)	t=t->next;
 	t->next=malloc(sizeof(LIST));
 	t=t->next;

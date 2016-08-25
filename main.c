@@ -58,7 +58,8 @@ int main(int argc,char *argv[]){
 //	printf("%d %d\n",fdin,fdout);
 
 	objs=createObjects();
-	objs->fd=fdout;
+	objs->fdin=fdin;
+	objs->fdout=fdout;
 	objs->state=idle;
 	
 	int tmp=0;	
@@ -76,11 +77,17 @@ int main(int argc,char *argv[]){
 		objs=scanArea(objs);
 		printObjs(objs);
 //return 0;
+
+		if(checkFaint(objs->map)){
+			printf("dying of starvation\n");
+			objs->state=starving;
+		}
+
 		if(checkMore(objs->map)){
 			printf("cleared more prompt\n");
 			space(fdin);
 		}
-		
+
 		if(objs->state!=attacking){
 				if(objs->enemy){
 					printf("transitioning to attack state\n");
@@ -93,7 +100,7 @@ int main(int argc,char *argv[]){
 					objs->state=attacking;
 				}
 		}
-		
+
 		switch(objs->state){
 			case idle:
 				if(objs->item){
@@ -117,6 +124,14 @@ int main(int argc,char *argv[]){
 					printf("moving towards / attacking enemy\n");
 					moveTowards(fdin,objs,objs->enemy);
 				}
+			break;
+			case starving:
+				checkInventory(objs);
+				char foodSlot=findFood(objs);
+				if(foodSlot){
+					consume(objs,foodSlot);
+				}
+				objs->state=idle;
 			break;
 			case returningToPrevLoc:
 printf("prev loc:");
