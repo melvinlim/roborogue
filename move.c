@@ -28,6 +28,15 @@ void consume(OBJECTS *objs,char slot){
 	n=write(fdin,&buf,1);
 	printf("consuming item in slot %c.  wrote %d bytes\n",slot,n);
 }
+void save(int fdin,char *name){
+	char buf;
+	int n;
+	buf='S';
+	n=write(fdin,&buf,1);
+	printf("wrote %d bytes\n",n);
+	n=write(fdin,name,strlen(name));
+	printf("wrote %d bytes\n",n);
+}
 void space(int fdin){
 	char buf;
 	int n;

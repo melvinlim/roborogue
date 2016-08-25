@@ -72,6 +72,10 @@ int main(int argc,char *argv[]){
 */
 	POINT *prevLoc;
 	int searches=0;
+
+//	save(fdin,"save\n\0");
+//	return 0;
+
 	while(1){
 
 		objs=scanArea(objs);
@@ -149,15 +153,6 @@ printf("restoring old state\n");
 			case inTunnel:
 				searches=0;
 				prev=navigateTunnel(fdin,objs,prev);
-/*
-				if(prev==0){
-					printf("exiting tunnel.  should mark exit as visited at next step.\n");
-					objs->state=exitedTunnel;
-				}else if(prev==-1){
-					printf("dead end.  searching to try and find door\n");
-					objs->state=searching;
-				}
-*/
 			break;
 			case searching:
 				searches++;
@@ -166,16 +161,6 @@ printf("restoring old state\n");
 					search(fdin);
 					objs->state=inTunnel;	//navigateTunnel will change state to exitedTunnel or searching based on result.
 					prev=navigateTunnel(fdin,objs,prev);
-/*
-					if(prev>0){
-						searches=0;
-						objs->state=inTunnel;
-					}else if(prev==0){
-						searches=0;
-						printf("exiting tunnel.  should mark exit as visited at next step.\n");
-						objs->state=exitedTunnel;
-					}
-*/
 				}else{
 					searches=0;
 					printf("dead end.  need to assume tunnel was just entered in other direction\n");

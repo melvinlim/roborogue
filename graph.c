@@ -42,11 +42,11 @@ void freeGraph(GRAPH *g){
 	free(g);
 }
 
-void checkTile(GRAPH *g,char *map,int i,int j,int k){
+VERTEX *checkTile(GRAPH *g,char *map,int i,int j,int k){
 	int t;
 	VERTEX *v;
-	if((i<1)||(i>=ROWS))		return;		//first row is status bar
-	if((j<0)||(j>=COLUMNS))	return;
+	if((i<1)||(i>=ROWS))		return 0;		//first row is status bar
+	if((j<0)||(j>=COLUMNS))	return 0;
 	t=INDEX(i,j);
 	if(validTile(map[t])){
 		if(g->vertex[t]==0){
@@ -57,7 +57,58 @@ void checkTile(GRAPH *g,char *map,int i,int j,int k){
 			v=g->vertex[t];
 		}
 		addList(g->vList[k],v);
+		return v;
 	}
+	return 0;
+}
+
+void buildGraph(GRAPH *g,char *map,POINT *loc){
+	int visited[ROWS*COLUMNS];
+	int i,j,k=0;
+	LIST *next,*q;
+	VERTEX *v;
+	i=loc->y;
+	j=loc->x;
+	k=INDEX(i,j);
+	q=createList();
+	v=checkTile(g,map,i+0,j+0,k);
+	addList(q,v);
+
+	bzero(visited,ROWS*COLUMNS*4);
+
+	while(!emptyList(q)){
+		next=dequeue(q);
+		v=next->v;
+
+		if(!visited[v->val]){
+
+			i=v->val/COLUMNS;
+			j=v->val%COLUMNS;
+			k=INDEX(i,j);
+
+			v=checkTile(g,map,i+1,j+0,k);
+			if(v){
+				addList(q,v);
+			}
+			v=checkTile(g,map,i+0,j+1,k);
+			if(v){
+				addList(q,v);
+			}
+			v=checkTile(g,map,i-0,j-1,k);
+			if(v){
+				addList(q,v);
+			}
+			v=checkTile(g,map,i-1,j-0,k);
+			if(v){
+				addList(q,v);
+			}
+
+			visited[k]=1;
+
+		}
+		
+	}
+
 }
 
 void fillGraph(GRAPH *g,char *map){

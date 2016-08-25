@@ -258,12 +258,12 @@ break;
 	objs->offset=offset;
 	//if(n>=BUFSZ){
 //	if(n>=BUFSZ/2){
+	objs->map=screen;
 	if(pEnd < buffer+n+pBLen){		//have to make sure to finish reading remnants of buffer.
 		printf("buffer getting full, copying remainder (end pointer -> end of buffer) to special buffer and calling updateScreen again\n");
 		printf("%d\n",n+pBLen-(pEnd-buffer));
 		bzero(objs->prevBuffer,BUFSZ);
 		memcpy(objs->prevBuffer,pEnd,n+pBLen-(pEnd-buffer));
-		objs->map=screen;
 		updateScreen(objs);
 	}
 }

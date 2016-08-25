@@ -71,12 +71,15 @@ OBJECTS *scanArea(OBJECTS *objs){
 		printf("error, map==0\n");
 		return 0;
 	}
-	g=createGraph();
-	fillGraph(g,map);
-	//printGraph(g);
+
 	free(objs->self);
 	objs->self=findSelf(map);
 	loc=objs->self;
+	
+	g=createGraph();
+	buildGraph(g,map,loc);
+	//fillGraph(g,map);
+	//printGraph(g);
 
 	if(objs->stairs==0){
 		objs->stairs=nearestStairs(objs,g);
