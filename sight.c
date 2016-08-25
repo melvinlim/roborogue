@@ -24,7 +24,7 @@ int moveToPoint(int fdin,OBJECTS *objs,POINT *pt){
 		printf("scanArea requires initialized pointer\n");
 		return 0;
 	}
-	map=updateScreen(objs);
+	updateScreen(objs);
 	if(map==0){
 		printf("error, map==0\n");
 		return 0;
@@ -32,7 +32,7 @@ int moveToPoint(int fdin,OBJECTS *objs,POINT *pt){
 	g=createGraph();
 	fillGraph(g,map);
 	//printGraph(g);
-	objs->map=map;
+//	objs->map=map;
 	free(objs->self);
 	objs->self=findSelf(map);
 	loc=objs->self;

@@ -14,7 +14,7 @@ struct esc{
 	char *p;
 };
 
-ESC *handleESC(char *p);
+//ESC *handleESC(char *p);
 //char *printScreen(int fdout);
 //char *updateScreen(int fdout,char *map);
 
