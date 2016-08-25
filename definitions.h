@@ -71,6 +71,8 @@ OBJECTS{
 	POINT *stairs;
 	POINT *nextStep;
 	LIST *visitedDoors;
+
+	char prevBuffer[BUFSZ];
 };
 
 #endif

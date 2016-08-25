@@ -18,10 +18,23 @@ void updateScreen(OBJECTS *objs){
 		memset(screen,(char)' ',ROWS*COLUMNS);
 	}
 	buffer[BUFSZ]=0;
-	n=read(fdout,buffer,BUFSZ);
+	int pBLen=strlen(objs->prevBuffer);
+strncpy(buffer,objs->prevBuffer,pBLen);
+	n=read(fdout,buffer+pBLen,BUFSZ-pBLen);
+bzero(objs->prevBuffer,pBLen);
+	//n=read(fdout,buffer,BUFSZ);
 	printf("read %d bytes\n",n);
 	p=buffer;
-	pEnd=buffer+n;
+	//if(n>=BUFSZ/2){
+	if(n+pBLen>=BUFSZ/2){
+		pEnd=memchr( (p+BUFSZ/2) , 0x1b , BUFSZ/2 );
+		if(pEnd==0){
+			printf("ERROR: could not find 0x1b.\n");
+			return;
+		}
+	}else{
+		pEnd=buffer+n+pBLen;
+	}
 #ifdef RAWDATA
 i=0;
 while(p<pEnd){
@@ -43,6 +56,11 @@ return;
 #endif
 	while(p<pEnd){
 		ch=*p;
+if(iscntrl(ch)){
+printf("\n[0x%02x]",*p);
+}else{
+printf("%c",*p);
+}
 		switch(ch){
 			case 0x1b:
 				p++;
@@ -59,8 +77,10 @@ return;
 					p++;
 				}
 				a--;
+printf("%d,",a);
 				ch=*p;
 				if(ch!=';'){
+printf("%c,",ch);
 					switch(ch){
 						case 24:
 							printf("CANCEL\n");
@@ -76,14 +96,12 @@ return;
 							offset += a - (offset%80);
 						break;
 						case'H':									//cursor home set to: [1,1] and? status line cleared?
-							memset(screen,' ',80);
+//							memset(screen,' ',80);
 							offset=0;
 						break;
-/*
 						case'K':									//status line cleared?
 							memset(screen,' ',80);
 						break;
-*/
 					}
 				}else{
 					p++;
@@ -94,7 +112,9 @@ return;
 						p++;
 					}
 					b--;
+printf("%d,",b);
 					ch=*p;
+printf("%c,",ch);
 					switch(ch){
 						case'r':		//scrolling enabled from rows [a,b]
 						break;
@@ -150,8 +170,13 @@ break;
 	}
 	printf("n=%d\n",n);
 	objs->offset=offset;
-	if(n>=BUFSZ){
-		printf("buffer was full, calling updateScreen again\n");
+	//if(n>=BUFSZ){
+//	if(n>=BUFSZ/2){
+	if(pEnd < buffer+n+pBLen){		//have to make sure to finish reading remnants of buffer.
+		printf("buffer getting full, copying remainder (end pointer -> end of buffer) to special buffer and calling updateScreen again\n");
+		printf("%d\n",n+pBLen-(pEnd-buffer));
+		bzero(objs->prevBuffer,BUFSZ);
+		memcpy(objs->prevBuffer,pEnd,n+pBLen-(pEnd-buffer));
 		objs->map=screen;
 		updateScreen(objs);
 	}
