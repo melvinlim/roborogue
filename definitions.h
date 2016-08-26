@@ -85,7 +85,7 @@ OBJECTS{
 
 	int scrollTop;
 	int scrollBottom;
-
+	int maxSearches;
 };
 
 #endif

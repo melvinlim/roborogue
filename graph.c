@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 #include<definitions.h>
 #include<graph.h>
 #include<list.h>

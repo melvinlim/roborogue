@@ -48,6 +48,9 @@ int moveToPoint(int fdin,OBJECTS *objs,POINT *pt){
 
 	free(objs->self);
 	objs->self=findSelf(map);
+	if(objs->self==0){
+		space(objs->fdin);
+	}
 	loc=objs->self;
 	g=objs->graph;
 	if(g==0){
@@ -83,6 +86,9 @@ OBJECTS *scanArea(OBJECTS *objs){
 
 	free(objs->self);
 	objs->self=findSelf(map);
+	if(objs->self==0){
+		space(objs->fdin);
+	}
 	loc=objs->self;
 
 	g=objs->graph;
@@ -374,6 +380,12 @@ POINT *nearestUnvisitedDoor(OBJECTS *objs,GRAPH *g){
 	//return nearest(map,g,loc,isDoor);
 }
 */
+char *lastStatus(char *map){
+	char *last=malloc(80);
+	strncpy(last,map+(23*COLS),80);
+	return last;
+}
+
 char *lastMessage(char *map){
 	char *last=malloc(80);
 	strncpy(last,map,80);
@@ -388,6 +400,16 @@ int checkInventory(OBJECTS *objs){
 	printf("wrote %d bytes\n",n);
 	parseInventory(objs);
 	space(objs->fdin);
+}
+
+int checkHungry(char *map){
+	char *last=lastStatus(map);
+	if(strstr(last,"hungry")){
+		free(last);
+		return 1;
+	}
+	free(last);
+	return 0;
 }
 
 int checkFaint(char *map){

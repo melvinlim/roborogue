@@ -10,8 +10,6 @@
 #include<graph.h>
 #include<move.h>
 
-#define MAXSEARCHES 50
-
 int main(int argc,char *argv[]){
 	int fdin,fdout,i,j,n;
 	char *map;
@@ -78,12 +76,19 @@ int main(int argc,char *argv[]){
 	return 0;
 #endif
 
+	objs->maxSearches=5;
+
 //	objs->state=movingToStairs;
 	while(1){
 
 		objs=scanArea(objs);
 		printObjs(objs);
 //return 0;
+
+		if(checkHungry(objs->map)){
+			printf("hungry\n");
+			objs->state=starving;
+		}
 
 		if(checkFaint(objs->map)){
 			printf("dying of starvation\n");
@@ -139,11 +144,15 @@ int main(int argc,char *argv[]){
 //						printf("previous step: %c\n",prev);
 						objs->state=atDoor;
 					}
+				}else{
+					objs->state=movingToStairs;
 				}
 			break;
 			case attacking:
 				if(enemyDefeated(objs->map)){
 					printf("enemy defeated, returning to previous location.\n");
+					objs->state=returningToPrevLoc;
+				}else if(objs->enemy==0){
 					objs->state=returningToPrevLoc;
 				}else{
 					printf("moving towards / attacking enemy\n");
@@ -177,8 +186,8 @@ printf("restoring old state\n");
 			break;
 			case searching:
 				searches++;
-				if(searches<=MAXSEARCHES){
-					printf("searching (%d/%d)\n",searches,MAXSEARCHES);
+				if(searches<=objs->maxSearches){
+					printf("searching (%d/%d)\n",searches,objs->maxSearches);
 					search(fdin);
 					objs->state=inTunnel;	//navigateTunnel will change state to exitedTunnel or searching based on result.
 					prev=navigateTunnel(fdin,objs,prev);
