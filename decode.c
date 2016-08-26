@@ -14,9 +14,9 @@ void parseInventory(OBJECTS *objs){
 //	int offset=objs->offset;
 	int offset=0;
 	if(inventory==0){
-		inventory=malloc(ROWS*COLUMNS);
-		bzero(inventory,ROWS*COLUMNS);
-		memset(inventory,(char)' ',ROWS*COLUMNS);
+		inventory=malloc(ROWS*COLS);
+		bzero(inventory,ROWS*COLS);
+		memset(inventory,(char)' ',ROWS*COLS);
 	}
 	buffer[BUFSZ]=0;
 	int pBLen=strlen(objs->prevBuffer);
@@ -91,9 +91,9 @@ void updateScreen(OBJECTS *objs){
 	char buffer[BUFSZ+1];
 	int offset=objs->offset;
 	if(screen==0){
-		screen=malloc(ROWS*COLUMNS);
-		bzero(screen,ROWS*COLUMNS);
-		memset(screen,(char)' ',ROWS*COLUMNS);
+		screen=malloc(ROWS*COLS);
+		bzero(screen,ROWS*COLS);
+		memset(screen,(char)' ',ROWS*COLS);
 	}
 	buffer[BUFSZ]=0;
 	int pBLen=strlen(objs->prevBuffer);
@@ -184,6 +184,9 @@ printf("%c,",ch);
 						break;
 						case'X':									//clear a characters?
 							memset(screen+offset,' ',a);
+						break;
+						case'J':									//clear entire screen?
+							memset(screen,' ',ROWS*COLS);
 						break;
 					}
 				}else{

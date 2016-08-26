@@ -11,9 +11,9 @@
 #define EAST 'C'
 #define WEST 'D'
 
-#define COLUMNS 80
+#define COLS 80
 #define ROWS 25
-#define INDEX(n,m) (((n)*COLUMNS)+(m))
+#define INDEX(n,m) (((n)*COLS)+(m))
 #define NEW(x) malloc(sizeof(x))
 
 #define VERTEX struct vertex
@@ -32,8 +32,8 @@ LIST{
 
 #define GRAPH struct graph
 struct graph{
-	LIST *vList[ROWS*COLUMNS];
-	VERTEX *vertex[ROWS*COLUMNS];
+	LIST *vList[ROWS*COLS];
+	VERTEX *vertex[ROWS*COLS];
 };
 
 struct point{
@@ -45,12 +45,14 @@ struct point{
 STATE{
 	idle,
 	atDoor,
+	atStairs,
 	inTunnel,
 	starving,
 	attacking,
 	searching,
 	exitedTunnel,
-	returningToPrevLoc
+	returningToPrevLoc,
+	movingToStairs
 };
 
 #define OBJECTS struct objects

@@ -11,7 +11,7 @@ GRAPH *createGraph(){
 		printf("error: could not allocate memory\n");
 		return g;
 	}
-	for(i=80;i<(COLUMNS*ROWS);i++){
+	for(i=80;i<(COLS*ROWS);i++){
 		g->vList[i]=createList();
 		g->vertex[i]=0;
 	}
@@ -35,7 +35,7 @@ int validTile(char tile){
 
 void freeGraph(GRAPH *g){
 	int i;
-	for(i=80;i<(COLUMNS*ROWS);i++){
+	for(i=80;i<(COLS*ROWS);i++){
 		freeList(g->vList[i]);
 		free(g->vertex[i]);
 	}
@@ -46,7 +46,7 @@ VERTEX *checkTile(GRAPH *g,char *map,int i,int j,int k){
 	int t;
 	VERTEX *v;
 	if((i<1)||(i>=ROWS))		return 0;		//first row is status bar
-	if((j<0)||(j>=COLUMNS))	return 0;
+	if((j<0)||(j>=COLS))	return 0;
 	t=INDEX(i,j);
 /*
 	v=findListValue(g->vList[k],t);
@@ -69,7 +69,7 @@ VERTEX *checkTile(GRAPH *g,char *map,int i,int j,int k){
 }
 
 void buildGraph(GRAPH *g,char *map,POINT *loc){
-	int visited[ROWS*COLUMNS];
+	int visited[ROWS*COLS];
 	int i,j,k=0;
 	LIST *next,*q;
 	VERTEX *v;
@@ -80,7 +80,7 @@ void buildGraph(GRAPH *g,char *map,POINT *loc){
 	v=checkTile(g,map,i+0,j+0,k);
 	addList(q,v);
 
-	bzero(visited,ROWS*COLUMNS*4);
+	bzero(visited,ROWS*COLS*4);
 
 	while(!emptyList(q)){
 		next=dequeue(q);
@@ -88,8 +88,8 @@ void buildGraph(GRAPH *g,char *map,POINT *loc){
 
 		if(!visited[v->val]){
 
-			i=v->val/COLUMNS;
-			j=v->val%COLUMNS;
+			i=v->val/COLS;
+			j=v->val%COLS;
 			k=INDEX(i,j);
 
 			v=checkTile(g,map,i+1,j+0,k);
@@ -122,7 +122,7 @@ void fillGraph(GRAPH *g,char *map){
 	int t;
 	k=80;
 	for(i=1;i<ROWS;i++){
-		for(j=0;j<COLUMNS;j++){
+		for(j=0;j<COLS;j++){
 			if(map[k]!=' '){
 				checkTile(g,map,i+1,j+0,k);
 				checkTile(g,map,i+0,j+1,k);
@@ -137,7 +137,7 @@ void fillGraph(GRAPH *g,char *map){
 void printGraph(GRAPH *g){
 	int i;
 	LIST *p;
-	for(i=80;i<(COLUMNS*ROWS);i++){
+	for(i=80;i<(COLS*ROWS);i++){
 		p=g->vList[i];
 		if(p->next){
 			printf("g->v[%4d/(%2d,%2d)]:\t",i,i/80,i%80);

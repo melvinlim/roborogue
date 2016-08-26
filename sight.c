@@ -94,6 +94,8 @@ OBJECTS *scanArea(OBJECTS *objs){
 
 	if(objs->stairs==0){
 		objs->stairs=nearestStairs(objs);
+		printf("stairs at:");
+		print(objs->stairs);
 		//objs->stairs=nearestStairs(objs,g);
 	}
 
@@ -129,7 +131,7 @@ POINT *findSelf(char *map){
 	POINT *pt=malloc(sizeof(POINT));
 	map+=80;
 	for(i=1;i<ROWS;i++){
-		for(j=0;j<COLUMNS;j++){
+		for(j=0;j<COLS;j++){
 			if(*map++=='@'){
 				pt->x=j;
 				pt->y=i;
@@ -204,8 +206,8 @@ POINT *nearestPoint(OBJECTS *objs,GRAPH *g,POINT *target){
 	LIST *q=createList();
 	VERTEX *s=g->vertex[vIndex];
 	lp=g->vList[vIndex];
-	int visited[ROWS*COLUMNS];
-	bzero(visited,4*ROWS*COLUMNS);
+	int visited[ROWS*COLS];
+	bzero(visited,4*ROWS*COLS);
 	visited[s->val]=1;
 	addList(q,s);
 //	printList(q);
@@ -270,8 +272,8 @@ POINT *nearest(OBJECTS *objs,int f(char)){
 	LIST *q=createList();
 	VERTEX *s=g->vertex[vIndex];
 	lp=g->vList[vIndex];
-	int visited[ROWS*COLUMNS];
-	bzero(visited,4*ROWS*COLUMNS);
+	int visited[ROWS*COLS];
+	bzero(visited,4*ROWS*COLS);
 	visited[s->val]=1;
 	addList(q,s);
 //	printList(q);

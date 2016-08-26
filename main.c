@@ -76,6 +76,7 @@ int main(int argc,char *argv[]){
 //	save(fdin,"save\n\0");
 //	return 0;
 
+//	objs->state=movingToStairs;
 	while(1){
 
 		objs=scanArea(objs);
@@ -106,6 +107,21 @@ int main(int argc,char *argv[]){
 		}
 
 		switch(objs->state){
+			case movingToStairs:
+				printf("moving to stairs\n");
+				nearestStairs(objs);
+				prev=moveTowards(fdin,objs,objs->stairs);
+				if(prev){
+					printf("in front of stairs.  should erase graph and travel down stairs on next step.\n");
+					objs->state=atStairs;
+				}
+			break;
+			case atStairs:
+				descend(fdin);
+				freeGraph(objs->graph);
+				objs->graph=0;
+				objs->state=idle;
+			break;
 			case idle:
 				if(objs->item){
 					printf("moving to item\n");
