@@ -204,7 +204,7 @@ int moveTowards(int fdin,OBJECTS *objs,POINT *dst){
 */
 	if((objs->nextStep==0)){
 		printf("error in move.c:moveTowards(), objs->nextStep==0\n");
-		return;
+		return 0;
 	}
 	dir=(moveTowardsX(fdin,map,objs->nextStep,src));
 	if(dir==0){

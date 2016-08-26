@@ -73,8 +73,10 @@ int main(int argc,char *argv[]){
 	POINT *prevLoc;
 	int searches=0;
 
-//	save(fdin,"save\n\0");
-//	return 0;
+#ifdef SAVE
+	save(fdin,"save\n\0");
+	return 0;
+#endif
 
 //	objs->state=movingToStairs;
 	while(1){
@@ -93,8 +95,11 @@ int main(int argc,char *argv[]){
 			space(fdin);
 		}
 
-		if(objs->state!=attacking){
+		//if(objs->state!=attacking){
+		if((objs->state!=attacking)&&(objs->state!=returningToPrevLoc)){
 				if(objs->enemy){
+					printf("clearing message (first) line in case of prior enemy defeated message\n");
+					memset(objs->map,' ',80);
 					printf("transitioning to attack state\n");
 					prevLoc=NEW(POINT);
 					memcpy(prevLoc,objs->self,sizeof(POINT));
@@ -191,7 +196,7 @@ printf("restoring old state\n");
 			break;
 		}
 //return 0;
-		sleep(2);
+		sleep(1);
 	}
 
 	quit(fdin);

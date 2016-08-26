@@ -4,6 +4,31 @@
 #include<decode.h>
 #include<definitions.h>
 
+void printMap(char *screen){
+	int i,j;
+	printf("\n");
+	printf("\t\t");
+	for(i=0;i<80;i++){
+		printf("%d",i%10);
+	}
+	printf("\n");
+	for(i=0;i<ROWS;i++){
+		printf("line %02i:\t",i);
+		for(j=0;j<80;j++){
+			if(screen[i*80+j]==' '){
+#ifdef NUMBEREDMAP
+				printf("%d",j%10);
+#else
+				printf(" ");
+#endif
+			}else{
+				printf("%c",screen[i*80+j]);
+			}
+		}
+		putchar('\n');
+	}
+}
+
 void parseInventory(OBJECTS *objs){
 	char ch;
 	int fdout=objs->fdout;
@@ -83,6 +108,7 @@ void parseInventory(OBJECTS *objs){
 }
 
 void updateScreen(OBJECTS *objs){
+	int ti,tj;
 	char ch;
 	int fdout=objs->fdout;
 	char *screen=objs->map;
@@ -119,6 +145,7 @@ while(p<pEnd){
 if(iscntrl(*p)){
 if(i++ > 40){
 	i=0;
+	//printMap(screen);
 	getchar();
 }
 printf("\n[0x%02x]",*p);
@@ -135,17 +162,40 @@ return;
 	while(p<pEnd){
 		ch=*p;
 if(iscntrl(ch)){
-printf("\n[0x%02x]",*p);
+printf("\n[0x%02x]",ch);
 }else{
-printf("%c",*p);
+printf("%c",ch);
 }
 		switch(ch){
 			case 0x1b:
 				p++;
 				ch=*p;
 				if(ch!='['){
-					printf("error, [0x1b][0x%x]\n",ch);
-					return;
+					switch(ch){
+						case'M':	//scroll screen up
+							for(ti=objs->scrollBottom;ti>objs->scrollTop;ti--){
+								for(tj=0;tj<COLS;tj++){
+									screen[(ti)*COLS+tj]=screen[(ti-1)*COLS+tj];
+								}
+							}
+/*
+objs->offset+=80;
+printf("[0x1b]M\n");
+getchar();
+*/
+						break;
+						case'7':	//save cursor position
+							objs->savedPosition=objs->offset;
+						break;
+						case'8':	//restore cursor position
+							objs->offset=objs->savedPosition;
+						break;
+						default:
+							printf("error, [0x1b][0x%x]\n",ch);
+getchar();
+//while(1);
+					}
+					break;
 				}
 				p++;
 				a=0;
@@ -203,6 +253,8 @@ printf("%d,",b);
 printf("%c,",ch);
 					switch(ch){
 						case'r':		//scrolling enabled from rows [a,b]
+							objs->scrollTop=a;
+							objs->scrollBottom=b;
 						break;
 						case'R':		//cursor was reported at [a,b]
 						break;
@@ -227,9 +279,14 @@ printf("%c,",ch);
 				screen[offset++]=' ';
 			break;
 */
-case '\n':
-offset++;
-break;
+			case 0x0a:
+				for(ti=objs->scrollTop;ti<objs->scrollBottom;ti++){
+					for(tj=0;tj<COLS;tj++){
+						screen[ti*COLS+tj]=screen[(ti+1)*COLS+tj];
+					}
+				}
+//			offset++;
+			break;
 			default:
 				screen[offset++]=ch;
 		}
@@ -243,27 +300,8 @@ break;
 	clearStr[2]='H';
 	printf("%s",clearStr);
 */
-	printf("\n");
-	printf("\t\t");
-	for(i=0;i<80;i++){
-		printf("%d",i%10);
-	}
-	printf("\n");
-	for(i=0;i<ROWS;i++){
-		printf("line %02i:\t",i);
-		for(j=0;j<80;j++){
-			if(screen[i*80+j]==' '){
-#ifdef NUMBEREDMAP
-				printf("%d",j%10);
-#else
-				printf(" ");
-#endif
-			}else{
-				printf("%c",screen[i*80+j]);
-			}
-		}
-		putchar('\n');
-	}
+
+	printMap(screen);
 	printf("n=%d\n",n);
 	objs->offset=offset;
 	//if(n>=BUFSZ){

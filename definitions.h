@@ -1,6 +1,8 @@
 #ifndef _DEFINITIONS_H
 #define _DEFINITIONS_H
 
+//#define SAVE
+
 #define DEBUG
 #define DECODE_DEBUG
 
@@ -62,6 +64,7 @@ OBJECTS{
 	char *map;
 	char *inventory;
 	int offset;
+	int savedPosition;
 	
 	int prevStep;
 	POINT *prevLoc;
@@ -79,6 +82,10 @@ OBJECTS{
 
 	char prevBuffer[BUFSZ];
 	GRAPH *graph;
+
+	int scrollTop;
+	int scrollBottom;
+
 };
 
 #endif

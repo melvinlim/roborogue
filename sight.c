@@ -45,21 +45,23 @@ int moveToPoint(int fdin,OBJECTS *objs,POINT *pt){
 		printf("error, map==0\n");
 		return 0;
 	}
+
+	free(objs->self);
+	objs->self=findSelf(map);
+	loc=objs->self;
 	g=objs->graph;
 	if(g==0){
 		g=createGraph();
 	}
+
 	buildGraph(g,map,loc);
 	//fillGraph(g,map);
 	//printGraph(g);
 
 	objs->graph=g;
 
-	free(objs->self);
-	objs->self=findSelf(map);
-	loc=objs->self;
-
-	nearestPoint(objs,g,pt);
+	//nearestPoint(objs,g,pt);
+	nearestPoint(objs,pt);
 	return moveTowards(fdin,objs,pt);
 }
 
@@ -94,8 +96,10 @@ OBJECTS *scanArea(OBJECTS *objs){
 
 	if(objs->stairs==0){
 		objs->stairs=nearestStairs(objs);
-		printf("stairs at:");
-		print(objs->stairs);
+		if(objs->stairs){
+			printf("stairs at:");
+			print(objs->stairs);
+		}
 		//objs->stairs=nearestStairs(objs,g);
 	}
 
@@ -195,7 +199,9 @@ int isEnemy(char loc){
 	return isalpha(loc);
 }
 
-POINT *nearestPoint(OBJECTS *objs,GRAPH *g,POINT *target){
+//POINT *nearestPoint(OBJECTS *objs,GRAPH *g,POINT *target){
+POINT *nearestPoint(OBJECTS *objs,POINT *target){
+	GRAPH *g=objs->graph;
 	char *map=objs->map;
 	POINT *loc=objs->self;
 	VERTEX *vert;
