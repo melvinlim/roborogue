@@ -48,6 +48,12 @@ VERTEX *checkTile(GRAPH *g,char *map,int i,int j,int k){
 	if((i<1)||(i>=ROWS))		return 0;		//first row is status bar
 	if((j<0)||(j>=COLUMNS))	return 0;
 	t=INDEX(i,j);
+/*
+	v=findListValue(g->vList[k],t);
+	if(v){
+		return v;
+	}
+*/
 	if(validTile(map[t])){
 		if(g->vertex[t]==0){
 			v=NEW(VERTEX);

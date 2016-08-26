@@ -45,9 +45,16 @@ int moveToPoint(int fdin,OBJECTS *objs,POINT *pt){
 		printf("error, map==0\n");
 		return 0;
 	}
-	g=createGraph();
-	fillGraph(g,map);
+	g=objs->graph;
+	if(g==0){
+		g=createGraph();
+	}
+	buildGraph(g,map,loc);
+	//fillGraph(g,map);
 	//printGraph(g);
+
+	objs->graph=g;
+
 	free(objs->self);
 	objs->self=findSelf(map);
 	loc=objs->self;
@@ -75,25 +82,34 @@ OBJECTS *scanArea(OBJECTS *objs){
 	free(objs->self);
 	objs->self=findSelf(map);
 	loc=objs->self;
-	
-	g=createGraph();
+
+	g=objs->graph;
+	if(g==0){
+		g=createGraph();
+	}
 	buildGraph(g,map,loc);
 	//fillGraph(g,map);
 	//printGraph(g);
+	objs->graph=g;
 
 	if(objs->stairs==0){
-		objs->stairs=nearestStairs(objs,g);
+		objs->stairs=nearestStairs(objs);
+		//objs->stairs=nearestStairs(objs,g);
 	}
 
 	free(objs->enemy);
 	free(objs->item);
 	free(objs->door);
-
+/*
 	objs->door=nearestDoor(objs,g);
 	objs->item=nearestItem(objs,g);
 	objs->enemy=nearestEnemy(objs,g);
+*/
+	objs->door=nearestDoor(objs);
+	objs->item=nearestItem(objs);
+	objs->enemy=nearestEnemy(objs);
 	
-	freeGraph(g);
+//	freeGraph(g);
 	return objs;
 }
 
@@ -142,6 +158,7 @@ int isTunnel(char loc){
 int isItem(char loc){
 	if(
 		!(isalpha(loc))&&
+		loc!=' '&&
 		loc!='#'&&
 		loc!='.'&&
 		loc!='-'&&
@@ -235,12 +252,14 @@ return 0;
 	freeList(q);
 	free(pt);
 #ifdef DEBUG
-	printf("not found\n");
+//	printf("not found\n");
 #endif
 	return 0;
 }
 
-POINT *nearest(OBJECTS *objs,GRAPH *g,int f(char)){
+//POINT *nearest(OBJECTS *objs,GRAPH *g,int f(char)){
+POINT *nearest(OBJECTS *objs,int f(char)){
+	GRAPH *g=objs->graph;
 	char *map=objs->map;
 //	char *graph=objs->g;
 	POINT *loc=objs->self;
@@ -308,26 +327,36 @@ return 0;
 	freeList(q);
 	free(pt);
 #ifdef DEBUG
-	printf("not found\n");
+//	printf("not found\n");
 #endif
 	return 0;
 }
 
-POINT *nearestObject(OBJECTS *objs,GRAPH *g){
-	return nearest(objs,g,ofInterest);
+//POINT *nearestObject(OBJECTS *objs,GRAPH *g){
+POINT *nearestObject(OBJECTS *objs){
+	return nearest(objs,ofInterest);
+	//return nearest(objs,g,ofInterest);
 }
-POINT *nearestItem(OBJECTS *objs,GRAPH *g){
-	return nearest(objs,g,isItem);
+//POINT *nearestItem(OBJECTS *objs,GRAPH *g){
+POINT *nearestItem(OBJECTS *objs){
+	return nearest(objs,isItem);
+	//return nearest(objs,g,isItem);
 }
-POINT *nearestEnemy(OBJECTS *objs,GRAPH *g){
-	return nearest(objs,g,isEnemy);
+//POINT *nearestEnemy(OBJECTS *objs,GRAPH *g){
+POINT *nearestEnemy(OBJECTS *objs){
+	return nearest(objs,isEnemy);
+	//return nearest(objs,g,isEnemy);
 }
-POINT *nearestDoor(OBJECTS *objs,GRAPH *g){
-	return nearest(objs,g,isDoor);
+//POINT *nearestDoor(OBJECTS *objs,GRAPH *g){
+POINT *nearestDoor(OBJECTS *objs){
+	return nearest(objs,isDoor);
+	//return nearest(objs,g,isDoor);
 }
 
-POINT *nearestStairs(OBJECTS *objs,GRAPH *g){
-	return nearest(objs,g,isStairs);
+//POINT *nearestStairs(OBJECTS *objs,GRAPH *g){
+POINT *nearestStairs(OBJECTS *objs){
+	return nearest(objs,isStairs);
+	//return nearest(objs,g,isStairs);
 }
 
 /*

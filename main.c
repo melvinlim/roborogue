@@ -115,7 +115,7 @@ int main(int argc,char *argv[]){
 					prev=(moveTowards(fdin,objs,objs->door));
 					if(prev){
 						printf("in front of door.  should mark door on next step then travel through tunnel.\n");
-						printf("previous step: %c\n",prev);
+//						printf("previous step: %c\n",prev);
 						objs->state=atDoor;
 					}
 				}

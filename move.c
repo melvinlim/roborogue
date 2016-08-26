@@ -53,17 +53,17 @@ void move(int fdin,char *map,char dir){
 	n=write(fdin,buf,3);
 #ifdef DEBUG
 	switch(dir){
-		case UP:
-			printf("moving UP\n");
+		case NORTH:
+			printf("moving NORTH\n");
 		break;
-		case DOWN:
-			printf("moving DOWN\n");
+		case SOUTH:
+			printf("moving SOUTH\n");
 		break;
-		case LEFT:
-			printf("moving LEFT\n");
+		case WEST:
+			printf("moving WEST\n");
 		break;
-		case RIGHT:
-			printf("moving RIGHT\n");
+		case EAST:
+			printf("moving EAST\n");
 		break;
 	}
 	printf("wrote %d bytes\n",n);
@@ -79,24 +79,24 @@ void quit(int fdin){
 int moveTowardsX(int fdin,char *map,POINT *dst,POINT *src){
 	if(src->x > dst->x){
 		if(!validTile(map[INDEX(src->y,src->x-1)]))	return 0;
-		move(fdin,map,LEFT);
-		return LEFT;
+		move(fdin,map,WEST);
+		return WEST;
 	}else if(src->x < dst->x){
 		if(!validTile(map[INDEX(src->y,src->x+1)]))	return 0;
-		move(fdin,map,RIGHT);
-		return RIGHT;
+		move(fdin,map,EAST);
+		return EAST;
 	}
 	return 0;
 }
 int moveTowardsY(int fdin,char *map,POINT *dst,POINT *src){
 	if(src->y > dst->y){
 		if(!validTile(map[INDEX(src->y-1,src->x)]))	return 0;
-		move(fdin,map,UP);
-		return UP;
+		move(fdin,map,NORTH);
+		return NORTH;
 	}else if(src->y < dst->y){
 		if(!validTile(map[INDEX(src->y+1,src->x)]))	return 0;
-		move(fdin,map,DOWN);
-		return DOWN;
+		move(fdin,map,SOUTH);
+		return SOUTH;
 	}
 	return 0;
 }

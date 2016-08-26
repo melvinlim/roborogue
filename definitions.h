@@ -6,10 +6,10 @@
 
 #define BUFSZ 4096
 
-#define UP 'A'
-#define DOWN 'B'
-#define RIGHT 'C'
-#define LEFT 'D'
+#define NORTH 'A'
+#define SOUTH 'B'
+#define EAST 'C'
+#define WEST 'D'
 
 #define COLUMNS 80
 #define ROWS 25
@@ -76,6 +76,7 @@ OBJECTS{
 	LIST *visitedDoors;
 
 	char prevBuffer[BUFSZ];
+	GRAPH *graph;
 };
 
 #endif

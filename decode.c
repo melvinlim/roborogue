@@ -233,6 +233,13 @@ break;
 		p++;
 	}
 //	printf("\27[5B");	//move down 5 lines.
+/*
+	char clearStr[3];
+	clearStr[0]=0x1b;
+	clearStr[1]='[';
+	clearStr[2]='H';
+	printf("%s",clearStr);
+*/
 	printf("\n");
 	printf("\t\t");
 	for(i=0;i<80;i++){
