@@ -287,6 +287,17 @@ POINT *nearest(OBJECTS *objs,int f(char)){
 			lp=lp->next;
 			vert=lp->v;
 			if(!(visited[vert->val])&&(vert!=s)){
+int tmpx0,tmpy0,tmpx1,tmpy1;
+tmpx0=vp->v->val%COLS;
+tmpy0=vp->v->val/COLS;
+tmpx1=vert->val%COLS;
+tmpy1=vert->val/COLS;
+if(abs(tmpx0-tmpx1)>1){
+printf("error\n");
+}
+if(abs(tmpy0-tmpy1)>1){
+printf("error\n");
+}
 				vert->pre=vp->v;
 if(	!findListValue(objs->visitedDoors,(vert->val)) &&
 		!findListValue(objs->visitedTunnels,(vert->val))	)					//should maybe add another function to parameter list to not check these in every case.
@@ -302,27 +313,27 @@ if(	!findListValue(objs->visitedDoors,(vert->val)) &&
 					return pt;
 */
 
-				while(vert->pre){
-					if(vert->pre==s){
-									nextStep->x=vert->val%80;
-									nextStep->y=vert->val/80;
+					while(vert->pre){
+						if(vert->pre==s){
+							nextStep->x=vert->val%80;
+							nextStep->y=vert->val/80;
 #ifdef DEBUGSTEPS
-									print(nextStep);
-									printf("%c\n",map[INDEX(nextStep->y,nextStep->x)]);
+							print(nextStep);
+							printf("%c\n",map[INDEX(nextStep->y,nextStep->x)]);
 #endif
-									objs->nextStep=nextStep;
-									return pt;
-					}else{
-									nextStep->x=vert->val%80;
-									nextStep->y=vert->val/80;
+							objs->nextStep=nextStep;
+							return pt;
+						}else{
+							nextStep->x=vert->val%80;
+							nextStep->y=vert->val/80;
 #ifdef DEBUGSTEPS
-									print(nextStep);
+							print(nextStep);
 #endif
-						vert=vert->pre;
+							vert=vert->pre;
+						}
 					}
-				}
-printf("unable to trace predecessors back to source.  bug in sight.c:nearest()\n");
-return 0;
+					printf("unable to trace predecessors back to source.  bug in sight.c:nearest()\n");
+					return 0;
 				}
 				visited[vert->val]=1;
 				addList(q,vert);

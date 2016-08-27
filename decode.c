@@ -240,7 +240,7 @@ printf("%c,",ch);
 							}
 						break;
 						case'X':									//clear a characters?
-							memset(screen+offset,' ',a);
+							memset(screen+offset,' ',a+1);
 						break;
 						case'J':									//clear entire screen?
 							memset(screen,' ',ROWS*COLS);

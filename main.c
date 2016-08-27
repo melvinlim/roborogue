@@ -140,6 +140,9 @@ int main(int argc,char *argv[]){
 			case movingToStairs:
 				printf("moving to stairs\n");
 				nearestStairs(objs);
+				if(objs->stairs==0){
+					printf("error: objs->stairs should not be 0 here.\n");
+				}
 				prev=moveTowards(fdin,objs,objs->stairs);
 				if(prev){
 					printf("in front of stairs.  should erase graph and travel down stairs on next step.\n");
