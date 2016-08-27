@@ -291,6 +291,11 @@ printf("%c,",ch);
 //			offset++;
 			break;
 			default:
+if(iscntrl(ch)){
+printf("error: control character which is not ESC\n");
+printf("[%d]\n",ch);
+getchar();
+}
 				screen[offset++]=ch;
 		}
 		p++;

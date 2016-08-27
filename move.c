@@ -138,6 +138,7 @@ int navTunnel(int fdin,OBJECTS *objs){
 			move(fdin,objs->map,'A');
 			printf("exiting tunnel.  in move.c:navigateTunnel().  need to mark door as visited on next step.\n");
 			objs->state=exitedTunnel;
+			objs->state=idle;
 			return 0;
 		}
 	if(!findListValue(objs->visitedDoors,INDEX(objs->self->y+1,objs->self->x)))
@@ -145,6 +146,7 @@ int navTunnel(int fdin,OBJECTS *objs){
 			move(fdin,objs->map,'B');
 			printf("exiting tunnel.  in move.c:navigateTunnel().  need to mark door as visited on next step.\n");
 			objs->state=exitedTunnel;
+			objs->state=idle;
 			return 0;
 		}
 	if(!findListValue(objs->visitedDoors,INDEX(objs->self->y,objs->self->x+1)))
@@ -152,6 +154,7 @@ int navTunnel(int fdin,OBJECTS *objs){
 			move(fdin,objs->map,'C');
 			printf("exiting tunnel.  in move.c:navigateTunnel().  need to mark door as visited on next step.\n");
 			objs->state=exitedTunnel;
+			objs->state=idle;
 			return 0;
 		}
 	if(!findListValue(objs->visitedDoors,INDEX(objs->self->y,objs->self->x-1)))
@@ -159,6 +162,7 @@ int navTunnel(int fdin,OBJECTS *objs){
 			move(fdin,objs->map,'D');
 			printf("exiting tunnel.  in move.c:navigateTunnel().  need to mark door as visited on next step.\n");
 			objs->state=exitedTunnel;
+			objs->state=idle;
 			return 0;
 		}
 	dst=nearestTunnel(objs);

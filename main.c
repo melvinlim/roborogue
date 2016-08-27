@@ -80,6 +80,9 @@ int main(int argc,char *argv[]){
 		objs=scanArea(objs);
 		printObjs(objs);
 //return 0;
+		if(isInDoorway(objs)){
+			markDoor(objs);
+		}
 
 		if(isInTunnel(objs)){
 			if((objs->state!=idle)&&(objs->state!=movingToStairs)){
@@ -166,7 +169,8 @@ int main(int argc,char *argv[]){
 			break;
 			case attacking:
 				if(enemyDefeated(objs->map)){
-					printf("enemy defeated, returning to previous location.\n");
+					printf("enemy defeated\n");
+					//printf("enemy defeated, returning to previous location.\n");
 					objs->state=returningToPrevLoc;
 					objs->state=idle;
 				}else if(objs->enemy==0){
@@ -222,7 +226,7 @@ printf("restoring old state\n");
 				}
 			break;
 			case atDoor:
-				markDoor(objs);
+//				markDoor(objs);
 				objs->state=inTunnel;
 			break;
 			case inTunnel:
@@ -254,7 +258,7 @@ printf("restoring old state\n");
 			break;
 		}
 //return 0;
-//		sleep(1);
+		sleep(1);
 	}
 
 	quit(fdin);

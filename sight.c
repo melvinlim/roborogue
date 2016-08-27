@@ -74,38 +74,6 @@ int updateArea(OBJECTS *objs){
 }
 
 int moveToPoint(int fdin,OBJECTS *objs,POINT *pt){
-/*
-	GRAPH *g;
-	char *map;
-	POINT *loc;
-	if(objs==0){
-		printf("scanArea requires initialized pointer\n");
-		return 0;
-	}
-	updateScreen(objs);
-	map=objs->map;
-	if(map==0){
-		printf("error, map==0\n");
-		return 0;
-	}
-
-	free(objs->self);
-	objs->self=findSelf(map);
-	if(objs->self==0){
-		space(objs->fdin);
-	}
-	loc=objs->self;
-	g=objs->graph;
-	if(g==0){
-		g=createGraph();
-	}
-
-	buildGraph(g,map,loc);
-	//fillGraph(g,map);
-	//printGraph(g);
-
-	objs->graph=g;
-*/
 	int result;
 	result=updateArea(objs);
 	if(result==0)	return 0;
@@ -115,37 +83,6 @@ int moveToPoint(int fdin,OBJECTS *objs,POINT *pt){
 }
 
 OBJECTS *scanArea(OBJECTS *objs){
-/*
-	GRAPH *g;
-	char *map;
-	POINT *loc;
-	if(objs==0){
-		printf("scanArea requires initialized pointer\n");
-		return 0;
-	}
-	updateScreen(objs);
-	map=objs->map;
-	if(map==0){
-		printf("error, map==0\n");
-		return 0;
-	}
-
-	free(objs->self);
-	objs->self=findSelf(map);
-	if(objs->self==0){
-		space(objs->fdin);
-	}
-	loc=objs->self;
-
-	g=objs->graph;
-	if(g==0){
-		g=createGraph();
-	}
-	buildGraph(g,map,loc);
-	//fillGraph(g,map);
-	//printGraph(g);
-	objs->graph=g;
-*/
 	int result;
 	result=updateArea(objs);
 	if(result==0)	return 0;
@@ -495,9 +432,57 @@ int enemyDefeated(char *map){
 	return 0;
 }
 
-int isInTunnel(OBJECTS *objs){
-	char *map=objs->map;
+char *getSurroundings(OBJECTS *objs){
+	int x,y;
+	x=objs->self->x;
+	y=objs->self->y;
 	POINT *self=objs->self;
+	char *map=objs->map;
+	char *results=malloc(4);
+	results[0]=map[INDEX(self->y+1,self->x)];
+	results[1]=map[INDEX(self->y-1,self->x)];
+	results[2]=map[INDEX(self->y,self->x+1)];
+	results[3]=map[INDEX(self->y,self->x-1)];
+	return results;
+}
+
+int isInDoorway(OBJECTS *objs){
+	int i;
+	char ch;
+	char *surr=getSurroundings(objs);
+	int nTunnel=0;
+	int nFloor=0;
+	for(i=0;i<4;i++){
+		ch=surr[i];
+		if(isTunnel(ch)){
+			nTunnel++;
+		}else if(isFloor(ch)){
+			nFloor++;
+		}
+	}
+	free(surr);
+	if((nTunnel==1)&&(nFloor==1)){
+		return 1;
+	}
+	return 0;
+}
+
+int isInTunnel(OBJECTS *objs){
+	int i;
+	char ch;
+	char *surr=getSurroundings(objs);
+	for(i=0;i<4;i++){
+		ch=surr[i];
+		if(!isTunnel(ch)&&(!isNothing(ch))){
+			free(surr);
+			return 0;
+		}
+	}
+	free(surr);
+	return 1;
+/*
+	POINT *self=objs->self;
+	char *map=objs->map;
 	char ch;
 	ch=map[INDEX(self->y+1,self->x)];
 	if(!isTunnel(ch)&&(!isNothing(ch))){
@@ -516,7 +501,6 @@ int isInTunnel(OBJECTS *objs){
 		return 0;
 	}
 	return 1;
-/*
 	if(isFloor(map[INDEX(self->y+1,self->x)])){
 		return 0;
 	}
