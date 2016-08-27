@@ -91,6 +91,11 @@ int main(int argc,char *argv[]){
 			}
 		}
 
+		if(isInDeadEnd(objs)){
+			if(!findListValue(objs->deadEnds,INDEX(objs->self->y,objs->self->x)))
+				objs->state=searching;
+		}
+
 		if((objs->state!=searchingForFood)&&(objs->state!=movingToStairs)&&(objs->state!=atStairs)&&(objs->state!=inTunnel)&&(objs->state!=atDoor)){
 
 			if(checkHungry(objs->map)){
@@ -240,6 +245,22 @@ printf("restoring old state\n");
 				if(searches<=objs->maxSearches){
 					printf("searching (%d/%d)\n",searches,objs->maxSearches);
 					search(fdin);
+				}else{
+					searches=0;
+					printf("giving up search\n");
+					markTunnel(objs);
+					markDeadEnd(objs);
+					objs->state=idle;
+				}
+				if(!isInDeadEnd(objs)){
+					searches=0;
+					printf("successful search\n");
+					objs->state=inTunnel;
+				}
+					
+/*
+					printf("searching (%d/%d)\n",searches,objs->maxSearches);
+					search(fdin);
 					objs->state=inTunnel;	//navigateTunnel will change state to exitedTunnel or searching based on result.
 					navTunnel(fdin,objs);
 					//prev=navigateTunnel(fdin,objs,prev);
@@ -250,6 +271,7 @@ printf("restoring old state\n");
 					//prev=opposite(prev);
 					//objs->state=inTunnel;
 				}
+*/
 			break;
 			case exitedTunnel:
 				searches=0;

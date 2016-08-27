@@ -81,6 +81,7 @@ OBJECTS{
 	POINT *nextStep;
 	LIST *visitedDoors;
 	LIST *visitedTunnels;
+	LIST *deadEnds;
 
 	char prevBuffer[BUFSZ];
 	GRAPH *graph;

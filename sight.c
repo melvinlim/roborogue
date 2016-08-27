@@ -10,6 +10,7 @@ OBJECTS *createObjects(){
 	bzero(objs,sizeof(OBJECTS));
 	objs->visitedDoors=createList();
 	objs->visitedTunnels=createList();
+	objs->deadEnds=createList();
 	return objs;
 }
 
@@ -444,6 +445,27 @@ char *getSurroundings(OBJECTS *objs){
 	results[2]=map[INDEX(self->y,self->x+1)];
 	results[3]=map[INDEX(self->y,self->x-1)];
 	return results;
+}
+
+int isInDeadEnd(OBJECTS *objs){
+	int i;
+	char ch;
+	char *surr=getSurroundings(objs);
+	int nTunnel=0;
+	int nNothing=0;
+	for(i=0;i<4;i++){
+		ch=surr[i];
+		if(isTunnel(ch)){
+			nTunnel++;
+		}else if(isNothing(ch)){
+			nNothing++;
+		}
+	}
+	free(surr);
+	if((nTunnel==1)&&(nNothing==3)){
+		return 1;
+	}
+	return 0;
 }
 
 int isInDoorway(OBJECTS *objs){

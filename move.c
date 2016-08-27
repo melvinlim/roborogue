@@ -4,6 +4,13 @@
 #include<move.h>
 #include<definitions.h>
 
+void markDeadEnd(OBJECTS *o){
+	VERTEX *v=NEW(VERTEX);
+	v->val=INDEX(o->self->y,o->self->x);
+	addList(o->deadEnds,v);
+	printf("DeadEnds:\n");
+	printList(o->deadEnds);
+}
 void markTunnel(OBJECTS *o){
 	VERTEX *v=NEW(VERTEX);
 	v->val=INDEX(o->self->y,o->self->x);
