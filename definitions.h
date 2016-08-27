@@ -52,6 +52,7 @@ STATE{
 	starving,
 	attacking,
 	searching,
+	searchingForFood,
 	exitedTunnel,
 	returningToPrevLoc,
 	movingToStairs
@@ -79,6 +80,7 @@ OBJECTS{
 	POINT *stairs;
 	POINT *nextStep;
 	LIST *visitedDoors;
+	LIST *visitedTunnels;
 
 	char prevBuffer[BUFSZ];
 	GRAPH *graph;

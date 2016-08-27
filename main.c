@@ -15,6 +15,7 @@ int main(int argc,char *argv[]){
 	char *map;
 	char buf[256];
 	char ch;
+	char foodSlot;
 	OBJECTS *objs;
 
 	srand(time(0));
@@ -85,14 +86,18 @@ int main(int argc,char *argv[]){
 		printObjs(objs);
 //return 0;
 
-		if(checkHungry(objs->map)){
-			printf("hungry\n");
-			objs->state=starving;
-		}
+		if((objs->state!=searchingForFood)&&(objs->state!=movingToStairs)&&(objs->state!=atStairs)){
 
-		if(checkFaint(objs->map)){
-			printf("dying of starvation\n");
-			objs->state=starving;
+			if(checkHungry(objs->map)){
+				printf("hungry\n");
+				objs->state=starving;
+			}
+
+			if(checkFaint(objs->map)){
+				printf("dying of starvation\n");
+				objs->state=starving;
+			}
+
 		}
 
 		if(checkMore(objs->map)){
@@ -161,11 +166,38 @@ int main(int argc,char *argv[]){
 			break;
 			case starving:
 				checkInventory(objs);
-				char foodSlot=findFood(objs);
+				foodSlot=findFood(objs);
 				if(foodSlot){
 					consume(objs,foodSlot);
+					objs->state=idle;
+				}else{
+					objs->state=searchingForFood;
 				}
-				objs->state=idle;
+			break;
+			case searchingForFood:
+
+				checkInventory(objs);
+				foodSlot=findFood(objs);
+				if(foodSlot){
+					consume(objs,foodSlot);
+					objs->state=idle;
+				}
+
+				if(objs->stairs){
+					objs->state=movingToStairs;
+				}
+				if(objs->item){
+					printf("moving to item\n");
+					moveTowards(fdin,objs,objs->item);
+				}else if(objs->door){
+					printf("moving to door\n");
+					prev=(moveTowards(fdin,objs,objs->door));
+					if(prev){
+						printf("in front of door.  should mark door on next step then travel through tunnel.\n");
+//						printf("previous step: %c\n",prev);
+						objs->state=atDoor;
+					}
+				}
 			break;
 			case returningToPrevLoc:
 printf("prev loc:");
@@ -182,7 +214,9 @@ printf("restoring old state\n");
 			break;
 			case inTunnel:
 				searches=0;
-				prev=navigateTunnel(fdin,objs,prev);
+markTunnel(objs);
+navTunnel(fdin,objs);
+//				prev=navigateTunnel(fdin,objs,prev);
 			break;
 			case searching:
 				searches++;

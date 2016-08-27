@@ -4,6 +4,13 @@
 #include<move.h>
 #include<definitions.h>
 
+void markTunnel(OBJECTS *o){
+	VERTEX *v=NEW(VERTEX);
+	v->val=INDEX(o->self->y,o->self->x);
+	addList(o->visitedTunnels,v);
+	printf("visitedTunnels:\n");
+	printList(o->visitedTunnels);
+}
 void markDoor(OBJECTS *o){
 	VERTEX *v=NEW(VERTEX);
 	v->val=INDEX(o->self->y,o->self->x);
@@ -123,6 +130,39 @@ int opposite(int dir){
 		break;
 	}
 	return 0;
+}
+int navTunnel(int fdin,OBJECTS *objs){
+	POINT *dst;
+	if(!findListValue(objs->visitedDoors,INDEX(objs->self->y-1,objs->self->x)))
+		if(isDoor(objs->map[INDEX(objs->self->y-1,objs->self->x)])){
+			move(fdin,objs->map,'A');
+			printf("exiting tunnel.  in move.c:navigateTunnel().  need to mark door as visited on next step.\n");
+			objs->state=exitedTunnel;
+			return 0;
+		}
+	if(!findListValue(objs->visitedDoors,INDEX(objs->self->y+1,objs->self->x)))
+		if(isDoor(objs->map[INDEX(objs->self->y+1,objs->self->x)])){
+			move(fdin,objs->map,'B');
+			printf("exiting tunnel.  in move.c:navigateTunnel().  need to mark door as visited on next step.\n");
+			objs->state=exitedTunnel;
+			return 0;
+		}
+	if(!findListValue(objs->visitedDoors,INDEX(objs->self->y,objs->self->x+1)))
+		if(isDoor(objs->map[INDEX(objs->self->y,objs->self->x+1)])){
+			move(fdin,objs->map,'C');
+			printf("exiting tunnel.  in move.c:navigateTunnel().  need to mark door as visited on next step.\n");
+			objs->state=exitedTunnel;
+			return 0;
+		}
+	if(!findListValue(objs->visitedDoors,INDEX(objs->self->y,objs->self->x-1)))
+		if(isDoor(objs->map[INDEX(objs->self->y,objs->self->x-1)])){
+			move(fdin,objs->map,'D');
+			printf("exiting tunnel.  in move.c:navigateTunnel().  need to mark door as visited on next step.\n");
+			objs->state=exitedTunnel;
+			return 0;
+		}
+	dst=nearestTunnel(objs);
+	moveTowards(fdin,objs,dst);
 }
 int navigateTunnel(int fdin,OBJECTS *objs,int prev){
 	int opp=opposite(prev);

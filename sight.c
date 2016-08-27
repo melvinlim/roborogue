@@ -9,6 +9,7 @@ OBJECTS *createObjects(){
 	OBJECTS *objs=NEW(OBJECTS);
 	bzero(objs,sizeof(OBJECTS));
 	objs->visitedDoors=createList();
+	objs->visitedTunnels=createList();
 	return objs;
 }
 
@@ -24,7 +25,14 @@ char findFood(OBJECTS *objs){
 	for(i=0;i<ROWS;i+=ROWS){
 		loc=strstr(inv+i,"food");
 		if(loc){
-			loc=strstr(inv+i,")");
+			loc=loc-((loc-inv)%COLS);
+			loc=strstr(loc,")");
+			return *(loc-1);
+		}
+		loc=strstr(inv+i,"slime");
+		if(loc){
+			loc=loc-((loc-inv)%COLS);
+			loc=strstr(loc,")");
 			return *(loc-1);
 		}
 	}
@@ -76,7 +84,6 @@ OBJECTS *scanArea(OBJECTS *objs){
 		printf("scanArea requires initialized pointer\n");
 		return 0;
 	}
-	//map=updateScreen(objs);
 	updateScreen(objs);
 	map=objs->map;
 	if(map==0){
@@ -106,17 +113,12 @@ OBJECTS *scanArea(OBJECTS *objs){
 			printf("stairs at:");
 			print(objs->stairs);
 		}
-		//objs->stairs=nearestStairs(objs,g);
 	}
 
 	free(objs->enemy);
 	free(objs->item);
 	free(objs->door);
-/*
-	objs->door=nearestDoor(objs,g);
-	objs->item=nearestItem(objs,g);
-	objs->enemy=nearestEnemy(objs,g);
-*/
+
 	objs->door=nearestDoor(objs);
 	objs->item=nearestItem(objs);
 	objs->enemy=nearestEnemy(objs);
@@ -176,8 +178,6 @@ int isItem(char loc){
 		loc!='-'&&
 		loc!='+'&&
 		loc!='%'&&
-//		loc!='>'&&
-//		loc!='<'&&
 		loc!='|'
 		){
 		return 1;
@@ -205,7 +205,6 @@ int isEnemy(char loc){
 	return isalpha(loc);
 }
 
-//POINT *nearestPoint(OBJECTS *objs,GRAPH *g,POINT *target){
 POINT *nearestPoint(OBJECTS *objs,POINT *target){
 	GRAPH *g=objs->graph;
 	char *map=objs->map;
@@ -271,7 +270,6 @@ return 0;
 	return 0;
 }
 
-//POINT *nearest(OBJECTS *objs,GRAPH *g,int f(char)){
 POINT *nearest(OBJECTS *objs,int f(char)){
 	GRAPH *g=objs->graph;
 	char *map=objs->map;
@@ -298,7 +296,8 @@ POINT *nearest(OBJECTS *objs,int f(char)){
 			vert=lp->v;
 			if(!(visited[vert->val])&&(vert!=s)){
 				vert->pre=vp->v;
-if(!findListValue(objs->visitedDoors,(vert->val)))					//should maybe add another function to parameter list to not check this in every case.
+if(	!findListValue(objs->visitedDoors,(vert->val)) &&
+		!findListValue(objs->visitedTunnels,(vert->val))	)					//should maybe add another function to parameter list to not check these in every case.
 				if(f(map[vert->val])){
 
 					freeList(q);
@@ -346,31 +345,23 @@ return 0;
 	return 0;
 }
 
-//POINT *nearestObject(OBJECTS *objs,GRAPH *g){
 POINT *nearestObject(OBJECTS *objs){
 	return nearest(objs,ofInterest);
-	//return nearest(objs,g,ofInterest);
 }
-//POINT *nearestItem(OBJECTS *objs,GRAPH *g){
 POINT *nearestItem(OBJECTS *objs){
 	return nearest(objs,isItem);
-	//return nearest(objs,g,isItem);
 }
-//POINT *nearestEnemy(OBJECTS *objs,GRAPH *g){
 POINT *nearestEnemy(OBJECTS *objs){
 	return nearest(objs,isEnemy);
-	//return nearest(objs,g,isEnemy);
 }
-//POINT *nearestDoor(OBJECTS *objs,GRAPH *g){
 POINT *nearestDoor(OBJECTS *objs){
 	return nearest(objs,isDoor);
-	//return nearest(objs,g,isDoor);
 }
-
-//POINT *nearestStairs(OBJECTS *objs,GRAPH *g){
 POINT *nearestStairs(OBJECTS *objs){
 	return nearest(objs,isStairs);
-	//return nearest(objs,g,isStairs);
+}
+POINT *nearestTunnel(OBJECTS *objs){
+	return nearest(objs,isTunnel);
 }
 
 /*
