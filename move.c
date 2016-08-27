@@ -162,6 +162,11 @@ int navTunnel(int fdin,OBJECTS *objs){
 			return 0;
 		}
 	dst=nearestTunnel(objs);
+	if(dst==0){
+		printf("at dead end.  in move.c:navigateTunnel().  changing to search state\n");
+		objs->state=searching;
+		return 0;
+	}
 	moveTowards(fdin,objs,dst);
 }
 int navigateTunnel(int fdin,OBJECTS *objs,int prev){

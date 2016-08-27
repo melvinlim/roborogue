@@ -178,6 +178,7 @@ int isItem(char loc){
 		loc!='-'&&
 		loc!='+'&&
 		loc!='%'&&
+		loc!='^'&&
 		loc!='|'
 		){
 		return 1;

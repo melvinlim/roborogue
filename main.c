@@ -64,10 +64,10 @@ int main(int argc,char *argv[]){
 	int tmp=0;	
 	int prev=0;
 /*
-		if(isInTunnel(objs)){
-			printf("possibly in tunnel\n");
-			objs->state=inTunnel;
-		}
+	if(isInTunnel(objs)){
+		printf("possibly in tunnel\n");
+		objs->state=inTunnel;
+	}
 */
 	POINT *prevLoc;
 	int searches=0;
@@ -86,7 +86,7 @@ int main(int argc,char *argv[]){
 		printObjs(objs);
 //return 0;
 
-		if((objs->state!=searchingForFood)&&(objs->state!=movingToStairs)&&(objs->state!=atStairs)){
+		if((objs->state!=searchingForFood)&&(objs->state!=movingToStairs)&&(objs->state!=atStairs)&&(objs->state!=inTunnel)&&(objs->state!=atDoor)){
 
 			if(checkHungry(objs->map)){
 				printf("hungry\n");
@@ -134,6 +134,11 @@ int main(int argc,char *argv[]){
 			case atStairs:
 				descend(fdin);
 				freeGraph(objs->graph);
+				free(objs->stairs);
+objs->visitedDoors=0;
+objs->visitedTunnels=0;
+				//freeList(objs->visitedDoors);
+				//freeList(objs->visitedTunnels);
 				objs->graph=0;
 				objs->state=idle;
 			break;
@@ -224,12 +229,14 @@ navTunnel(fdin,objs);
 					printf("searching (%d/%d)\n",searches,objs->maxSearches);
 					search(fdin);
 					objs->state=inTunnel;	//navigateTunnel will change state to exitedTunnel or searching based on result.
-					prev=navigateTunnel(fdin,objs,prev);
+					navTunnel(fdin,objs);
+					//prev=navigateTunnel(fdin,objs,prev);
 				}else{
 					searches=0;
 					printf("dead end.  need to assume tunnel was just entered in other direction\n");
-					prev=opposite(prev);
-					objs->state=inTunnel;
+					objs->state=idle;
+					//prev=opposite(prev);
+					//objs->state=inTunnel;
 				}
 			break;
 			case exitedTunnel:
