@@ -406,6 +406,7 @@ int checkFaint(char *map){
 }
 
 int checkGameOver(char *map){
+	getchar();
 	char *last=map+3*COLS;
 	if(strstr(last,"Rogueists")){
 		return 1;

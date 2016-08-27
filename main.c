@@ -111,12 +111,13 @@ int main(int argc,char *argv[]){
 		}
 
 		if(checkMore(objs->map)){
+			printf("cleared more prompt\n");
+			space(fdin);
+			updateScreen(objs);
 			if(checkGameOver(objs->map)){
 				printf("game over\n");
 				return 0;
 			}
-			printf("cleared more prompt\n");
-			space(fdin);
 		}
 
 		//if(objs->state!=attacking){
@@ -146,7 +147,12 @@ int main(int argc,char *argv[]){
 				}
 			break;
 			case atStairs:
-				descend(fdin);
+				n=descend(fdin);
+				if(n!=1){
+					printf("failed to descend stairs\n");
+					getchar();
+				}
+//getchar();
 				freeGraph(objs->graph);
 				free(objs->stairs);
 //objs->visitedDoors=0;
@@ -280,7 +286,7 @@ printf("restoring old state\n");
 			break;
 		}
 //return 0;
-		sleep(1);
+//		sleep(1);
 	}
 
 	quit(fdin);

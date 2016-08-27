@@ -233,7 +233,11 @@ printf("%c,",ch);
 						case'K':									//status line cleared?
 //							memset(screen,' ',80);
 //							memset(screen+(offset-offset%80),' ',80);
-							memset(screen+(offset),' ',80-(offset%80));
+							if(a>=0){
+								memset(screen+(offset)-(offset%80)+a,' ',80-a);
+							}else{
+								memset(screen+(offset),' ',80-(offset%80));
+							}
 						break;
 						case'X':									//clear a characters?
 							memset(screen+offset,' ',a);

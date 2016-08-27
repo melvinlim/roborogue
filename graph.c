@@ -46,8 +46,12 @@ void freeGraph(GRAPH *g){
 VERTEX *checkTile(GRAPH *g,char *map,int i,int j,int k){
 	int t;
 	VERTEX *v;
-	if((i<1)||(i>=ROWS))		return 0;		//first row is status bar
+	//if((i<1)||(i>=ROWS))		return 0;		//first row is a status bar
+	if((i<1)||(i>=(ROWS-1)))		return 0;		//first row is a status bar, last row is also a status bar.
 	if((j<0)||(j>=COLS))	return 0;
+	if(k>=1840){
+printf("?\n");
+	}
 	t=INDEX(i,j);
 /*
 	v=findListValue(g->vList[k],t);

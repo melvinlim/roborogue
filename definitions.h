@@ -14,7 +14,8 @@
 #define WEST 'D'
 
 #define COLS 80
-#define ROWS 25
+//#define ROWS 25
+#define ROWS 24
 #define INDEX(n,m) (((n)*COLS)+(m))
 #define NEW(x) malloc(sizeof(x))
 

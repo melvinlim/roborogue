@@ -25,12 +25,13 @@ void markDoor(OBJECTS *o){
 	printf("visitedDoors:\n");
 	printList(o->visitedDoors);
 }
-void descend(int fdin){
+int descend(int fdin){
 	char buf;
 	int n;
 	buf='>';
 	n=write(fdin,&buf,1);
 	printf("descending.  wrote %d bytes\n",n);
+	return n;
 }
 void search(int fdin){
 	char buf;
