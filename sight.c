@@ -164,8 +164,18 @@ int isDoor(char loc){
 	return 0;
 }
 
+int isNothing(char loc){
+	if(loc==' ')	return 1;
+	return 0;
+}
+
 int isTunnel(char loc){
 	if(loc=='#')	return 1;
+	return 0;
+}
+
+int isFloor(char loc){
+	if(loc=='.')	return 1;
 	return 0;
 }
 
@@ -437,6 +447,49 @@ int enemyDefeated(char *map){
 int isInTunnel(OBJECTS *objs){
 	char *map=objs->map;
 	POINT *self=objs->self;
+	char ch;
+	ch=map[INDEX(self->y+1,self->x)];
+	if(!isTunnel(ch)&&(!isNothing(ch))){
+		return 0;
+	}
+	ch=map[INDEX(self->y-1,self->x)];
+	if(!isTunnel(ch)&&(!isNothing(ch))){
+		return 0;
+	}
+	ch=map[INDEX(self->y,self->x+1)];
+	if(!isTunnel(ch)&&(!isNothing(ch))){
+		return 0;
+	}
+	ch=map[INDEX(self->y,self->x-1)];
+	if(!isTunnel(ch)&&(!isNothing(ch))){
+		return 0;
+	}
+	return 1;
+/*
+	if(isFloor(map[INDEX(self->y+1,self->x)])){
+		return 0;
+	}
+	if(isFloor(map[INDEX(self->y-1,self->x)])){
+		return 0;
+	}
+	if(isFloor(map[INDEX(self->y,self->x+1)])){
+		return 0;
+	}
+	if(isFloor(map[INDEX(self->y,self->x-1)])){
+		return 0;
+	}
+	if(isDoor(map[INDEX(self->y+1,self->x)])){
+		return 0;
+	}
+	if(isDoor(map[INDEX(self->y-1,self->x)])){
+		return 0;
+	}
+	if(isDoor(map[INDEX(self->y,self->x+1)])){
+		return 0;
+	}
+	if(isDoor(map[INDEX(self->y,self->x-1)])){
+		return 0;
+	}
 	if(isTunnel(map[INDEX(self->y+1,self->x)])){
 		return 1;
 	}
@@ -450,4 +503,5 @@ int isInTunnel(OBJECTS *objs){
 		return 1;
 	}
 	return 0;
+*/
 }

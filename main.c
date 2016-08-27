@@ -63,12 +63,7 @@ int main(int argc,char *argv[]){
 	
 	int tmp=0;	
 	int prev=0;
-/*
-	if(isInTunnel(objs)){
-		printf("possibly in tunnel\n");
-		objs->state=inTunnel;
-	}
-*/
+
 	POINT *prevLoc;
 	int searches=0;
 
@@ -85,6 +80,13 @@ int main(int argc,char *argv[]){
 		objs=scanArea(objs);
 		printObjs(objs);
 //return 0;
+
+		if(isInTunnel(objs)){
+			if((objs->state!=idle)&&(objs->state!=movingToStairs)){
+				printf("possibly in tunnel\n");
+				objs->state=inTunnel;
+			}
+		}
 
 		if((objs->state!=searchingForFood)&&(objs->state!=movingToStairs)&&(objs->state!=atStairs)&&(objs->state!=inTunnel)&&(objs->state!=atDoor)){
 
@@ -135,10 +137,10 @@ int main(int argc,char *argv[]){
 				descend(fdin);
 				freeGraph(objs->graph);
 				free(objs->stairs);
-objs->visitedDoors=0;
-objs->visitedTunnels=0;
-				//freeList(objs->visitedDoors);
-				//freeList(objs->visitedTunnels);
+//objs->visitedDoors=0;
+//objs->visitedTunnels=0;
+				freeList(objs->visitedDoors);
+				freeList(objs->visitedTunnels);
 				objs->graph=0;
 				objs->state=idle;
 			break;
@@ -219,8 +221,8 @@ printf("restoring old state\n");
 			break;
 			case inTunnel:
 				searches=0;
-markTunnel(objs);
-navTunnel(fdin,objs);
+				markTunnel(objs);
+				navTunnel(fdin,objs);
 //				prev=navigateTunnel(fdin,objs,prev);
 			break;
 			case searching:
