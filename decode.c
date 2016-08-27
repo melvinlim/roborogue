@@ -192,13 +192,16 @@ getchar();
 						break;
 						default:
 							printf("error, [0x1b][0x%x]\n",ch);
-getchar();
-//while(1);
+							getchar();
 					}
 					break;
 				}
+				putchar(ch);
 				p++;
 				a=0;
+if(!isdigit(*p)){
+	printf("not a digit: %c / %d\n",*p,*p);
+}
 				while(isdigit(*p)){
 					a*=10;
 					a+=*p-48;

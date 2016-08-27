@@ -39,7 +39,7 @@ char findFood(OBJECTS *objs){
 	return 0;
 }
 
-int moveToPoint(int fdin,OBJECTS *objs,POINT *pt){
+int updateArea(OBJECTS *objs){
 	GRAPH *g;
 	char *map;
 	POINT *loc;
@@ -70,13 +70,52 @@ int moveToPoint(int fdin,OBJECTS *objs,POINT *pt){
 	//printGraph(g);
 
 	objs->graph=g;
+	return 1;
+}
 
-	//nearestPoint(objs,g,pt);
+int moveToPoint(int fdin,OBJECTS *objs,POINT *pt){
+/*
+	GRAPH *g;
+	char *map;
+	POINT *loc;
+	if(objs==0){
+		printf("scanArea requires initialized pointer\n");
+		return 0;
+	}
+	updateScreen(objs);
+	map=objs->map;
+	if(map==0){
+		printf("error, map==0\n");
+		return 0;
+	}
+
+	free(objs->self);
+	objs->self=findSelf(map);
+	if(objs->self==0){
+		space(objs->fdin);
+	}
+	loc=objs->self;
+	g=objs->graph;
+	if(g==0){
+		g=createGraph();
+	}
+
+	buildGraph(g,map,loc);
+	//fillGraph(g,map);
+	//printGraph(g);
+
+	objs->graph=g;
+*/
+	int result;
+	result=updateArea(objs);
+	if(result==0)	return 0;
+
 	nearestPoint(objs,pt);
 	return moveTowards(fdin,objs,pt);
 }
 
 OBJECTS *scanArea(OBJECTS *objs){
+/*
 	GRAPH *g;
 	char *map;
 	POINT *loc;
@@ -106,6 +145,10 @@ OBJECTS *scanArea(OBJECTS *objs){
 	//fillGraph(g,map);
 	//printGraph(g);
 	objs->graph=g;
+*/
+	int result;
+	result=updateArea(objs);
+	if(result==0)	return 0;
 
 	if(objs->stairs==0){
 		objs->stairs=nearestStairs(objs);
@@ -421,6 +464,14 @@ int checkFaint(char *map){
 		return 1;
 	}
 	free(last);
+	return 0;
+}
+
+int checkGameOver(char *map){
+	char *last=map+3*COLS;
+	if(strstr(last,"Rogueists")){
+		return 1;
+	}
 	return 0;
 }
 

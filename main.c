@@ -103,6 +103,10 @@ int main(int argc,char *argv[]){
 		}
 
 		if(checkMore(objs->map)){
+			if(checkGameOver(objs->map)){
+				printf("game over\n");
+				return 0;
+			}
 			printf("cleared more prompt\n");
 			space(fdin);
 		}
@@ -164,8 +168,10 @@ int main(int argc,char *argv[]){
 				if(enemyDefeated(objs->map)){
 					printf("enemy defeated, returning to previous location.\n");
 					objs->state=returningToPrevLoc;
+					objs->state=idle;
 				}else if(objs->enemy==0){
 					objs->state=returningToPrevLoc;
+					objs->state=idle;
 				}else{
 					printf("moving towards / attacking enemy\n");
 					moveTowards(fdin,objs,objs->enemy);
@@ -248,7 +254,7 @@ printf("restoring old state\n");
 			break;
 		}
 //return 0;
-		sleep(1);
+//		sleep(1);
 	}
 
 	quit(fdin);
