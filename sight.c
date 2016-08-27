@@ -9,6 +9,7 @@ OBJECTS *createObjects(){
 	OBJECTS *objs=NEW(OBJECTS);
 	bzero(objs,sizeof(OBJECTS));
 	objs->visitedDoors=createList();
+	objs->visitedItems=createList();
 	objs->visitedTunnels=createList();
 	objs->deadEnds=createList();
 	return objs;
@@ -300,6 +301,7 @@ printf("error\n");
 }
 				vert->pre=vp->v;
 if(	!findListValue(objs->visitedDoors,(vert->val)) &&
+		!findListValue(objs->visitedItems,(vert->val)) &&
 		!findListValue(objs->visitedTunnels,(vert->val))	)					//should maybe add another function to parameter list to not check these in every case.
 				if(f(map[vert->val])){
 
@@ -367,13 +369,6 @@ POINT *nearestTunnel(OBJECTS *objs){
 	return nearest(objs,isTunnel);
 }
 
-/*
-//POINT *nearestUnvisitedDoor(char *map,GRAPH *g,POINT *loc){
-POINT *nearestUnvisitedDoor(OBJECTS *objs,GRAPH *g){
-	return nearest(objs,g,isDoor);
-	//return nearest(map,g,loc,isDoor);
-}
-*/
 char *lastStatus(char *map){
 	char *last=malloc(80);
 	strncpy(last,map+(23*COLS),80);
@@ -399,6 +394,16 @@ int checkInventory(OBJECTS *objs){
 int checkHungry(char *map){
 	char *last=lastStatus(map);
 	if(strstr(last,"hungry")){
+		free(last);
+		return 1;
+	}
+	free(last);
+	return 0;
+}
+
+int checkItem(char *map){
+	char *last=lastMessage(map);
+	if(strstr(last,"moved onto")){
 		free(last);
 		return 1;
 	}
@@ -459,6 +464,73 @@ char *getSurroundings(OBJECTS *objs){
 	return results;
 }
 
+void updateState(OBJECTS *objs){
+	int i;
+	char ch;
+	char *surr=getSurroundings(objs);
+	int nTunnel=0;
+	int nFloor=0;
+	int nNothing=0;
+	int nOther=0;
+
+	if((objs->state!=searchingForFood)&&(objs->state!=movingToStairs)&&(objs->state!=atStairs)&&(objs->state!=inTunnel)&&(objs->state!=atDoor)){
+		if(checkHungry(objs->map)){
+			printf("hungry\n");
+			objs->state=starving;
+			return;
+		}
+		if(checkFaint(objs->map)){
+			printf("dying of starvation\n");
+			objs->state=starving;
+			return;
+		}
+	}
+
+	if(checkMore(objs->map)){
+		printf("cleared more prompt\n");
+		space(objs->fdin);
+		updateScreen(objs);
+		if(checkGameOver(objs->map)){
+			printf("game over\n");
+			printf("should add game over state\n");
+			while(1);
+		}
+	}
+
+	if(checkItem(objs->map)){
+		printf("inventory full and at item location.  marking item as visited.\n");
+		markItem(objs);
+	}
+
+	for(i=0;i<4;i++){
+		ch=surr[i];
+		if(isTunnel(ch)){
+			nTunnel++;
+		}else if(isFloor(ch)){
+			nFloor++;
+		}else if(isNothing(ch)){
+			nNothing++;
+		}else{
+			nOther++;
+		}
+	}
+	free(surr);
+	if((nTunnel==1)&&(nNothing==3)){
+		if(!findListValue(objs->deadEnds,INDEX(objs->self->y,objs->self->x)))
+			objs->state=searching;
+		return;
+	}else if((nTunnel==1)&&(nFloor==1)){
+		markDoor(objs);
+		return;
+	}else if(nOther>0){
+		return;
+	}
+	if((objs->state!=idle)&&(objs->state!=movingToStairs)){
+		printf("possibly in tunnel\n");
+		objs->state=inTunnel;
+	}
+}
+
 int isInDeadEnd(OBJECTS *objs){
 	int i;
 	char ch;
@@ -514,63 +586,4 @@ int isInTunnel(OBJECTS *objs){
 	}
 	free(surr);
 	return 1;
-/*
-	POINT *self=objs->self;
-	char *map=objs->map;
-	char ch;
-	ch=map[INDEX(self->y+1,self->x)];
-	if(!isTunnel(ch)&&(!isNothing(ch))){
-		return 0;
-	}
-	ch=map[INDEX(self->y-1,self->x)];
-	if(!isTunnel(ch)&&(!isNothing(ch))){
-		return 0;
-	}
-	ch=map[INDEX(self->y,self->x+1)];
-	if(!isTunnel(ch)&&(!isNothing(ch))){
-		return 0;
-	}
-	ch=map[INDEX(self->y,self->x-1)];
-	if(!isTunnel(ch)&&(!isNothing(ch))){
-		return 0;
-	}
-	return 1;
-	if(isFloor(map[INDEX(self->y+1,self->x)])){
-		return 0;
-	}
-	if(isFloor(map[INDEX(self->y-1,self->x)])){
-		return 0;
-	}
-	if(isFloor(map[INDEX(self->y,self->x+1)])){
-		return 0;
-	}
-	if(isFloor(map[INDEX(self->y,self->x-1)])){
-		return 0;
-	}
-	if(isDoor(map[INDEX(self->y+1,self->x)])){
-		return 0;
-	}
-	if(isDoor(map[INDEX(self->y-1,self->x)])){
-		return 0;
-	}
-	if(isDoor(map[INDEX(self->y,self->x+1)])){
-		return 0;
-	}
-	if(isDoor(map[INDEX(self->y,self->x-1)])){
-		return 0;
-	}
-	if(isTunnel(map[INDEX(self->y+1,self->x)])){
-		return 1;
-	}
-	if(isTunnel(map[INDEX(self->y-1,self->x)])){
-		return 1;
-	}
-	if(isTunnel(map[INDEX(self->y,self->x+1)])){
-		return 1;
-	}
-	if(isTunnel(map[INDEX(self->y,self->x-1)])){
-		return 1;
-	}
-	return 0;
-*/
 }

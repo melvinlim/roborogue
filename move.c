@@ -18,6 +18,13 @@ void markTunnel(OBJECTS *o){
 	printf("visitedTunnels:\n");
 	printList(o->visitedTunnels);
 }
+void markItem(OBJECTS *o){
+	VERTEX *v=NEW(VERTEX);
+	v->val=INDEX(o->self->y,o->self->x);
+	addList(o->visitedItems,v);
+	printf("visitedItems:\n");
+	printList(o->visitedItems);
+}
 void markDoor(OBJECTS *o){
 	VERTEX *v=NEW(VERTEX);
 	v->val=INDEX(o->self->y,o->self->x);

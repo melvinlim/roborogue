@@ -80,6 +80,10 @@ int main(int argc,char *argv[]){
 		objs=scanArea(objs);
 		printObjs(objs);
 //return 0;
+
+		updateState(objs);
+
+/*
 		if(isInDoorway(objs)){
 			markDoor(objs);
 		}
@@ -119,8 +123,8 @@ int main(int argc,char *argv[]){
 				return 0;
 			}
 		}
+*/
 
-		//if(objs->state!=attacking){
 		if((objs->state!=attacking)&&(objs->state!=returningToPrevLoc)){
 				if(objs->enemy){
 					printf("clearing message (first) line in case of prior enemy defeated message\n");
@@ -289,7 +293,7 @@ printf("restoring old state\n");
 			break;
 		}
 //return 0;
-//		sleep(1);
+		sleep(1);
 	}
 
 	quit(fdin);

@@ -83,6 +83,7 @@ OBJECTS{
 	LIST *visitedDoors;
 	LIST *visitedTunnels;
 	LIST *deadEnds;
+	LIST *visitedItems;
 
 	char prevBuffer[BUFSZ];
 	GRAPH *graph;
