@@ -397,6 +397,16 @@ int checkInventory(OBJECTS *objs){
 	space(objs->fdin);
 }
 
+int checkFound(char *map){
+	char *last=lastMessage(map);
+	if(strstr(last,"Nothing appropriate")){
+		free(last);
+		return 0;
+	}
+	free(last);
+	return 1;
+}
+
 int checkWeak(char *map){
 	char *last=lastStatus(map);
 	if(strstr(last,"weak")){
@@ -536,7 +546,14 @@ void updateState(OBJECTS *objs){
 
 	if(checkItem(objs->map)){
 		printf("inventory full and at item location.  marking item as visited.\n");
-		markItem(objs);
+		//better to put this in decisions...
+		if(tryQuaff(objs)){
+			pickupItem(objs);
+		}else if(tryRead(objs)){
+			pickupItem(objs);
+		}else{
+			markItem(objs);
+		}
 	}
 
 	for(i=0;i<4;i++){

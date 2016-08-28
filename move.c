@@ -4,6 +4,14 @@
 #include<move.h>
 #include<definitions.h>
 
+int pickupItem(OBJECTS *o){
+	char buf;
+	int n;
+	buf=',';
+	n=write(o->fdin,&buf,1);
+	printf("wrote %d bytes\n",n);
+	return n;
+}
 void markDeadEnd(OBJECTS *o){
 	VERTEX *v=NEW(VERTEX);
 	v->val=INDEX(o->self->y,o->self->x);
@@ -48,6 +56,36 @@ void search(int fdin){
 	buf='s';
 	n=write(fdin,&buf,1);
 	printf("searching.  wrote %d bytes\n",n);
+}
+int tryQuaff(OBJECTS *objs){
+	char buf;
+	int fdin=objs->fdin;
+	int n;
+	buf='q';
+	n=write(fdin,&buf,1);
+	scanArea(objs);
+	if(checkFound(objs->map)){
+		buf='a';
+		n=write(fdin,&buf,1);
+		printf("wrote %d bytes\n",n);
+		return 1;
+	}
+	return 0;
+}
+int tryRead(OBJECTS *objs){
+	char buf;
+	int fdin=objs->fdin;
+	int n;
+	buf='r';
+	n=write(fdin,&buf,1);
+	scanArea(objs);
+	if(checkFound(objs->map)){
+		buf='a';
+		n=write(fdin,&buf,1);
+		printf("wrote %d bytes\n",n);
+		return 1;
+	}
+	return 0;
 }
 void tryToEat(OBJECTS *objs){
 	char buf;
