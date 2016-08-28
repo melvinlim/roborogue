@@ -88,7 +88,7 @@ int main(int argc,char *argv[]){
 		updateState(objs);
 
 		decision(objs);
-		sleep(1);
+//		sleep(1);
 	}
 
 	quit(fdin);

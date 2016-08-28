@@ -97,6 +97,7 @@ OBJECTS{
 	int maxSearches;
 
 	int status;
+	int searches;
 };
 
 #endif

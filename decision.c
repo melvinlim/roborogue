@@ -5,7 +5,7 @@
 
 void decision(OBJECTS *objs){
 	POINT *prevLoc;
-	int n,foodSlot,searches,prev;
+	int n,foodSlot,prev;
 	int fdin=objs->fdin;
 	STATE state=objs->state;
 
@@ -21,6 +21,7 @@ void decision(OBJECTS *objs){
 				objs->prevStep=prev;
 				objs->prevState=state;
 				objs->state=attacking;
+				state=attacking;
 			}
 	}
 
@@ -58,12 +59,14 @@ void decision(OBJECTS *objs){
 				printf("failed to descend stairs\n");
 				getchar();
 			}
-//getchar();
-			freeGraph(objs->graph);
-			free(objs->stairs);
-			freeList(objs->visitedDoors);
-			freeList(objs->visitedTunnels);
-			objs->graph=0;
+			if(checkDescent(objs->map)){
+				freeGraph(objs->graph);
+				objs->graph=0;
+				free(objs->stairs);
+				objs->stairs=0;
+				freeList(objs->visitedDoors);
+				freeList(objs->visitedTunnels);
+			}
 			objs->state=idle;
 		break;
 		case idle:
@@ -78,8 +81,18 @@ void decision(OBJECTS *objs){
 //						printf("previous step: %c\n",prev);
 					objs->state=atDoor;
 				}
-			}else{
+			}else if(objs->stairs){
 				objs->state=movingToStairs;
+			}else{
+				LIST *tmpNode;
+				VERTEX *tmpV;
+				while(!emptyList(objs->deadEnds)){
+					tmpNode=dequeue(objs->deadEnds);
+					tmpV=findListValue(objs->visitedTunnels,tmpNode->v->val);
+					remList(objs->visitedTunnels,tmpV);
+				}
+				objs->state=inTunnel;
+				navTunnel(fdin,objs);
 			}
 		break;
 		case attacking:
@@ -145,37 +158,36 @@ printf("restoring old state\n");
 			objs->state=inTunnel;
 		break;
 		case inTunnel:
-			searches=0;
+			objs->searches=0;
 			markTunnel(objs);
 			navTunnel(fdin,objs);
 //				prev=navigateTunnel(fdin,objs,prev);
 		break;
 		case searching:
-			searches++;
-			if(searches<=objs->maxSearches){
-				printf("searching (%d/%d)\n",searches,objs->maxSearches);
+			objs->searches++;
+			if(objs->searches<=objs->maxSearches){
+				printf("searching (%d/%d)\n",objs->searches,objs->maxSearches);
 				search(fdin);
+			}else if(!isInDeadEnd(objs)){
+				objs->searches=0;
+				printf("successful search\n");
+				objs->state=idle;
 			}else{
-				searches=0;
+				objs->searches=0;
 				printf("giving up search\n");
 				markTunnel(objs);
 				markDeadEnd(objs);
 				objs->state=idle;
 			}
-			if(!isInDeadEnd(objs)){
-				searches=0;
-				printf("successful search\n");
-				objs->state=inTunnel;
-			}
 				
 /*
-				printf("searching (%d/%d)\n",searches,objs->maxSearches);
+				printf("searching (%d/%d)\n",objs->searches,objs->maxSearches);
 				search(fdin);
 				objs->state=inTunnel;	//navigateTunnel will change state to exitedTunnel or searching based on result.
 				navTunnel(fdin,objs);
 				//prev=navigateTunnel(fdin,objs,prev);
 			}else{
-				searches=0;
+				objs->searches=0;
 				printf("dead end.  need to assume tunnel was just entered in other direction\n");
 				objs->state=idle;
 				//prev=opposite(prev);
@@ -184,10 +196,9 @@ printf("restoring old state\n");
 */
 		break;
 		case exitedTunnel:
-			searches=0;
+			objs->searches=0;
 			markDoor(objs);
 			objs->state=idle;
 		break;
 	}
-	sleep(1);
 }

@@ -24,7 +24,8 @@ LIST *addList(LIST *p,VERTEX *v){
 	t=t->next;
 	t->v=v;
 	t->next=0;
-	return p;
+	return t;
+//	return p;
 }
 LIST *remList(LIST *root,LIST *target){
 	LIST *t=root;
@@ -65,12 +66,13 @@ LIST *lastList(LIST *t){
 }
 void freeList(LIST *root){
 	LIST *target;
-	if(root==0)	return;
+//	if(root==0)	return;
 	while(root->next){
 		target=lastList(root);
 		root=remList(root,target);
 	}
-	free(root);
+	root->next=0;
+//	free(root);
 }
 void printList(LIST *p){
 	while(p->next){

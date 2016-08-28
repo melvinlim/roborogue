@@ -59,7 +59,9 @@ int updateArea(OBJECTS *objs){
 	free(objs->self);
 	objs->self=findSelf(map);
 	if(objs->self==0){
-		space(objs->fdin);
+		printf("unable to find self\n");
+		while(1);
+		//space(objs->fdin);
 	}
 	loc=objs->self;
 	g=objs->graph;
@@ -324,6 +326,10 @@ if(	!findListValue(objs->visitedDoors,(vert->val)) &&
 							printf("%c\n",map[INDEX(nextStep->y,nextStep->x)]);
 #endif
 							objs->nextStep=nextStep;
+							if(pt->y==0){
+								printf("error, trying to return point (%d,%d) in nearest()\n",pt->x,pt->y);
+								getchar();
+							}
 							return pt;
 						}else{
 							nextStep->x=vert->val%80;
@@ -409,6 +415,26 @@ int checkHungry(char *map){
 	}
 	free(last);
 	return 0;
+}
+
+int checkTrapped(char *map){
+	char *last=lastStatus(map);
+	if(strstr(last,"bear trap")){
+		free(last);
+		return 1;
+	}
+	free(last);
+	return 0;
+}
+
+int checkDescent(char *map){
+	char *last=lastMessage(map);
+	if(strstr(last,"no way down")){
+		free(last);
+		return 0;
+	}
+	free(last);
+	return 1;
 }
 
 int checkItem(char *map){
@@ -503,6 +529,7 @@ void updateState(OBJECTS *objs){
 		if(checkGameOver(objs->map)){
 			printf("game over\n");
 			printf("should add game over state\n");
+			space(objs->fdin);
 			while(1);
 		}
 	}
@@ -526,8 +553,9 @@ void updateState(OBJECTS *objs){
 	}
 	free(surr);
 	if((nTunnel==1)&&(nNothing==3)){
-		if(!findListValue(objs->deadEnds,INDEX(objs->self->y,objs->self->x)))
+		if(!findListValue(objs->deadEnds,INDEX(objs->self->y,objs->self->x))){
 			objs->state=searching;
+		}
 		return;
 	}else if((nTunnel==1)&&(nFloor==1)){
 		markDoor(objs);

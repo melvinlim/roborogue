@@ -11,12 +11,14 @@ void markDeadEnd(OBJECTS *o){
 	printf("DeadEnds:\n");
 	printList(o->deadEnds);
 }
-void markTunnel(OBJECTS *o){
+LIST *markTunnel(OBJECTS *o){
+	LIST *newNode;
 	VERTEX *v=NEW(VERTEX);
 	v->val=INDEX(o->self->y,o->self->x);
-	addList(o->visitedTunnels,v);
+	newNode=addList(o->visitedTunnels,v);
 	printf("visitedTunnels:\n");
 	printList(o->visitedTunnels);
+	return newNode;
 }
 void markItem(OBJECTS *o){
 	VERTEX *v=NEW(VERTEX);
