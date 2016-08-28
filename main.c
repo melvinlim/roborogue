@@ -83,47 +83,8 @@ int main(int argc,char *argv[]){
 
 		updateState(objs);
 
+		decision(objs);
 /*
-		if(isInDoorway(objs)){
-			markDoor(objs);
-		}
-
-		if(isInTunnel(objs)){
-			if((objs->state!=idle)&&(objs->state!=movingToStairs)){
-				printf("possibly in tunnel\n");
-				objs->state=inTunnel;
-			}
-		}
-
-		if(isInDeadEnd(objs)){
-			if(!findListValue(objs->deadEnds,INDEX(objs->self->y,objs->self->x)))
-				objs->state=searching;
-		}
-
-		if((objs->state!=searchingForFood)&&(objs->state!=movingToStairs)&&(objs->state!=atStairs)&&(objs->state!=inTunnel)&&(objs->state!=atDoor)){
-
-			if(checkHungry(objs->map)){
-				printf("hungry\n");
-				objs->state=starving;
-			}
-
-			if(checkFaint(objs->map)){
-				printf("dying of starvation\n");
-				objs->state=starving;
-			}
-
-		}
-
-		if(checkMore(objs->map)){
-			printf("cleared more prompt\n");
-			space(fdin);
-			updateScreen(objs);
-			if(checkGameOver(objs->map)){
-				printf("game over\n");
-				return 0;
-			}
-		}
-*/
 
 		if((objs->state!=attacking)&&(objs->state!=returningToPrevLoc)){
 				if(objs->enemy){
@@ -162,8 +123,6 @@ int main(int argc,char *argv[]){
 //getchar();
 				freeGraph(objs->graph);
 				free(objs->stairs);
-//objs->visitedDoors=0;
-//objs->visitedTunnels=0;
 				freeList(objs->visitedDoors);
 				freeList(objs->visitedTunnels);
 				objs->graph=0;
@@ -271,20 +230,6 @@ printf("restoring old state\n");
 					objs->state=inTunnel;
 				}
 					
-/*
-					printf("searching (%d/%d)\n",searches,objs->maxSearches);
-					search(fdin);
-					objs->state=inTunnel;	//navigateTunnel will change state to exitedTunnel or searching based on result.
-					navTunnel(fdin,objs);
-					//prev=navigateTunnel(fdin,objs,prev);
-				}else{
-					searches=0;
-					printf("dead end.  need to assume tunnel was just entered in other direction\n");
-					objs->state=idle;
-					//prev=opposite(prev);
-					//objs->state=inTunnel;
-				}
-*/
 			break;
 			case exitedTunnel:
 				searches=0;
@@ -293,6 +238,7 @@ printf("restoring old state\n");
 			break;
 		}
 //return 0;
+*/
 		sleep(1);
 	}
 

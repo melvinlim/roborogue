@@ -524,6 +524,8 @@ void updateState(OBJECTS *objs){
 		return;
 	}else if(nOther>0){
 		return;
+	}else if(nFloor>1){
+		return;
 	}
 	if((objs->state!=idle)&&(objs->state!=movingToStairs)){
 		printf("possibly in tunnel\n");

@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-O0 -I. -g
-DEPS = move.h list.h graph.h sight.h decode.h
-OBJ = move.o list.o graph.o sight.o decode.o main.o
+DEPS = decision.h move.h list.h graph.h sight.h decode.h
+OBJ = decision.o move.o list.o graph.o sight.o decode.o main.o
 TARGS = main
 NAME = robo
 
