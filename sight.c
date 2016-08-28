@@ -417,6 +417,44 @@ int checkWeak(char *map){
 	return 0;
 }
 
+char *fillHP(char *p,OBJECTS *objs){
+	int tmp;
+	char buf[32];
+	char *t;
+	bzero(buf,32);
+	p=strstr(p,"Hp:");
+	if(p==0){
+		printf("error\n");
+		while(1);
+	}
+	p+=4;
+	t=p;
+	while(isdigit(*t)){
+		t++;
+	}
+	strncpy(buf,p,(t-p));
+	tmp=atoi(buf);
+	objs->hp=tmp;
+
+	p=t+1;
+	t=p;
+	while(isdigit(*t)){
+		t++;
+	}
+	strncpy(buf,p,(t-p));
+	tmp=atoi(buf);
+	objs->maxhp=tmp;
+
+	return t;
+}
+
+void parseStatus(OBJECTS *objs){
+	char *map=objs->map;
+	char *p=lastStatus(map);
+	fillHP(p,objs);
+	free(p);
+}
+
 int checkHungry(char *map){
 	char *last=lastStatus(map);
 	if(strstr(last,"hungry")){
@@ -543,6 +581,8 @@ void updateState(OBJECTS *objs){
 			while(1);
 		}
 	}
+
+	parseStatus(objs);
 
 	if(checkItem(objs->map)){
 		printf("inventory full and at item location.  marking item as visited.\n");

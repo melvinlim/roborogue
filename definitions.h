@@ -98,6 +98,9 @@ OBJECTS{
 
 	int status;
 	int searches;
+
+	int hp;
+	int maxhp;
 };
 
 #endif
