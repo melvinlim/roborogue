@@ -47,7 +47,7 @@ void decision(OBJECTS *objs){
 			if(objs->stairs==0){
 				printf("error: objs->stairs should not be 0 here.\n");
 			}
-			prev=moveTowards(fdin,objs,objs->stairs);
+			prev=moveTowards(objs,objs->stairs);
 			if(prev){
 				printf("in front of stairs.  should erase graph and travel down stairs on next step.\n");
 				objs->state=atStairs;
@@ -72,10 +72,10 @@ void decision(OBJECTS *objs){
 		case idle:
 			if(objs->item){
 				printf("moving to item\n");
-				moveTowards(fdin,objs,objs->item);
+				moveTowards(objs,objs->item);
 			}else if(objs->door){
 				printf("moving to door\n");
-				prev=(moveTowards(fdin,objs,objs->door));
+				prev=(moveTowards(objs,objs->door));
 				if(prev){
 					printf("in front of door.  should mark door on next step then travel through tunnel.\n");
 //						printf("previous step: %c\n",prev);
@@ -106,7 +106,7 @@ void decision(OBJECTS *objs){
 				objs->state=idle;
 			}else{
 				printf("moving towards / attacking enemy\n");
-				moveTowards(fdin,objs,objs->enemy);
+				moveTowards(objs,objs->enemy);
 			}
 		break;
 		case starving:
@@ -133,10 +133,10 @@ void decision(OBJECTS *objs){
 			}
 			if(objs->item){
 				printf("moving to item\n");
-				moveTowards(fdin,objs,objs->item);
+				moveTowards(objs,objs->item);
 			}else if(objs->door){
 				printf("moving to door\n");
-				prev=(moveTowards(fdin,objs,objs->door));
+				prev=(moveTowards(objs,objs->door));
 				if(prev){
 					printf("in front of door.  should mark door on next step then travel through tunnel.\n");
 //						printf("previous step: %c\n",prev);

@@ -205,7 +205,7 @@ int navTunnel(int fdin,OBJECTS *objs){
 		objs->state=searching;
 		return 0;
 	}
-	moveTowards(fdin,objs,dst);
+	moveTowards(objs,dst);
 }
 int navigateTunnel(int fdin,OBJECTS *objs,int prev){
 	int opp=opposite(prev);
@@ -262,9 +262,10 @@ int navigateTunnel(int fdin,OBJECTS *objs,int prev){
 	return prev;
 //	return -1;
 }
-int moveTowards(int fdin,OBJECTS *objs,POINT *dst){
+int moveTowards(OBJECTS *objs,POINT *dst){
 	int dx,dy;
 	int dir;
+	int fdin=objs->fdin;
 	char *map=objs->map;
 	POINT *src=objs->self;
 	if((src==0)||(dst==0))	return;

@@ -83,7 +83,7 @@ int moveToPoint(int fdin,OBJECTS *objs,POINT *pt){
 	if(result==0)	return 0;
 
 	nearestPoint(objs,pt);
-	return moveTowards(fdin,objs,pt);
+	return moveTowards(objs,pt);
 }
 
 OBJECTS *scanArea(OBJECTS *objs){
