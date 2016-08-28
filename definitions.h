@@ -59,6 +59,10 @@ STATE{
 	movingToStairs
 };
 
+#define HUNGRY 2
+#define STARVING 4
+#define WEAK 8
+
 #define OBJECTS struct objects
 OBJECTS{
 	int fdin;
@@ -91,6 +95,8 @@ OBJECTS{
 	int scrollTop;
 	int scrollBottom;
 	int maxSearches;
+
+	int status;
 };
 
 #endif

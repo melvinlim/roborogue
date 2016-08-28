@@ -8,6 +8,7 @@ void decision(OBJECTS *objs){
 	int n,foodSlot,searches,prev;
 	int fdin=objs->fdin;
 	STATE state=objs->state;
+
 	if((state!=attacking)&&(state!=returningToPrevLoc)){
 			if(objs->enemy){
 				printf("clearing message (first) line in case of prior enemy defeated message\n");
@@ -21,6 +22,21 @@ void decision(OBJECTS *objs){
 				objs->prevState=state;
 				objs->state=attacking;
 			}
+	}
+
+	if(objs->status&(HUNGRY|STARVING|WEAK)){
+		printf("trying to eat\n");
+		tryToEat(objs);
+/*
+		checkInventory(objs);
+		foodSlot=findFood(objs);
+		if(foodSlot){
+			consume(objs,foodSlot);
+			objs->state=idle;
+		}else{
+			objs->state=searchingForFood;
+		}
+*/
 	}
 
 	switch(state){

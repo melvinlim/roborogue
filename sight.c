@@ -391,6 +391,16 @@ int checkInventory(OBJECTS *objs){
 	space(objs->fdin);
 }
 
+int checkWeak(char *map){
+	char *last=lastStatus(map);
+	if(strstr(last,"weak")){
+		free(last);
+		return 1;
+	}
+	free(last);
+	return 0;
+}
+
 int checkHungry(char *map){
 	char *last=lastStatus(map);
 	if(strstr(last,"hungry")){
@@ -473,17 +483,17 @@ void updateState(OBJECTS *objs){
 	int nNothing=0;
 	int nOther=0;
 
-	if((objs->state!=searchingForFood)&&(objs->state!=movingToStairs)&&(objs->state!=atStairs)&&(objs->state!=inTunnel)&&(objs->state!=atDoor)){
-		if(checkHungry(objs->map)){
-			printf("hungry\n");
-			objs->state=starving;
-			return;
-		}
-		if(checkFaint(objs->map)){
-			printf("dying of starvation\n");
-			objs->state=starving;
-			return;
-		}
+	if(checkHungry(objs->map)){
+		printf("hungry\n");
+		objs->status |= HUNGRY;
+	}else if(checkFaint(objs->map)){
+		printf("dying of starvation\n");
+		objs->status |= STARVING;
+	}else if(checkWeak(objs->map)){
+		printf("weak with hunger\n");
+		objs->status |= WEAK;
+	}else{
+		objs->status &= ~(HUNGRY|STARVING|WEAK);
 	}
 
 	if(checkMore(objs->map)){
