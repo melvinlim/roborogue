@@ -73,11 +73,15 @@ int main(int argc,char *argv[]){
 #endif
 
 	objs->maxSearches=5;
+		
+	objs=scanArea(objs);
+	//printMap(objs->map);
 
 //	objs->state=movingToStairs;
 	while(1){
 
 		objs=scanArea(objs);
+		printMap(objs->map);
 		printObjs(objs);
 //return 0;
 
