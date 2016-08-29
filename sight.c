@@ -64,8 +64,8 @@ int updateArea(OBJECTS *objs){
 	objs->self=findSelf(map);
 	if(objs->self==0){
 		printf("unable to find self\n");
+		space(objs->fdin);
 		while(1);
-		//space(objs->fdin);
 	}
 	loc=objs->self;
 	g=objs->graph;
@@ -272,6 +272,9 @@ return 0;
 }
 
 void near(OBJECTS *objs){
+	freeList(objs->seenEnemies);
+	freeList(objs->seenItems);
+	freeList(objs->seenDoors);
 	GRAPH *g=objs->graph;
 	char *map=objs->map;
 	int vIndex=objs->player->val;

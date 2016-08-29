@@ -71,20 +71,27 @@ void decision(OBJECTS *objs){
 			objs->state=idle;
 		break;
 		case idle:
-			if(objs->item){
+			//if(objs->item){
+			if(objs->seenItems->next){
 				printf("moving to item\n");
-				moveTowards(objs,objs->item);
-			}else if(objs->door){
+//				moveTowards(objs,objs->item);
+				moveToV(objs,objs->seenItems->next->v);
+			//}else if(objs->door){
+			}else if(objs->seenDoors->next){
 				printf("moving to door\n");
-				prev=(moveTowards(objs,objs->door));
+//				prev=(moveTowards(objs,objs->door));
+				prev=moveToV(objs,objs->seenDoors->next->v);
 				if(prev){
 					printf("in front of door.  should mark door on next step then travel through tunnel.\n");
 //						printf("previous step: %c\n",prev);
 					objs->state=atDoor;
 				}
-			}else if(objs->stairs){
+			//}else if(objs->stairs){
+			}else if(objs->seenStairs->next){
 				objs->state=movingToStairs;
 			}else{
+printf("tunnel 93 in decision.c unimplemented\n");
+while(1);
 				LIST *tmpNode;
 				VERTEX *tmpV;
 				while(!emptyList(objs->deadEnds)){
