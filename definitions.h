@@ -22,6 +22,7 @@
 #define VERTEX struct vertex
 VERTEX{
 	int val;
+	int sDist;
 	VERTEX *pre;	//predecessor
 };
 
@@ -88,6 +89,13 @@ OBJECTS{
 	LIST *visitedTunnels;
 	LIST *deadEnds;
 	LIST *visitedItems;
+
+	VERTEX *player;
+
+	LIST *seenDoors;
+	LIST *seenItems;
+	LIST *seenStairs;
+	LIST *seenEnemies;
 
 	char prevBuffer[BUFSZ];
 	GRAPH *graph;

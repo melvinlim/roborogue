@@ -25,6 +25,7 @@ POINT *nearestItem(OBJECTS *objs);
 POINT *nearestEnemy(OBJECTS *objs);
 POINT *nearestDoor(OBJECTS *objs);
 POINT *nearestStairs(OBJECTS *objs);
+void near(OBJECTS *objs);
 char *lastMessage(char *map);
 int checkMore(char *map);
 

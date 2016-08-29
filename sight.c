@@ -12,6 +12,10 @@ OBJECTS *createObjects(){
 	objs->visitedItems=createList();
 	objs->visitedTunnels=createList();
 	objs->deadEnds=createList();
+	objs->seenDoors=createList();
+	objs->seenItems=createList();
+	objs->seenEnemies=createList();
+	objs->seenStairs=createList();
 	return objs;
 }
 
@@ -69,11 +73,12 @@ int updateArea(OBJECTS *objs){
 		g=createGraph();
 	}
 
-	buildGraph(g,map,loc);
+	objs->graph=g;
+	buildGraph(objs,loc);
+	//buildGraph(g,map,loc);
 	//fillGraph(g,map);
 	//printGraph(g);
 
-	objs->graph=g;
 	return 1;
 }
 
@@ -98,7 +103,7 @@ OBJECTS *scanArea(OBJECTS *objs){
 			print(objs->stairs);
 		}
 	}
-
+/*
 	free(objs->enemy);
 	free(objs->item);
 	free(objs->door);
@@ -106,7 +111,8 @@ OBJECTS *scanArea(OBJECTS *objs){
 	objs->door=nearestDoor(objs);
 	objs->item=nearestItem(objs);
 	objs->enemy=nearestEnemy(objs);
-	
+*/
+	near(objs);	
 //	freeGraph(g);
 	return objs;
 }
@@ -265,6 +271,70 @@ return 0;
 	return 0;
 }
 
+void near(OBJECTS *objs){
+	GRAPH *g=objs->graph;
+	char *map=objs->map;
+	int vIndex=objs->player->val;
+	VERTEX *vert;
+	LIST *lp,*vp;
+	POINT *pt=NEW(POINT);
+	LIST *q=createList();
+	VERTEX *s=g->vertex[vIndex];
+	lp=g->vList[vIndex];
+	int visited[ROWS*COLS];
+	bzero(visited,4*ROWS*COLS);
+	visited[s->val]=1;
+	s->sDist=0;
+	addList(q,s);
+//	printList(q);
+	while(!emptyList(q)){
+		vp=dequeue(q);
+		lp=g->vList[vp->v->val];
+		//printf("%d?=%d\n",vIndex,vp->v->val);
+		while(lp->next){
+			lp=lp->next;
+			vert=lp->v;
+			if(!(visited[vert->val])&&(vert!=s)){
+				vert->pre=vp->v;
+				vert->sDist=vp->v->sDist+1;
+//				if(f(map[vert->val])){
+				char ch=map[vert->val];
+/*
+				if(isTunnel(ch)){
+					if(!findListValue(objs->visitedTunnels,(vert->val)))
+						addList(objs->seenDoors,(vert));
+*/
+				//}else if(isDoor(ch)){
+				if(isDoor(ch)){
+					if(!findListValue(objs->visitedDoors,(vert->val))){
+						addList(objs->seenDoors,(vert));
+					}
+				}else if(isEnemy(ch)){
+					addList(objs->seenEnemies,(vert));
+				}else if(isItem(ch)){
+					if(!findListValue(objs->visitedItems,(vert->val))){
+						addList(objs->seenItems,(vert));
+					}
+				}else if(isStairs(ch)){
+					addList(objs->seenStairs,(vert));
+				}
+				visited[vert->val]=1;
+				addList(q,vert);
+			}
+		}
+	}
+	printf("doors:");
+	printList(objs->seenDoors);
+	printf("enemies:");
+	printList(objs->seenEnemies);
+	printf("items:");
+	printList(objs->seenItems);
+	printf("stairs:");
+	printList(objs->seenStairs);
+	freeList(q);
+}
+
+
 POINT *nearest(OBJECTS *objs,int f(char)){
 	GRAPH *g=objs->graph;
 	char *map=objs->map;
@@ -275,7 +345,8 @@ POINT *nearest(OBJECTS *objs,int f(char)){
 	LIST *lp,*vp;
 	POINT *pt=NEW(POINT);
 	LIST *q=createList();
-	VERTEX *s=g->vertex[vIndex];
+	//VERTEX *s=g->vertex[vIndex];
+	VERTEX *s=g->vertex[objs->player->val];
 	lp=g->vList[vIndex];
 	int visited[ROWS*COLS];
 	bzero(visited,4*ROWS*COLS);
@@ -683,4 +754,17 @@ int isInTunnel(OBJECTS *objs){
 	}
 	free(surr);
 	return 1;
+}
+
+VERTEX *findPredecessor(OBJECTS *objs,VERTEX *vert){
+	VERTEX *source=objs->player;
+	while(vert->pre){
+		if(vert->pre==source){
+			return vert;
+		}else{
+			vert=vert->pre;
+		}
+	}
+	printf("unable to trace predecessors back to source.  bug in sight.c:findPredecessor()\n");
+	return 0;
 }

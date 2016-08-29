@@ -10,7 +10,8 @@ void decision(OBJECTS *objs){
 	STATE state=objs->state;
 
 	if((state!=attacking)&&(state!=returningToPrevLoc)){
-			if(objs->enemy){
+			//if(objs->enemy){
+			if(objs->seenEnemies->next){
 				printf("clearing message (first) line in case of prior enemy defeated message\n");
 				memset(objs->map,' ',80);
 				printf("transitioning to attack state\n");
@@ -99,14 +100,17 @@ void decision(OBJECTS *objs){
 			if(enemyDefeated(objs->map)){
 				printf("enemy defeated\n");
 				//printf("enemy defeated, returning to previous location.\n");
+				remList(objs->seenEnemies,objs->seenEnemies->next);
 				objs->state=returningToPrevLoc;
 				objs->state=idle;
-			}else if(objs->enemy==0){
+			//}else if(objs->enemy==0){
+			}else if(objs->seenEnemies->next==0){
 				objs->state=returningToPrevLoc;
 				objs->state=idle;
 			}else{
 				printf("moving towards / attacking enemy\n");
-				moveTowards(objs,objs->enemy);
+//				moveTowards(objs,objs->enemy);
+				moveToV(objs,objs->seenEnemies->next->v);
 			}
 		break;
 		case starving:

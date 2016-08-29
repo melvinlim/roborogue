@@ -300,6 +300,32 @@ int navigateTunnel(int fdin,OBJECTS *objs,int prev){
 	return prev;
 //	return -1;
 }
+int moveToV(OBJECTS *objs,VERTEX *vert){
+	int dx,dy;
+	int dir;
+	int fdin=objs->fdin;
+	char *map=objs->map;
+	VERTEX *p=findPredecessor(objs,vert);
+	POINT *src=objs->self;
+	int dstx=vert->val%COLS;
+	int dsty=vert->val/COLS;
+	if((src==0))	return;
+	dx = abs(src->x - dstx);
+	dy = abs(src->y - dsty);
+	objs->nextStep=malloc(sizeof(POINT));
+	objs->nextStep->x=p->val%COLS;
+	objs->nextStep->y=p->val/COLS;
+	dir=(moveTowardsX(fdin,map,objs->nextStep,src));
+	if(dir==0){
+		dir=moveTowardsY(fdin,map,objs->nextStep,src);
+	}
+	
+	if(	(dx==1)&&(dy==0)	||
+			(dx==0)&&(dy==1)	){
+		return dir;
+	}
+	return 0;
+}
 int moveTowards(OBJECTS *objs,POINT *dst){
 	int dx,dy;
 	int dir;

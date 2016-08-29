@@ -73,7 +73,10 @@ printf("?\n");
 	return 0;
 }
 
-void buildGraph(GRAPH *g,char *map,POINT *loc){
+//void buildGraph(GRAPH *g,char *map,POINT *loc){
+void buildGraph(OBJECTS *objs,POINT *loc){
+	char *map=objs->map;
+	GRAPH *g=objs->graph;
 	int visited[ROWS*COLS];
 	int i,j,k=0;
 	LIST *next,*q;
@@ -83,6 +86,7 @@ void buildGraph(GRAPH *g,char *map,POINT *loc){
 	k=INDEX(i,j);
 	q=createList();
 	v=checkTile(g,map,i+0,j+0,k);
+	objs->player=v;
 	addList(q,v);
 
 	bzero(visited,ROWS*COLS*4);
