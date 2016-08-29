@@ -4,6 +4,14 @@
 #include<move.h>
 #include<definitions.h>
 
+int restOneTurn(OBJECTS *o){
+	char buf;
+	int n;
+	buf='.';
+	n=write(o->fdin,&buf,1);
+	printf("wrote %d bytes\n",n);
+	return n;
+}
 int pickupItem(OBJECTS *o){
 	char buf;
 	int n;
@@ -21,9 +29,12 @@ void markDeadEnd(OBJECTS *o){
 }
 LIST *markTunnel(OBJECTS *o){
 	LIST *newNode;
+/*
 	VERTEX *v=NEW(VERTEX);
 	v->val=INDEX(o->self->y,o->self->x);
 	newNode=addList(o->visitedTunnels,v);
+*/
+	newNode=addList(o->visitedTunnels,o->player);
 	printf("visitedTunnels:\n");
 	printList(o->visitedTunnels);
 	return newNode;

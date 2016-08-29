@@ -16,6 +16,7 @@ OBJECTS *createObjects(){
 	objs->seenItems=createList();
 	objs->seenEnemies=createList();
 	objs->seenStairs=createList();
+	objs->seenTunnels=createList();
 	return objs;
 }
 
@@ -273,6 +274,7 @@ return 0;
 
 void near(OBJECTS *objs){
 	freeList(objs->seenEnemies);
+	freeList(objs->seenTunnels);
 	freeList(objs->seenItems);
 	freeList(objs->seenDoors);
 	GRAPH *g=objs->graph;
@@ -302,13 +304,11 @@ void near(OBJECTS *objs){
 				vert->sDist=vp->v->sDist+1;
 //				if(f(map[vert->val])){
 				char ch=map[vert->val];
-/*
 				if(isTunnel(ch)){
 					if(!findListValue(objs->visitedTunnels,(vert->val)))
-						addList(objs->seenDoors,(vert));
-*/
-				//}else if(isDoor(ch)){
-				if(isDoor(ch)){
+						addList(objs->seenTunnels,(vert));
+				}else if(isDoor(ch)){
+				//if(isDoor(ch)){
 					if(!findListValue(objs->visitedDoors,(vert->val))){
 						addList(objs->seenDoors,(vert));
 					}
@@ -328,6 +328,8 @@ void near(OBJECTS *objs){
 	}
 	printf("doors:");
 	printList(objs->seenDoors);
+	printf("tunnels:");
+	printList(objs->seenTunnels);
 	printf("enemies:");
 	printList(objs->seenEnemies);
 	printf("items:");
@@ -518,6 +520,8 @@ char *fillHP(char *p,OBJECTS *objs){
 	strncpy(buf,p,(t-p));
 	tmp=atoi(buf);
 	objs->maxhp=tmp;
+
+	objs->hpratio=objs->hp*100/objs->maxhp;
 
 	return t;
 }

@@ -71,8 +71,10 @@ void decision(OBJECTS *objs){
 			objs->state=idle;
 		break;
 		case idle:
-			//if(objs->item){
-			if(objs->seenItems->next){
+			if(objs->hpratio<100){
+				printf("resting\n");
+				restOneTurn(objs);
+			}else if(objs->seenItems->next){
 				printf("moving to item\n");
 //				moveTowards(objs,objs->item);
 				moveToV(objs,objs->seenItems->next->v);
@@ -171,8 +173,11 @@ printf("restoring old state\n");
 		case inTunnel:
 			objs->searches=0;
 			markTunnel(objs);
-			navTunnel(fdin,objs);
-//				prev=navigateTunnel(fdin,objs,prev);
+			if(objs->seenTunnels->next)
+				moveToV(objs,objs->seenTunnels->next->v);
+			else
+				objs->state=idle;
+			//navTunnel(fdin,objs);
 		break;
 		case searching:
 			objs->searches++;
@@ -196,7 +201,6 @@ printf("restoring old state\n");
 				search(fdin);
 				objs->state=inTunnel;	//navigateTunnel will change state to exitedTunnel or searching based on result.
 				navTunnel(fdin,objs);
-				//prev=navigateTunnel(fdin,objs,prev);
 			}else{
 				objs->searches=0;
 				printf("dead end.  need to assume tunnel was just entered in other direction\n");

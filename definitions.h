@@ -96,6 +96,7 @@ OBJECTS{
 	LIST *seenItems;
 	LIST *seenStairs;
 	LIST *seenEnemies;
+	LIST *seenTunnels;
 
 	char prevBuffer[BUFSZ];
 	GRAPH *graph;
@@ -109,6 +110,7 @@ OBJECTS{
 
 	int hp;
 	int maxhp;
+	int hpratio;
 };
 
 #endif
