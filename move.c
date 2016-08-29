@@ -21,9 +21,12 @@ int pickupItem(OBJECTS *o){
 	return n;
 }
 void markDeadEnd(OBJECTS *o){
+/*
 	VERTEX *v=NEW(VERTEX);
 	v->val=INDEX(o->self->y,o->self->x);
 	addList(o->deadEnds,v);
+*/
+	addList(o->deadEnds,o->player);
 	printf("DeadEnds:\n");
 	printList(o->deadEnds);
 }
@@ -40,16 +43,22 @@ LIST *markTunnel(OBJECTS *o){
 	return newNode;
 }
 void markItem(OBJECTS *o){
+/*
 	VERTEX *v=NEW(VERTEX);
 	v->val=INDEX(o->self->y,o->self->x);
 	addList(o->visitedItems,v);
+*/
+	addList(o->visitedItems,o->player);
 	printf("visitedItems:\n");
 	printList(o->visitedItems);
 }
 void markDoor(OBJECTS *o){
+/*
 	VERTEX *v=NEW(VERTEX);
 	v->val=INDEX(o->self->y,o->self->x);
 	addList(o->visitedDoors,v);
+*/
+	addList(o->visitedDoors,o->player);
 	printf("visitedDoors:\n");
 	printList(o->visitedDoors);
 }
