@@ -282,7 +282,6 @@ void near(OBJECTS *objs){
 	int vIndex=objs->player->val;
 	VERTEX *vert;
 	LIST *lp,*vp;
-	POINT *pt=NEW(POINT);
 	LIST *q=createList();
 	VERTEX *s=g->vertex[vIndex];
 	lp=g->vList[vIndex];
