@@ -120,6 +120,7 @@ OBJECTS *scanArea(OBJECTS *objs){
 	result=updateArea(objs);
 	if(result==0)	return 0;
 
+/*
 	if(objs->stairs==0){
 		objs->stairs=nearestStairs(objs);
 		if(objs->stairs){
@@ -127,7 +128,6 @@ OBJECTS *scanArea(OBJECTS *objs){
 			print(objs->stairs);
 		}
 	}
-/*
 	free(objs->enemy);
 	free(objs->item);
 	free(objs->door);
@@ -185,6 +185,11 @@ int isNothing(char loc){
 
 int isTunnel(char loc){
 	if(loc=='#')	return 1;
+	return 0;
+}
+
+int isWall(char loc){
+	if((loc=='|')||(loc=='-'))	return 1;
 	return 0;
 }
 
@@ -300,6 +305,7 @@ void near(OBJECTS *objs){
 	freeList(objs->seenTunnels);
 	freeList(objs->seenItems);
 	freeList(objs->seenDoors);
+	freeList(objs->seenStairs);
 	GRAPH *g=objs->graph;
 	char *map=objs->map;
 	int vIndex=objs->player->val;
@@ -647,6 +653,7 @@ void updateState(OBJECTS *objs){
 	int nNothing=0;
 	int nOther=0;
 	int nEnemy=0;
+	int nWalls=0;
 
 	if(checkHungry(objs->map)){
 		printf("hungry\n");
@@ -665,6 +672,7 @@ void updateState(OBJECTS *objs){
 		printf("cleared more prompt\n");
 		space(objs->fdin);
 		updateScreen(objs);
+		printMap(objs->map);
 		if(checkGameOver(objs->map)){
 			printf("game over\n");
 			printf("should add game over state\n");
@@ -691,6 +699,8 @@ void updateState(OBJECTS *objs){
 		ch=surr[i];
 		if(isTunnel(ch)){
 			nTunnel++;
+		}else if(isWall(ch)){
+			nWalls++;
 		}else if(isFloor(ch)){
 			nFloor++;
 		}else if(isNothing(ch)){
@@ -707,7 +717,8 @@ void updateState(OBJECTS *objs){
 			objs->state=searching;
 		}
 		return;
-	}else if((nTunnel==1)&&(nFloor==1)){
+	//}else if((nTunnel==1)&&(nFloor==1)){
+	}else if((nTunnel==1)&&(nWalls==2)){
 		markDoor(objs);
 		return;
 	//}else if(nOther>0){

@@ -44,11 +44,14 @@ void decision(OBJECTS *objs){
 	switch(state){
 		case movingToStairs:
 			printf("moving to stairs\n");
+/*
 			nearestStairs(objs);
 			if(objs->stairs==0){
 				printf("error: objs->stairs should not be 0 here.\n");
 			}
 			prev=moveTowards(objs,objs->stairs);
+*/
+			prev=moveToV(objs,objs->seenStairs->next->v);
 			if(prev){
 				printf("in front of stairs.  should erase graph and travel down stairs on next step.\n");
 				objs->state=atStairs;
