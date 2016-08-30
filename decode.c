@@ -29,6 +29,20 @@ void printMap(char *screen){
 	}
 }
 
+void moveCursorHome(){
+	char clearStr[4];
+	clearStr[0]=0x1b;
+	clearStr[1]='[';
+	clearStr[2]='H';
+	clearStr[3]=0;
+	printf("%s",clearStr);
+	clearStr[0]=0x1b;
+	clearStr[1]='[';
+	clearStr[2]='J';
+	clearStr[3]=0;
+	printf("%s",clearStr);
+}
+
 void parseInventory(OBJECTS *objs){
 	char ch;
 	int fdout=objs->fdout;
@@ -305,13 +319,6 @@ getchar();
 		p++;
 	}
 //	printf("\27[5B");	//move down 5 lines.
-/*
-	char clearStr[3];
-	clearStr[0]=0x1b;
-	clearStr[1]='[';
-	clearStr[2]='H';
-	printf("%s",clearStr);
-*/
 
 //	printMap(screen);
 //	printf("n=%d\n",n);

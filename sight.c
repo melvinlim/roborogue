@@ -573,7 +573,7 @@ int checkItem(char *map){
 }
 
 int checkFaint(char *map){
-	char *last=lastMessage(map);
+	char *last=lastStatus(map);
 	if(strstr(last,"faint")){
 		free(last);
 		return 1;

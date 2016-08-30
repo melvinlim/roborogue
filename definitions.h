@@ -21,6 +21,8 @@
 
 #define VERTEX struct vertex
 VERTEX{
+	int x;
+	int y;
 	int val;
 	int sDist;
 	VERTEX *pre;	//predecessor

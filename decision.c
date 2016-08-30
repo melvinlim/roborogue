@@ -28,17 +28,17 @@ void decision(OBJECTS *objs){
 
 	if(objs->status&(HUNGRY|STARVING|WEAK)){
 		printf("trying to eat\n");
-		tryToEat(objs);
-/*
+//		tryToEat(objs);
 		checkInventory(objs);
 		foodSlot=findFood(objs);
 		if(foodSlot){
 			consume(objs,foodSlot);
+/*
 			objs->state=idle;
 		}else{
 			objs->state=searchingForFood;
-		}
 */
+		}
 	}
 
 	switch(state){

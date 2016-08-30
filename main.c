@@ -81,6 +81,7 @@ int main(int argc,char *argv[]){
 	while(1){
 
 		objs=scanArea(objs);
+		//moveCursorHome();
 		printMap(objs->map);
 		printObjs(objs);
 //return 0;

@@ -77,7 +77,8 @@ void freeList(LIST *root){
 void printList(LIST *p){
 	while(p->next){
 		p=p->next;
-		printf("[%d]->",p->v->val);
+		//printf("[%d]->",p->v->val);
+		printf("[%d,%d]->",p->v->x,p->v->y);
 	}
 	printf("0\n");
 }

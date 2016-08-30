@@ -63,6 +63,8 @@ printf("?\n");
 		if(g->vertex[t]==0){
 			v=NEW(VERTEX);
 			v->val=t;
+			v->x=j;
+			v->y=i;
 			g->vertex[t]=v;
 		}else{
 			v=g->vertex[t];
