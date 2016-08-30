@@ -307,11 +307,13 @@ int moveToV(OBJECTS *objs,VERTEX *vert){
 	char *map=objs->map;
 	VERTEX *p=findPredecessor(objs,vert);
 	POINT *src=objs->self;
-	int dstx=vert->val%COLS;
-	int dsty=vert->val/COLS;
+//	int dstx=vert->val%COLS;
+//	int dsty=vert->val/COLS;
 	if((src==0))	return;
-	dx = abs(src->x - dstx);
-	dy = abs(src->y - dsty);
+	//dx = abs(src->x - dstx);
+	//dy = abs(src->y - dsty);
+	dx = abs(src->x - vert->x);
+	dy = abs(src->y - vert->y);
 	objs->nextStep=malloc(sizeof(POINT));
 	objs->nextStep->x=p->x;
 	objs->nextStep->y=p->y;

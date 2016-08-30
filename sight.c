@@ -86,6 +86,14 @@ int updateArea(OBJECTS *objs){
 		while(1);
 */
 		while(objs->self==0){
+			if(checkGameOver(objs->map)){
+				printMap(objs->map);
+				printf("game over\n");
+				printf("should add game over state\n");
+				space(objs->fdin);
+				while(1);
+			}
+			free(objs->self);
 			space(objs->fdin);
 			updateScreen(objs);
 			objs->self=findSelf(objs->map);
@@ -602,7 +610,6 @@ int checkFaint(char *map){
 }
 
 int checkGameOver(char *map){
-	getchar();
 	char *last=map+3*COLS;
 	if(strstr(last,"Rogueists")){
 		return 1;
@@ -671,6 +678,7 @@ void updateState(OBJECTS *objs){
 	if(checkMore(objs->map)){
 		printf("cleared more prompt\n");
 		space(objs->fdin);
+return;
 		updateScreen(objs);
 		printMap(objs->map);
 		if(checkGameOver(objs->map)){
