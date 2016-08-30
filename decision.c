@@ -28,17 +28,17 @@ void decision(OBJECTS *objs){
 
 	if(objs->status&(HUNGRY|STARVING|WEAK)){
 		printf("trying to eat\n");
-//		tryToEat(objs);
+		tryToEat(objs);
+/*
 		checkInventory(objs);
 		foodSlot=findFood(objs);
 		if(foodSlot){
 			consume(objs,foodSlot);
-/*
 			objs->state=idle;
 		}else{
 			objs->state=searchingForFood;
-*/
 		}
+*/
 	}
 
 	switch(state){
@@ -71,7 +71,7 @@ void decision(OBJECTS *objs){
 			objs->state=idle;
 		break;
 		case idle:
-			if(objs->hpratio<100){
+			if((!objs->status&(HUNGRY|STARVING|WEAK))&&objs->hpratio<100){
 				printf("resting\n");
 				restOneTurn(objs);
 			}else if(objs->seenItems->next){
@@ -91,7 +91,8 @@ void decision(OBJECTS *objs){
 			//}else if(objs->stairs){
 			}else if(objs->seenStairs->next){
 				objs->state=movingToStairs;
-			}else{
+			}
+/*
 printf("tunnel 93 in decision.c unimplemented\n");
 while(1);
 				LIST *tmpNode;
@@ -104,6 +105,7 @@ while(1);
 				objs->state=inTunnel;
 				navTunnel(fdin,objs);
 			}
+*/
 		break;
 		case attacking:
 			if(enemyDefeated(objs->map)){

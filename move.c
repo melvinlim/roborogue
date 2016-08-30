@@ -313,8 +313,8 @@ int moveToV(OBJECTS *objs,VERTEX *vert){
 	dx = abs(src->x - dstx);
 	dy = abs(src->y - dsty);
 	objs->nextStep=malloc(sizeof(POINT));
-	objs->nextStep->x=p->val%COLS;
-	objs->nextStep->y=p->val/COLS;
+	objs->nextStep->x=p->x;
+	objs->nextStep->y=p->y;
 	dir=(moveTowardsX(fdin,map,objs->nextStep,src));
 	if(dir==0){
 		dir=moveTowardsY(fdin,map,objs->nextStep,src);
@@ -322,6 +322,7 @@ int moveToV(OBJECTS *objs,VERTEX *vert){
 	
 	if(	(dx==1)&&(dy==0)	||
 			(dx==0)&&(dy==1)	){
+if(vert->sDist!=1)	while(1);
 		return dir;
 	}
 	return 0;

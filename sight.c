@@ -51,7 +51,7 @@ int updateArea(OBJECTS *objs){
 	char *map;
 	POINT *loc;
 	if(objs==0){
-		printf("scanArea requires initialized pointer\n");
+		printf("updateArea requires initialized pointer\n");
 		return 0;
 	}
 	updateScreen(objs);
@@ -62,11 +62,18 @@ int updateArea(OBJECTS *objs){
 	}
 
 	free(objs->self);
-	objs->self=findSelf(map);
+	objs->self=findSelf(objs->map);
 	if(objs->self==0){
+/*
 		printf("unable to find self\n");
 		space(objs->fdin);
 		while(1);
+*/
+		while(objs->self==0){
+			space(objs->fdin);
+			updateScreen(objs);
+			objs->self=findSelf(objs->map);
+		}
 	}
 	loc=objs->self;
 	g=objs->graph;
@@ -701,6 +708,7 @@ void updateState(OBJECTS *objs){
 	}
 	if((objs->state!=idle)&&(objs->state!=movingToStairs)){
 		printf("possibly in tunnel\n");
+		markTunnel(objs);
 		objs->state=inTunnel;
 	}
 }
