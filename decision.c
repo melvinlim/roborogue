@@ -71,6 +71,7 @@ void decision(OBJECTS *objs){
 			objs->state=idle;
 		break;
 		case idle:
+			objs->searches=0;
 			if((!objs->status&(HUNGRY|STARVING|WEAK))&&objs->hpratio<100){
 				printf("resting\n");
 				restOneTurn(objs);
@@ -176,6 +177,7 @@ printf("restoring old state\n");
 			if(objs->seenTunnels->next)
 				moveToV(objs,objs->seenTunnels->next->v);
 			objs->state=inTunnel;
+			objs->state=idle;
 		break;
 		case inTunnel:
 			objs->searches=0;
