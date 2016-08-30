@@ -74,6 +74,9 @@ void decision(OBJECTS *objs){
 			if((!objs->status&(HUNGRY|STARVING|WEAK))&&objs->hpratio<100){
 				printf("resting\n");
 				restOneTurn(objs);
+			}else if(objs->seenTunnels->next){
+				printf("moving to tunnel\n");
+				moveToV(objs,objs->seenTunnels->next->v);
 			}else if(objs->seenItems->next){
 				printf("moving to item\n");
 //				moveTowards(objs,objs->item);

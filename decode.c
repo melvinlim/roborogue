@@ -29,7 +29,7 @@ void printMap(char *screen){
 	}
 }
 
-void moveCursorHome(){
+void clearScreen(){
 	char clearStr[4];
 	clearStr[0]=0x1b;
 	clearStr[1]='[';

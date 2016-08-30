@@ -84,14 +84,15 @@ int main(int argc,char *argv[]){
 
 		if(objs){
 
-//			moveCursorHome();
 			printMap(objs->map);
-			printObjs(objs);
+			//printObjs(objs);
 			updateState(objs);
 			decision(objs);
 
 		}
 //		sleep(1);
+		getchar();
+		clearScreen();
 	}
 
 	quit(fdin);

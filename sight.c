@@ -332,6 +332,7 @@ void near(OBJECTS *objs){
 			}
 		}
 	}
+	printf("\n");
 	printf("doors:");
 	printList(objs->seenDoors);
 	printf("tunnels:");
@@ -342,6 +343,8 @@ void near(OBJECTS *objs){
 	printList(objs->seenItems);
 	printf("stairs:");
 	printList(objs->seenStairs);
+	printf("visited tunnels:");
+	printList(objs->visitedTunnels);
 	freeList(q);
 }
 
@@ -640,6 +643,7 @@ void updateState(OBJECTS *objs){
 	int nFloor=0;
 	int nNothing=0;
 	int nOther=0;
+	int nEnemy=0;
 
 	if(checkHungry(objs->map)){
 		printf("hungry\n");
@@ -688,6 +692,8 @@ void updateState(OBJECTS *objs){
 			nFloor++;
 		}else if(isNothing(ch)){
 			nNothing++;
+		}else if(isEnemy(ch)){
+			nEnemy++;
 		}else{
 			nOther++;
 		}
@@ -701,15 +707,18 @@ void updateState(OBJECTS *objs){
 	}else if((nTunnel==1)&&(nFloor==1)){
 		markDoor(objs);
 		return;
-	}else if(nOther>0){
+	//}else if(nOther>0){
+	}else if(nEnemy>0){
 		return;
 	}else if(nFloor>1){
 		return;
-	}
-	if((objs->state!=idle)&&(objs->state!=movingToStairs)){
+//	}
+//	if((objs->state!=idle)&&(objs->state!=movingToStairs)){
+	}else{
 		printf("possibly in tunnel\n");
 		markTunnel(objs);
-		objs->state=inTunnel;
+//		objs->state=inTunnel;
+//		objs->state=idle;
 	}
 }
 
