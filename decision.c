@@ -168,6 +168,8 @@ printf("restoring old state\n");
 		break;
 		case atDoor:
 //				markDoor(objs);
+			if(objs->seenTunnels->next)
+				moveToV(objs,objs->seenTunnels->next->v);
 			objs->state=inTunnel;
 		break;
 		case inTunnel:
