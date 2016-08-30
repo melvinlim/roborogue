@@ -84,9 +84,9 @@ void parseInventory(OBJECTS *objs){
 				i=0;
 				getchar();
 			}
-		printf("\n[0x%02x]",*p);
+			printf("\n[0x%02x]",*p);
 		}else{
-		printf("%c",*p);
+			printf("%c",*p);
 		}
 		p++;
 	}
@@ -175,11 +175,15 @@ return;
 #endif
 	while(p<pEnd){
 		ch=*p;
-if(iscntrl(ch)){
-printf("\n[0x%02x]",ch);
-}else{
-printf("%c",ch);
-}
+		if(iscntrl(ch)){
+#ifdef DEBUGDECODE
+			printf("\n[0x%02x]",ch);
+#endif
+		}else{
+#ifdef DEBUGDECODE
+			printf("%c",ch);
+#endif
+		}
 		switch(ch){
 			case 0x1b:
 				p++;
@@ -213,19 +217,25 @@ getchar();
 				putchar(ch);
 				p++;
 				a=0;
-if(!isdigit(*p)){
-	printf("not a digit: %c / %d\n",*p,*p);
-}
+#ifdef DEBUGDECODE
+				if(!isdigit(*p)){
+					printf("not a digit: %c / %d\n",*p,*p);
+				}
+#endif
 				while(isdigit(*p)){
 					a*=10;
 					a+=*p-48;
 					p++;
 				}
 				a--;
-printf("%d,",a);
+#ifdef DEBUGDECODE
+					printf("%d,",a);
+#endif
 				ch=*p;
 				if(ch!=';'){
-printf("%c,",ch);
+#ifdef DEBUGDECODE
+					printf("%c,",ch);
+#endif
 					switch(ch){
 						case 24:
 							printf("CANCEL\n");
@@ -269,9 +279,13 @@ printf("%c,",ch);
 						p++;
 					}
 					b--;
-printf("%d,",b);
+#ifdef DEBUGDECODE
+					printf("%d,",b);
+#endif
 					ch=*p;
-printf("%c,",ch);
+#ifdef DEBUGDECODE
+					printf("%c,",ch);
+#endif
 					switch(ch){
 						case'r':		//scrolling enabled from rows [a,b]
 							objs->scrollTop=a;

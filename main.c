@@ -85,6 +85,7 @@ int main(int argc,char *argv[]){
 		if(objs){
 
 			printMap(objs->map);
+			printInfo(objs);
 			//printObjs(objs);
 			updateState(objs);
 			decision(objs);

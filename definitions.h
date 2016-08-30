@@ -5,6 +5,7 @@
 
 #define DEBUG
 #define DECODE_DEBUG
+//#define DEBUGDECODE
 
 #define BUFSZ 4096
 

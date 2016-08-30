@@ -5,6 +5,22 @@
 
 #include<graph.h>
 
+void printInfo(OBJECTS *objs){
+	printf("\n");
+	printf("doors:");
+	printList(objs->seenDoors);
+	printf("tunnels:");
+	printList(objs->seenTunnels);
+	printf("enemies:");
+	printList(objs->seenEnemies);
+	printf("items:");
+	printList(objs->seenItems);
+	printf("stairs:");
+	printList(objs->seenStairs);
+	printf("visited tunnels:");
+	printList(objs->visitedTunnels);
+}
+
 OBJECTS *createObjects(){
 	OBJECTS *objs=NEW(OBJECTS);
 	bzero(objs,sizeof(OBJECTS));
@@ -332,19 +348,6 @@ void near(OBJECTS *objs){
 			}
 		}
 	}
-	printf("\n");
-	printf("doors:");
-	printList(objs->seenDoors);
-	printf("tunnels:");
-	printList(objs->seenTunnels);
-	printf("enemies:");
-	printList(objs->seenEnemies);
-	printf("items:");
-	printList(objs->seenItems);
-	printf("stairs:");
-	printList(objs->seenStairs);
-	printf("visited tunnels:");
-	printList(objs->visitedTunnels);
 	freeList(q);
 }
 
