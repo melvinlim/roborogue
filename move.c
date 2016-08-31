@@ -116,7 +116,7 @@ void save(int fdin,char *name){
 	n=write(fdin,name,strlen(name));
 	printf("wrote %d bytes\n",n);
 }
-void space(int fdin){
+void sendSpace(int fdin){
 	char buf;
 	int n;
 	buf=' ';

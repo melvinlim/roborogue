@@ -33,10 +33,9 @@ OBJECTS *createObjects(){
 	objs->seenEnemies=createList();
 	objs->seenStairs=createList();
 	objs->seenTunnels=createList();
-	return objs;
-}
 
-OBJECTS *scan(OBJECTS *objs){
+	objs->inventory=malloc(ROWS*COLS);
+
 	return objs;
 }
 
@@ -82,7 +81,7 @@ int updateArea(OBJECTS *objs){
 	if(objs->self==0){
 /*
 		printf("unable to find self\n");
-		space(objs->fdin);
+		sendSpace(objs->fdin);
 		while(1);
 */
 		while(objs->self==0){
@@ -90,11 +89,11 @@ int updateArea(OBJECTS *objs){
 				printMap(objs->map);
 				printf("game over\n");
 				printf("should add game over state\n");
-				space(objs->fdin);
+				sendSpace(objs->fdin);
 				while(1);
 			}
 			free(objs->self);
-			space(objs->fdin);
+			sendSpace(objs->fdin);
 			updateScreen(objs);
 			objs->self=findSelf(objs->map);
 		}
@@ -496,7 +495,9 @@ int checkInventory(OBJECTS *objs){
 	n=write(fdin,&buf,1);
 	printf("wrote %d bytes\n",n);
 	parseInventory(objs);
-	space(objs->fdin);
+	sendSpace(objs->fdin);
+	scanArea(objs);
+	scanArea(objs);
 }
 
 int checkFound(char *map){
@@ -677,14 +678,14 @@ void updateState(OBJECTS *objs){
 
 	if(checkMore(objs->map)){
 		printf("cleared more prompt\n");
-		space(objs->fdin);
+		sendSpace(objs->fdin);
 return;
 		updateScreen(objs);
 		printMap(objs->map);
 		if(checkGameOver(objs->map)){
 			printf("game over\n");
 			printf("should add game over state\n");
-			space(objs->fdin);
+			sendSpace(objs->fdin);
 			while(1);
 		}
 	}

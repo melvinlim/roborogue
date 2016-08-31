@@ -26,6 +26,7 @@ void decision(OBJECTS *objs){
 			}
 	}
 
+		//checkInventory(objs);
 	if(objs->status&(HUNGRY|STARVING|WEAK)){
 		printf("trying to eat\n");
 		tryToEat(objs);

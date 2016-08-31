@@ -52,20 +52,28 @@ void parseInventory(OBJECTS *objs){
 	char buffer[BUFSZ+1];
 //	int offset=objs->offset;
 	int offset=0;
+	memset(inventory,(char)' ',ROWS*COLS);
+/*
 	if(inventory==0){
 		inventory=malloc(ROWS*COLS);
 		bzero(inventory,ROWS*COLS);
 		memset(inventory,(char)' ',ROWS*COLS);
 	}
+*/
 	buffer[BUFSZ]=0;
+/*
 	int pBLen=strlen(objs->prevBuffer);
 	strncpy(buffer,objs->prevBuffer,pBLen);
 	n=read(fdout,buffer+pBLen,BUFSZ-pBLen);
 	bzero(objs->prevBuffer,pBLen);
-	//n=read(fdout,buffer,BUFSZ);
+*/
+	do{
+		n=read(fdout,buffer,BUFSZ);
+	}while(n==0);
 	printf("read %d bytes\n",n);
 	p=buffer;
-	//if(n>=BUFSZ/2){
+	pEnd=buffer+n;
+/*
 	if(n+pBLen>=BUFSZ/2){
 		pEnd=memchr( (p+BUFSZ/2) , 0x1b , BUFSZ/2 );
 		if(pEnd==0){
@@ -75,7 +83,8 @@ void parseInventory(OBJECTS *objs){
 	}else{
 		pEnd=buffer+n+pBLen;
 	}
-
+*/
+/*
 //#ifdef RAWDATA
 	i=0;
 	while(p<pEnd){
@@ -84,9 +93,13 @@ void parseInventory(OBJECTS *objs){
 				i=0;
 				getchar();
 			}
+#ifdef DEBUGDECODE
 			printf("\n[0x%02x]",*p);
+#endif
 		}else{
+#ifdef DEBUGDECODE
 			printf("%c",*p);
+#endif
 		}
 		p++;
 	}
@@ -95,7 +108,7 @@ void parseInventory(OBJECTS *objs){
 	}
 //#endif
 	putchar('\n');
-
+*/
 	p=buffer;
 	while(p<pEnd){
 		while(!isalpha(*p)){
@@ -109,7 +122,7 @@ void parseInventory(OBJECTS *objs){
 		offset = (offset/80)*80+80;
 	}
 
-	objs->inventory=inventory;
+//	objs->inventory=inventory;
 	
 	for(i=0;i<ROWS;i++){
 		printf("line %02i:\t",i);
