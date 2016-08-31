@@ -101,7 +101,7 @@ printf("enemy detected.  moving to tunnel\n");
 		case idle:
 			objs->searches=0;
 			objs->enemyLocation=0;
-			if((!objs->status&(HUNGRY|STARVING|WEAK))&&objs->hpratio<100){
+			if((!(objs->status&(HUNGRY|STARVING|WEAK)))&&objs->hpratio<100){
 				printf("resting\n");
 				restOneTurn(objs);
 			}else if(objs->seenTunnels->next){
@@ -162,6 +162,15 @@ printf("enemy detected.  moving to tunnel\n");
 					printf("enemy detected.  moving to door\n");
 					prev=moveToV(objs,objs->seenDoors->next->v);
 					return;
+				}
+			}
+			if((!(objs->status&(HUNGRY|STARVING|WEAK)))&&objs->hpratio<100){
+				if(objs->seenEnemies->next){
+					if(objs->seenEnemies->next->v->sDist > 2){
+						printf("resting\n");
+						restOneTurn(objs);
+						return;
+					}
 				}
 			}
 			if(enemyDefeated(objs->map)){
