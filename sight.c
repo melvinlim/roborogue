@@ -802,6 +802,21 @@ int isInTunnel(OBJECTS *objs){
 	return 1;
 }
 
+int isInCorridor(OBJECTS *objs){
+	int i;
+	char ch;
+	char *surr=getSurroundings(objs);
+	for(i=0;i<4;i++){
+		ch=surr[i];
+		if(isTunnel(ch)){
+			free(surr);
+			return 1;
+		}
+	}
+	free(surr);
+	return 0;
+}
+
 VERTEX *findPredecessor(OBJECTS *objs,VERTEX *vert){
 	VERTEX *source=objs->player;
 	while(vert->pre){

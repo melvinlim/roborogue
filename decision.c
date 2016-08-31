@@ -12,6 +12,18 @@ void decision(OBJECTS *objs){
 	if((state!=attacking)&&(state!=returningToPrevLoc)){
 			//if(objs->enemy){
 			if(objs->seenEnemies->next){
+				if(!isInCorridor(objs)){
+//					if(objs->seenTunnels->next){
+					if(objs->visitedTunnels->next){
+printf("enemy detected.  moving to tunnel\n");
+						moveToV(objs,objs->visitedTunnels->next->v);
+						return;
+					}else if(objs->seenDoors->next){
+						printf("enemy detected.  moving to door\n");
+						prev=moveToV(objs,objs->seenDoors->next->v);
+						return;
+					}
+				}
 				printf("clearing message (first) line in case of prior enemy defeated message\n");
 				memset(objs->map,' ',80);
 				printf("transitioning to attack state\n");
@@ -29,17 +41,17 @@ void decision(OBJECTS *objs){
 		//checkInventory(objs);
 	if(objs->status&(HUNGRY|STARVING|WEAK)){
 		printf("trying to eat\n");
-		tryToEat(objs);
-/*
+		//tryToEat(objs);
 		checkInventory(objs);
 		foodSlot=findFood(objs);
 		if(foodSlot){
 			consume(objs,foodSlot);
 			objs->state=idle;
+/*
 		}else{
 			objs->state=searchingForFood;
-		}
 */
+		}
 	}
 
 	switch(state){
@@ -76,6 +88,7 @@ void decision(OBJECTS *objs){
 		break;
 		case idle:
 			objs->searches=0;
+			objs->enemyLocation=0;
 			if((!objs->status&(HUNGRY|STARVING|WEAK))&&objs->hpratio<100){
 				printf("resting\n");
 				restOneTurn(objs);
@@ -116,6 +129,17 @@ while(1);
 */
 		break;
 		case attacking:
+			if(!isInCorridor(objs)){
+				if(objs->visitedTunnels->next){
+printf("enemy detected.  moving to tunnel\n");
+					moveToV(objs,objs->visitedTunnels->next->v);
+					return;
+				}else if(objs->seenDoors->next){
+					printf("enemy detected.  moving to door\n");
+					prev=moveToV(objs,objs->seenDoors->next->v);
+					return;
+				}
+			}
 			if(enemyDefeated(objs->map)){
 				printf("enemy defeated\n");
 				//printf("enemy defeated, returning to previous location.\n");
@@ -126,6 +150,13 @@ while(1);
 			}else if(objs->seenEnemies->next==0){
 				objs->state=returningToPrevLoc;
 				objs->state=idle;
+			}else if(objs->seenEnemies->next->v->sDist > 1){
+				printf("waiting for enemy to approach\n");
+				if(objs->enemyLocation==objs->seenEnemies->next->v->val){
+					moveToV(objs,objs->seenEnemies->next->v);
+				}
+				objs->enemyLocation=objs->seenEnemies->next->v->val;
+				restOneTurn(objs);
 			}else{
 				printf("moving towards / attacking enemy\n");
 //				moveTowards(objs,objs->enemy);

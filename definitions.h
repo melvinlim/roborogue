@@ -114,6 +114,8 @@ OBJECTS{
 	int hp;
 	int maxhp;
 	int hpratio;
+
+	int enemyLocation;
 };
 
 #endif
