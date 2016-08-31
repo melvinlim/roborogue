@@ -56,6 +56,7 @@ STATE{
 	inTunnel,
 	starving,
 	attacking,
+	aggressive,
 	searching,
 	searchingForFood,
 	exitedTunnel,

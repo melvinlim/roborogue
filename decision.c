@@ -9,7 +9,8 @@ void decision(OBJECTS *objs){
 	int fdin=objs->fdin;
 	STATE state=objs->state;
 
-	if((state!=attacking)&&(state!=returningToPrevLoc)){
+	//if((state!=attacking)&&(state!=returningToPrevLoc)){
+	if((state!=aggressive)&&(state!=attacking)&&(state!=returningToPrevLoc)){
 			//if(objs->enemy){
 			if(objs->seenEnemies->next){
 				if(!isInCorridor(objs)){
@@ -128,6 +129,18 @@ while(1);
 			}
 */
 		break;
+		case aggressive:
+			if(enemyDefeated(objs->map)){
+				printf("enemy defeated\n");
+				remList(objs->seenEnemies,objs->seenEnemies->next);
+				objs->state=idle;
+			}else if(objs->seenEnemies->next==0){
+				objs->state=idle;
+			}else{
+				printf("moving towards / attacking enemy\n");
+				moveToV(objs,objs->seenEnemies->next->v);
+			}
+		break;
 		case attacking:
 			if(!isInCorridor(objs)){
 				if(objs->visitedTunnels->next){
@@ -153,7 +166,8 @@ printf("enemy detected.  moving to tunnel\n");
 			}else if(objs->seenEnemies->next->v->sDist > 1){
 				printf("waiting for enemy to approach\n");
 				if(objs->enemyLocation==objs->seenEnemies->next->v->val){
-					moveToV(objs,objs->seenEnemies->next->v);
+					objs->state=aggressive;
+//					moveToV(objs,objs->seenEnemies->next->v);
 				}
 				objs->enemyLocation=objs->seenEnemies->next->v->val;
 				restOneTurn(objs);
