@@ -148,6 +148,48 @@ void move(int fdin,char *map,char dir){
 	printf("wrote %d bytes\n",n);
 #endif
 }
+void runAway(OBJECTS *objs){
+	char *map=objs->map;
+	int tmp;
+	int maxDir=-1;
+	int max=0;
+	int loc;
+	loc=objs->player->val+1;
+	if(validTile(map[loc])){
+		tmp=objs->graph->vList[loc]->next->v->eDist;
+		if(tmp > max){
+			max=tmp;
+			maxDir=EAST;
+		}
+	}
+	loc=objs->player->val-1;
+	if(validTile(map[loc])){
+		tmp=objs->graph->vList[loc]->next->v->eDist;
+		if(tmp > max){
+			max=tmp;
+			maxDir=WEST;
+		}
+	}
+	loc=objs->player->val+COLS;
+	if(validTile(map[loc])){
+		tmp=objs->graph->vList[loc]->next->v->eDist;
+		if(tmp > max){
+			max=tmp;
+			maxDir=SOUTH;
+		}
+	}
+	loc=objs->player->val-COLS;
+	if(validTile(map[loc])){
+		tmp=objs->graph->vList[loc]->next->v->eDist;
+		if(tmp > max){
+			max=tmp;
+			maxDir=NORTH;
+		}
+	}
+	if(maxDir>=0){
+		move(objs->fdin,map,maxDir);
+	}
+}
 void quit(int fdin){
 	int n;
 	char buf[5];

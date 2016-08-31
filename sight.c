@@ -307,6 +307,37 @@ return 0;
 	return 0;
 }
 
+void findEnemyDistances(OBJECTS *objs,VERTEX *enemy){
+	GRAPH *g=objs->graph;
+	char *map=objs->map;
+	int vIndex=enemy->val;
+	VERTEX *vert;
+	LIST *lp,*vp;
+	LIST *q=createList();
+	VERTEX *s=g->vertex[vIndex];
+	lp=g->vList[vIndex];
+	int visited[ROWS*COLS];
+	bzero(visited,4*ROWS*COLS);
+	visited[s->val]=1;
+	s->eDist=0;
+	addList(q,s);
+	while(!emptyList(q)){
+		vp=dequeue(q);
+		lp=g->vList[vp->v->val];
+		while(lp->next){
+			lp=lp->next;
+			vert=lp->v;
+			if(!(visited[vert->val])&&(vert!=s)){
+				//vert->pre=vp->v;
+				vert->eDist=vp->v->eDist+1;
+				visited[vert->val]=1;
+				addList(q,vert);
+			}
+		}
+	}
+	freeList(q);
+}
+
 void near(OBJECTS *objs){
 	freeList(objs->seenEnemies);
 	freeList(objs->seenTunnels);
@@ -772,16 +803,23 @@ int isInDoorway(OBJECTS *objs){
 	char *surr=getSurroundings(objs);
 	int nTunnel=0;
 	int nFloor=0;
+	int nWalls=0;
 	for(i=0;i<4;i++){
 		ch=surr[i];
+		if(isWall(ch)){
+			nWalls++;
+		}
+/*
 		if(isTunnel(ch)){
 			nTunnel++;
 		}else if(isFloor(ch)){
 			nFloor++;
 		}
+*/
 	}
 	free(surr);
-	if((nTunnel==1)&&(nFloor==1)){
+	//if((nTunnel==1)&&(nFloor==1)){
+	if((nWalls==2)){
 		return 1;
 	}
 	return 0;

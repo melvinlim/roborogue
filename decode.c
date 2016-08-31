@@ -29,6 +29,42 @@ void printMap(char *screen){
 	}
 }
 
+void printEDist(OBJECTS *objs){
+	int i,j;
+	char ch;
+	char *screen=objs->map;
+	printf("\n");
+	printf("\t\t");
+	for(i=0;i<80;i++){
+		printf("%d",i%10);
+	}
+	printf("\n");
+	for(i=0;i<ROWS;i++){
+		printf("line %02i:\t",i);
+		for(j=0;j<80;j++){
+			if(screen[i*80+j]==' '){
+#ifdef NUMBEREDMAP
+				printf("%d",j%10);
+#else
+				printf(" ");
+#endif
+			}else{
+				ch=screen[i*80+j];
+				if(isalpha(ch)||ch=='@'){
+					printf("%c",ch);
+				}else if(objs->graph->vList[i*80+j]&&objs->graph->vList[i*80+j]->next){
+						ch=objs->graph->vList[i*80+j]->next->v->eDist;
+						if(ch>9)	ch=9;
+						printf("%d",ch);
+				}else{
+					printf("%c",ch);
+				}
+			}
+		}
+		putchar('\n');
+	}
+}
+
 void clearScreen(){
 	char clearStr[4];
 	clearStr[0]=0x1b;

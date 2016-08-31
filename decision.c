@@ -9,6 +9,17 @@ void decision(OBJECTS *objs){
 	int fdin=objs->fdin;
 	STATE state=objs->state;
 
+	if(objs->seenEnemies->next){
+		findEnemyDistances(objs,objs->seenEnemies->next->v);
+		if(objs->hpratio<100){
+			if(isInCorridor(objs)&&!isInDoorway(objs)){
+				//printEDist(objs);
+				runAway(objs);
+				return;
+			}
+		}
+	}
+
 	//if((state!=attacking)&&(state!=returningToPrevLoc)){
 	if((state!=aggressive)&&(state!=attacking)&&(state!=returningToPrevLoc)){
 			//if(objs->enemy){

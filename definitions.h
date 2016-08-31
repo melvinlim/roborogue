@@ -25,7 +25,8 @@ VERTEX{
 	int x;
 	int y;
 	int val;
-	int sDist;
+	int sDist;	//distance from player/source.
+	int eDist;	//distance from nearest enemy.
 	VERTEX *pre;	//predecessor
 };
 
