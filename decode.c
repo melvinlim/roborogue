@@ -6,7 +6,7 @@
 
 void printMap(char *screen){
 	int i,j;
-	printf("\n");
+	printf("\r\n");
 	printf("\t\t");
 	for(i=0;i<80;i++){
 		printf("%d",i%10);
@@ -25,6 +25,7 @@ void printMap(char *screen){
 				printf("%c",screen[i*80+j]);
 			}
 		}
+		putchar('\r');
 		putchar('\n');
 	}
 }

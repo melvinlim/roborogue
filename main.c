@@ -33,6 +33,8 @@ int main(int argc,char *argv[]){
 	int tcattr;
 	struct termios tos;
 	tcgetattr(1,&tos);
+//printf("%x %x %x %x\n",tos.c_iflag,tos.c_oflag,tos.c_cflag,tos.c_lflag);
+//return 0;
     
 	int writepipe[2],readpipe[2];
 	pid_t pid;
@@ -88,7 +90,8 @@ fdin=writepipe[1];
 
 	fcntl(fdin,F_SETFL,fcntl(fdin,F_GETFL)|O_NONBLOCK);
 	fcntl(fdout,F_SETFL,fcntl(fdin,F_GETFL)|O_NONBLOCK);
-	
+
+	tos.c_oflag=tos.c_oflag|ONLCR;	
 	tcsetattr(1,TCSANOW,&tos);
 
 	objs=createObjects();
